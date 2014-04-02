@@ -1,0 +1,21 @@
+
+# Name of application
+name: "hello-console"
+
+# Type of launcher (CONSOLE or DAEMON)
+type: CONSOLE
+
+# Java class to run
+main_class: "com.mfizz.sample.HelloConsole"
+
+# Platform launchers to generate (WINDOWS, LINUX, MAC_OSX)
+platforms: [ WINDOWS, LINUX ]
+
+working_dir_mode: APP_HOME
+
+# Arguments for application (as though user typed them on command-line)
+# These will be added immediately after the main class part of java command
+#app_args:
+
+# Arguments to use with the java command (e.g. way to pass -D arguments)
+#java_args:

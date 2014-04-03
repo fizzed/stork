@@ -21,6 +21,9 @@ JAVA_MAX_MEM="${config.maxJavaMemory!""}"
 JAVA_MIN_MEM_PCT="${config.minJavaMemoryPct!""}"
 JAVA_MAX_MEM_PCT="${config.maxJavaMemoryPct!""}"
 
+# dir for run data such as pid file
+RUN_DIR="${config.runDir!""}"
+
 #
 # constants
 #
@@ -33,17 +36,6 @@ APP_ARGS="${config.appArgs}"
 JAVA_ARGS="${config.javaArgs}"
 JAR_DIR="${config.jarDir}"
 MIN_JAVA_VERSION="${config.minJavaVersion}"
-
-# directory for pid file (relative dirs to app home)
-# RUN_DIR="$RUN_DIR"
-
-# directory for init.d script for daemons
-#INITD_DIR="$INITD_DIR"
-
-# single instance ony permitted of app?
-# only applies to console apps as daemons will always only allow single instances
-#SINGLE_INSTANCE=$SINGLE_INSTANCE
-
 
 #
 # working directory
@@ -61,4 +53,31 @@ APP_HOME="`pwd`"
 # revert to initial working directory?
 if [ $WORKING_DIR_MODE == "RETAIN" ]; then
   cd "$INITIAL_WORKING_DIR"
+fi
+
+#
+# is run directory absolute or relative to app home?
+#
+if [[ "$RUN_DIR" == /* ]]; then
+    # absolute path
+    APP_RUN_DIR="$RUN_DIR"
+else
+    # relative path to app home
+    APP_RUN_DIR="$APP_HOME/$RUN_DIR"
+fi
+
+#
+# pid handling
+#
+APP_PID_FILE="$APP_RUN_DIR/$NAME.pid"
+
+# will a pid file be used?
+if [ "$TYPE" == "DAEMON" ]; then
+    if [ ! -d $APP_RUN_DIR ]; then 
+        mkdir -p "$APP_RUN_DIR"
+    fi
+    if [ ! -w $APP_RUN_DIR ]; then
+        echo "Error: run directory is not writable by app! [run_dir=$APP_RUN_DIR]"
+        exit 1
+    fi
 fi

@@ -67,6 +67,10 @@ public class Configuration {
     @JsonIgnore
     private File file;
     
+    private String binDir = "bin";
+    private String runDir = "run";
+    private String shareDir = "share";
+    
     @NotNull @Size(min=1)
     private Set<Platform> platforms;
     
@@ -95,6 +99,30 @@ public class Configuration {
 
     public void setFile(File file) {
         this.file = file;
+    }
+
+    public String getBinDir() {
+        return binDir;
+    }
+
+    public void setBinDir(String binDir) {
+        this.binDir = binDir;
+    }
+
+    public String getShareDir() {
+        return shareDir;
+    }
+
+    public void setShareDir(String shareDir) {
+        this.shareDir = shareDir;
+    }
+
+    public String getRunDir() {
+        return runDir;
+    }
+
+    public void setRunDir(String runDir) {
+        this.runDir = runDir;
     }
 
     public Set<Platform> getPlatforms() {

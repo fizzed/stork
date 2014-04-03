@@ -36,6 +36,7 @@ package com.mfizz.jtools.launcher;
  */
 
 import com.mfizz.jtools.launcher.Configuration.Platform;
+import com.mfizz.jtools.launcher.Configuration.Type;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
@@ -46,6 +47,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -178,6 +180,8 @@ public class Generator {
     static public void generate(Configuration config, File outputDir) throws Exception {
 
         Platform unixLauncherGeneratedVia = null;
+        File binDir = Paths.get(outputDir.getPath(), config.getBinDir()).toFile();
+        File shareDir = Paths.get(outputDir.getPath(), config.getShareDir()).toFile();
 
         // sort platforms by name
         TreeSet<Platform> sortedPlatforms = new TreeSet<Platform>(config.getPlatforms());
@@ -196,40 +200,22 @@ public class Generator {
                     System.out.println(" - launcher: same as for " + unixLauncherGeneratedVia);
                 } else {
                     // generate unix launcher script
-                    File outputFile = new File(outputDir, config.getName());
-                    FileOutputStream fos = new FileOutputStream(outputFile);
-                    Writer out = new OutputStreamWriter(fos);
+                    File launcherFile = new File(binDir, config.getName());
 
-                    try {
-                        processTemplate("linux/script-header.ftl", out, model);
-
-                        includeResource("linux/script-functions.sh", fos);
-
-                        processTemplate("linux/script-java.ftl", out, model);
-
-                        processTemplate("linux/script-console.ftl", out, model);
-
-                        // set to executable
-                        outputFile.setExecutable(true);
-
-                        System.out.println(" - launcher: " + outputFile);
-                    } finally {
-                        if (out != null) {
-                            out.close();
-                        }
-                        if (fos != null) {
-                            fos.close();
-                        }
-                    }
+                    if (config.getType() == Type.CONSOLE) {
+                        generateUnixConsoleLauncher(config, launcherFile, model);
+                    } else if (config.getType() == Type.DAEMON) {
+                        generateUnixDaemonLauncher(config, launcherFile, model);
+                    } 
 
                     unixLauncherGeneratedVia = platform;
                 }
+                
             } else if (platform == Platform.WINDOWS) {
 
-				if (config.getType() == Type.DAEMON) {
-					// use java service library wrapper
-
-				}
+                if (config.getType() == Type.DAEMON) {
+                    // use java service library wrapper
+                }
 
             } else {
                 throw new Exception("Unsupported platform " + platform);
@@ -237,6 +223,60 @@ public class Generator {
         }
     }
 
+    static public void generateUnixConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
+        FileOutputStream fos = new FileOutputStream(launcherFile);
+        Writer out = new OutputStreamWriter(fos);
+
+        try {
+            processTemplate("linux/script-header.ftl", out, model);
+
+            includeResource("linux/script-functions.sh", fos);
+
+            processTemplate("linux/script-java.ftl", out, model);
+
+            processTemplate("linux/script-console.ftl", out, model);
+            
+            // set to executable
+            launcherFile.setExecutable(true);
+
+            System.out.println(" - launcher: " + launcherFile);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (fos != null) {
+                fos.close();
+            }
+        }
+    }
+    
+    static public void generateUnixDaemonLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
+        FileOutputStream fos = new FileOutputStream(launcherFile);
+        Writer out = new OutputStreamWriter(fos);
+
+        try {
+            processTemplate("linux/script-header.ftl", out, model);
+
+            includeResource("linux/script-functions.sh", fos);
+
+            processTemplate("linux/script-java.ftl", out, model);
+
+            processTemplate("linux/script-daemon.ftl", out, model);
+            
+            // set to executable
+            launcherFile.setExecutable(true);
+
+            System.out.println(" - launcher: " + launcherFile);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (fos != null) {
+                fos.close();
+            }
+        }
+    }
+    
     static public void processTemplate(String templateName, Writer out, Object model) throws Exception {
         freemarker.template.Configuration freemarker = getOrCreateFreemarker();
         Template template = freemarker.getTemplate(templateName);

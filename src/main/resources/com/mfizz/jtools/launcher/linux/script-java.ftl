@@ -33,6 +33,19 @@ else
 fi
 
 #
+# special case for daemon: first argument to script should be action
+#
+APP_ACTION_ARG=
+
+# first arg for a daemon is the action to do such as start vs. stop
+if [ "$TYPE" == "DAEMON" ] && [ $# -gt 0 ]; then
+  APP_ACTION_ARG=$1
+  shift
+  # append system property
+  JAVA_ARGS="$JAVA_ARGS -Dlauncher.action=$APP_ACTION_ARG"
+fi
+
+#
 # any additional command line arguments passed to this script?
 # filter out -D arguments as they should go to java, not app
 #
@@ -82,3 +95,15 @@ fi
 # TODO:
 #
 RUN_CMD="\"$JAVA_BIN\" -Dlauncher.name=$NAME -Dlauncher.type=$TYPE -cp $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
+
+#
+# debug for either console/daemon apps
+#
+if [[ $DEBUG ]]; then
+    echo "[launcher] app_home: $APP_HOME"
+    echo "[launcher] working_dir: `pwd`"
+    echo "[launcher] jar_dir: $JAR_DIR"
+    echo "[launcher] run_dir: $APP_RUN_DIR"
+    echo "[launcher] pid_file: $APP_PID_FILE"
+    echo "[launcher] java_run: $RUN_CMD"
+fi

@@ -1,44 +1,44 @@
 <project name="Jtools Launcher" default="hello-console" basedir=".">
 	
-	<property name="target" location="target"/>
-	<property name="batext" value=""/>
+    <property name="target" location="target"/>
+    <property name="batext" value=""/>
 	
-	<scriptdef name="propertyreset" language="javascript">
-	    <attribute name="name"/>
-	    <attribute name="value"/>
-	    project.setProperty(attributes.get("name"), attributes.get("value"));
-	</scriptdef>
+    <scriptdef name="propertyreset" language="javascript">
+        <attribute name="name"/>
+        <attribute name="value"/>
+        project.setProperty(attributes.get("name"), attributes.get("value"));
+    </scriptdef>
 	
-	<condition property="isWindows" value="true">
-		<os family="windows" />
-	</condition>
+    <condition property="isWindows" value="true">
+        <os family="windows" />
+    </condition>
 	
-	<target name="checkos" if="isWindows">
-		<propertyreset name="batext" value=".bat" />
-		<echo message="on windows, batext is ${batext}" />
-	</target>
+    <target name="checkos" if="isWindows">
+        <propertyreset name="batext" value=".bat" />
+        <echo message="on windows, batext is ${batext}" />
+    </target>
 	
-	<target name="init">
-		<tstamp/>
-		<mkdir dir="${target}"/>
-	</target>
+    <target name="init">
+        <tstamp/>
+        <mkdir dir="${target}"/>
+    </target>
 
-	<target name="clean">
-		<delete dir="${target}"/>
-	</target>
+    <target name="clean">
+        <delete dir="${target}"/>
+    </target>
 
-	<target name="stage-sample" depends="init">
-		<mkdir dir="${target}/sample"/>
-		<copy todir="${target}/sample/lib">
-		    <fileset dir="sample/lib"/>
-  		</copy>	
-	</target>
+    <target name="stage-sample" depends="init">
+        <mkdir dir="${target}/sample"/>
+        <copy todir="${target}/sample/lib">
+            <fileset dir="sample/lib"/>
+        </copy>	
+    </target>
 	
-	<target name="hello-console" depends="checkos, stage-sample">
-		<exec executable="mvn${batext}">
-			<arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args='-i src/test/resources/hello-console.yml -o ${target}/sample/bin'"/>
-		</exec>
-		<exec executable="${target}/sample/bin/hello-console${batext}" />
-	</target>
+    <target name="hello-console" depends="checkos, stage-sample">
+        <exec executable="mvn${batext}">
+            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args='-i src/test/resources/hello-console.yml -o ${target}/sample'"/>
+        </exec>
+        <exec executable="${target}/sample/bin/hello-console${batext}" />
+    </target>
 	
 </project>

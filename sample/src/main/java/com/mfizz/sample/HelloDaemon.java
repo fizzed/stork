@@ -42,6 +42,7 @@ public class HelloDaemon extends NanoHTTPD {
         
         // start server
         HelloDaemon server = new HelloDaemon(port);
+        System.out.println("Starting http server on port " + port);
         ServerRunner.executeInstance(server);
     }
     

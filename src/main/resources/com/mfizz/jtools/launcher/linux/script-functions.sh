@@ -168,6 +168,11 @@ findJavaCommands()
         fi
     fi;
 
+    # is java in /usr/bin?
+    if [ -x "/usr/bin/java" ]; then
+        java_cmds=`appendLine "$java_cmds" "/usr/bin/java"`
+    fi
+
     # are running on mac osx?
     if isOSX; then
         local osx_java_home=""
@@ -186,27 +191,26 @@ findJavaCommands()
     # search all known java home locations for java binaries
     # openjdk is usually in /usr/lib/jvm
     # sun jdk on centos/redhat in /usr/java
-    local java_install_locations="\
+    local java_home_parents="\
             /usr/lib/jvm \
             /usr/java \
             /Library/Java/JavaVirtualMachines \
             /System/Library/Java/JavaVirtualMachines
         "
 
-    for java_install_location in $java_install_locations; do
-	for maybe_java_home in "$java_install_location/*"; do
-        	[ -d $java_install_location ] || continue   
+    for java_home_parent in $java_home_parents; do
+	for maybe_java_home in $java_home_parent/*; do
+            [ -d $maybe_java_home ] || continue   
 
-	echo "Searching $java_install_location"
+            if [ -x "$maybe_java_home/bin/java" ]; then
+                java_cmds=`appendLine "$java_cmds" "$maybe_java_home/bin/java"`
+            fi
 
-        if [ -x "$java_install_location/bin/java" ]; then
-            java_cmds=`appendLine "$java_cmds" "$java_install_location/bin/java"`
-        fi
-
-        # osx path
-        if [ -x "$java_install_location/Contents/Home/bin/java" ]; then
-            java_cmds=`appendLine "$java_cmds" "$java_install_location/bin/java"`
-        fi
+            # osx path
+            if [ -x "$maybe_java_home/Contents/Home/bin/java" ]; then
+                java_cmds=`appendLine "$java_cmds" "$maybe_java_home/Contents/Home/bin/java"`
+            fi
+        done
     done
 
     echo -e "$java_cmds"

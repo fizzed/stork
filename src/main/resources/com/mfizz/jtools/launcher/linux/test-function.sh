@@ -20,17 +20,8 @@ fi
 
 echo "found java: $java_bin"
 
-# split by \n char into array
-#IFS=":" read -a array <<< "$java_cmds"
-#for element in "${array[@]}"; do
-#    echo "$element"
-#done
+plat=`platform`
+echo "platform: $plat"
 
-#IFS=""
-#java_bin=`findMinJavaVersion "1.7" '$java_cmds'`
-#echo $java_bin
-
-#IFS=""
-#for java_cmd in $java_cmds; do
-#    echo -e "java: $java_cmd"
-#done
+system_memory=`systemMemory`
+echo "system_memory: $system_memory"

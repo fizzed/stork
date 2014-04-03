@@ -58,6 +58,7 @@ done
 #
 if [ ! -z $JAVA_MAX_MEM_PCT ]; then
   if [ -z $SYS_MEM ]; then SYS_MEM=`systemMemory`; fi
+  if [ -z $SYS_MEM ]; then echo "Unable to detect system memory to set java max memory"; exit 1; fi
   MM=`pctOf $SYS_MEM $JAVA_MAX_MEM_PCT`
   JAVA_ARGS="-Xms${r"${MM}"}M -Xmx${r"${MM}"}M $JAVA_ARGS"
 elif [ ! -z $JAVA_MAX_MEM ]; then
@@ -69,6 +70,7 @@ fi
 #
 if [ ! -z $JAVA_MIN_MEM_PCT ]; then
   if [ -z $SYS_MEM ]; then SYS_MEM=`systemMemory`; fi
+  if [ -z $SYS_MEM ]; then echo "Unable to detect system memory to set java max memory"; exit 1; fi
   MM=`pctOf $SYS_MEM $JAVA_MIN_MEM_PCT`
   JAVA_ARGS="-Xmn${r"${MM}"}M $JAVA_ARGS"
 elif [ ! -z $JAVA_MIN_MEM ]; then

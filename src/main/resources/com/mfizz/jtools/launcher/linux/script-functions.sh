@@ -148,18 +148,24 @@ findJavaCommands()
 
     # is JAVA env var set?
     if [ ! -z "$JAVA" ]; then
-        java_cmds=`appendLine "$java_cmds" "$JAVA"`
+        if [ -x "$JAVA" ]; then
+            java_cmds=`appendLine "$java_cmds" "$JAVA"`
+        fi
     fi;
 
     # is java in path
     local which_java=`quietWhich java`
     if [ ! -z $which_java ]; then
-      java_cmds=`appendLine "$java_cmds" "$which_java"`
+        if [ -x "$which_java" ]; then
+            java_cmds=`appendLine "$java_cmds" "$which_java"`
+        fi
     fi
 
     # is JAVA_HOME set?
     if [ ! -z "$JAVA_HOME" ]; then
-        java_cmds=`appendLine "$java_cmds" "$JAVA_HOME/bin"`
+        if [ -x "$JAVA_HOME/bin/java" ]; then
+            java_cmds=`appendLine "$java_cmds" "$JAVA_HOME/bin/java"`
+        fi
     fi;
 
     # are running on mac osx?
@@ -171,9 +177,33 @@ findJavaCommands()
             osx_java_home=/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home
         fi
         if [ ! -z $osx_java_home ]; then
-            java_cmds=`appendLine "$java_cmds" "$osx_java_home/bin"`
+            if [ -x "$osx_java_home/bin" ]; then
+                java_cmds=`appendLine "$java_cmds" "$osx_java_home/bin"`
+            fi
         fi
     fi
+
+    # search all known java home locations for java binaries
+    # openjdk is usually in /usr/lib/jvm
+    # sun jdk on centos/redhat in /usr/java
+    local java_install_locations="\
+            /usr/lib/jvm/* \
+            /usr/java/* \
+            /Library/Java/JavaVirtualMachines
+        "
+
+    for java_install_location in $java_install_locations; do
+        [ -d $java_install_location ] || continue   
+
+        if [ -x "$java_install_location/bin/java" ]; then
+            java_cmds=`appendLine "$java_cmds" "$java_install_location/bin/java"`
+        fi
+
+        # osx path
+        if [ -x "$java_install_location/Contents/Home/bin/java" ]; then
+            java_cmds=`appendLine "$java_cmds" "$java_install_location/bin/java"`
+        fi
+    done
 
     echo -e "$java_cmds"
 }

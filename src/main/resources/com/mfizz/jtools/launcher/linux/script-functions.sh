@@ -193,11 +193,16 @@ findJavaCommands()
     java_home_parents=(
         "/usr/lib/jvm"
         "/usr/java"
-        "/Library/Internet Plug-Ins"
-        "/System/Library/Frameworks/JavaVM.framework/Versions"
-        "/Library/Java/JavaVirtualMachines"
-        "/System/Library/Java/JavaVirtualMachines"
     )
+
+    if isOSX; then
+        java_home_parents+=(
+            "/Library/Internet Plug-Ins"
+            "/System/Library/Frameworks/JavaVM.framework/Versions"
+            "/Library/Java/JavaVirtualMachines"
+            "/System/Library/Java/JavaVirtualMachines"
+        )
+    fi
 
     IFS=""
     for java_home_parent in ${java_home_parents[*]}; do

@@ -178,8 +178,6 @@ findJavaCommands()
         local osx_java_home=""
         if [ -x '/usr/libexec/java_home' ]; then
             osx_java_home=`/usr/libexec/java_home`
-        elif [ -d "/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home" ]; then
-            osx_java_home=/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home
         fi
         if [ ! -z $osx_java_home ]; then
             if [ -x "$osx_java_home/bin" ]; then
@@ -194,6 +192,7 @@ findJavaCommands()
     local java_home_parents="\
             /usr/lib/jvm \
             /usr/java \
+            /System/Library/Frameworks/JavaVM.framework/Versions \
             /Library/Java/JavaVirtualMachines \
             /System/Library/Java/JavaVirtualMachines
         "
@@ -204,11 +203,15 @@ findJavaCommands()
 
             if [ -x "$maybe_java_home/bin/java" ]; then
                 java_cmds=`appendLine "$java_cmds" "$maybe_java_home/bin/java"`
+            elif [ -x "$maybe_java_home/jre/bin/java" ]; then
+                java_cmds=`appendLine "$java_cmds" "$maybe_java_home/jre/bin/java"`
             fi
 
             # osx path
             if [ -x "$maybe_java_home/Contents/Home/bin/java" ]; then
                 java_cmds=`appendLine "$java_cmds" "$maybe_java_home/Contents/Home/bin/java"`
+            elif [ -x "$maybe_java_home/Contents/Home/jre/bin/java" ]; then
+                java_cmds=`appendLine "$java_cmds" "$maybe_java_home/Contents/Home/jre/bin/java"`
             fi
         done
     done

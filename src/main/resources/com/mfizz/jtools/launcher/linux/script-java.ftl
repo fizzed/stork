@@ -105,6 +105,20 @@ fi
 
 -->
 
+#
+# find java runtime that meets our minimum requirements
+#
+ALL_JAVA_CMDS=`findJavaCommands`
+
+JAVA_BIN=`findMinJavaVersion "$MIN_JAVA_VERSION" "$ALL_JAVA_CMDS"`
+
+if [ -z "$JAVA_BIN" ]; then
+    echo "Unable to find Java runtime on system with version >= $MIN_JAVA_VERSION"
+    echo "Please visit http://java.com to download and install one for your system"
+    exit 1
+fi
+
+# build classpath either in absolute or relative form
 if [ $WORKING_DIR_MODE == "RETAIN" ]; then
   # absolute to app home
   APP_JAVA_CLASSPATH=`buildJavaClasspath $APP_HOME/$JAR_DIR`
@@ -113,4 +127,4 @@ else
   APP_JAVA_CLASSPATH=`buildJavaClasspath $JAR_DIR`
 fi
 
-RUN_CMD="java -cp $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
+"$JAVA_BIN" -cp $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS

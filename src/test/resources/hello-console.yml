@@ -19,3 +19,6 @@ working_dir_mode: APP_HOME
 
 # Arguments to use with the java command (e.g. way to pass -D arguments)
 #java_args:
+  
+# minimum version of java required (system will be searched for acceptable jvm)
+min_java_version: "1.6"

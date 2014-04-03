@@ -83,6 +83,7 @@ public class Configuration {
     private String appArgs = "";
     private String javaArgs = "";
     private String jarDir = "lib";
+    private String minJavaVersion = "1.6";
     
     public File getFile() {
         return file;
@@ -161,6 +162,14 @@ public class Configuration {
 
     public void setJarDir(String jarDir) {
         this.jarDir = jarDir;
+    }
+
+    public String getMinJavaVersion() {
+        return minJavaVersion;
+    }
+
+    public void setMinJavaVersion(String minJavaVersion) {
+        this.minJavaVersion = minJavaVersion;
     }
     
 }

@@ -32,6 +32,7 @@ WORKING_DIR_MODE="${config.workingDirMode}"
 APP_ARGS="${config.appArgs}"
 JAVA_ARGS="${config.javaArgs}"
 JAR_DIR="${config.jarDir}"
+MIN_JAVA_VERSION="${config.minJavaVersion}"
 
 # directory for pid file (relative dirs to app home)
 # RUN_DIR="$RUN_DIR"

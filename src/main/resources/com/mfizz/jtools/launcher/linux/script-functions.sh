@@ -234,10 +234,19 @@ findMinJavaVersion()
     local min_version=$1
     local java_cmds_line=$2
     
+    # "1.7" -> extract java version
+    local target_java_version=`echo $min_version | awk '{split($0, array, ".")} END{print array[2]}'`
+    #echo "target version: $target_java_version"
+
     IFS=":" read -a java_cmds <<< "$java_cmds_line"
     for java_cmd in "${java_cmds[@]}"; do
-        java_version=`"$java_cmd" -version 2>&1 | grep "java version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
+        local java_version=`"$java_cmd" -version 2>&1 | grep "java version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
         echo "java_version: $java_cmd -> $java_version"
+        
+        if [ $java_version -ge $target_java_version ]; then
+             echo "boom -- works!"
+        fi
+
     done
 }
 

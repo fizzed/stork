@@ -227,6 +227,18 @@ findJavaCommands()
     echo "$java_cmds"
 }
 
+# java_bin=`extractMajorJavaVersion 1.7`
+# returns: "7"
+extractPrimaryJavaVersion()
+{
+    local min_version=$1
+    
+    # "1.7" -> extract java version
+    local target_java_version=`echo $min_version | awk '{split($0, array, ".")} END{print array[2]}'`
+
+    echo $target_java_version
+}
+
 
 # java_bin=`findMinJavaVersion 1.7 <java_cmd separated by colon>`
 findMinJavaVersion()
@@ -235,8 +247,7 @@ findMinJavaVersion()
     local java_cmds_line=$2
     
     # "1.7" -> extract java version
-    local target_java_version=`echo $min_version | awk '{split($0, array, ".")} END{print array[2]}'`
-    #echo "target version: $target_java_version"
+    local target_java_version=`extractPrimaryJavaVersion "$min_version"`
 
     IFS=":" read -a java_cmds <<< "$java_cmds_line"
     for java_cmd in "${java_cmds[@]}"; do

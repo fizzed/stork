@@ -14,7 +14,7 @@ platforms: [ WINDOWS, LINUX ]
 # Working directory for app
 #  RETAIN will not change the working directory
 #  APP_HOME will change the workding directory to the home of the app
-working_dir_mode: APP_HOME
+working_dir_mode: RETAIN
 
 # Arguments for application (as though user typed them on command-line)
 # These will be added immediately after the main class part of java command
@@ -24,7 +24,7 @@ working_dir_mode: APP_HOME
 #java_args: "-Dtest=foo"
   
 # minimum version of java required (system will be searched for acceptable jvm)
-min_java_version: "1.7"
+min_java_version: "1.9"
 
 # min/max fixed memory (measured in MB)
 #min_java_memory: 30

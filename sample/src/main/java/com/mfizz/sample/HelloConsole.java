@@ -22,17 +22,19 @@ package com.mfizz.sample;
 public class HelloConsole {
  
     static public void main(String[] args) throws Exception {
-        System.out.println("It worked!");
+        System.out.println("Hello World!");
         System.out.println("working.dir: " + System.getProperty("user.dir"));
-        System.out.println("launcher.app.dir: " + System.getProperty("launcher.app.dir"));
-        System.out.println("launcher.working.dir: " + System.getProperty("launcher.working.dir"));
+        System.out.println("home.dir: " + System.getProperty("user.home"));
         System.out.println("java.class.path: " + System.getProperty("java.class.path"));
         System.out.println("java.home: " + System.getProperty("java.home"));
+        System.out.println("java.version: " + System.getProperty("java.version"));
+        System.out.println("java.vendor: " + System.getProperty("java.vendor"));
         System.out.println("os.arch: " + System.getProperty("os.arch"));
-        
-        System.out.println("Arguments:");
+        System.out.println("os.name: " + System.getProperty("os.name"));
+        System.out.println("os.version: " + System.getProperty("os.version"));
+        System.out.println("arguments:");
         for (String s : args) {
-            System.out.println(" argument: " + s);
+            System.out.println(" - argument: " + s);
         }
     }
     

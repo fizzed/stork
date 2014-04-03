@@ -1,0 +1,37 @@
+<project name="Jtools Launcher" default="hello-console" basedir=".">
+	
+	<property name="target" location="target"/>
+	
+	<condition property="isWindows" value="true">
+		<os family="windows" />
+	</condition>
+	
+	<target name="checkos" if="isWindows">
+		<property name="batext" value=".bat" />
+		<echo message="on windows, batext is ${batext}" />
+	</target>
+	
+	<target name="init">
+		<tstamp/>
+		<mkdir dir="${target}"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${target}"/>
+	</target>
+
+	<target name="stage-sample" depends="init">
+		<mkdir dir="${target}/sample"/>
+		<copy todir="${target}/sample/lib">
+		    <fileset dir="sample/lib"/>
+  		</copy>	
+	</target>
+	
+	<target name="hello-console" depends="checkos, stage-sample">
+		<exec executable="mvn${batext}">
+			<arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args='-i src/test/resources/hello-console.yml -o ${target}/sample/bin'"/>
+		</exec>
+		<exec executable="${target}/sample/bin/hello-console${batext}" />
+	</target>
+	
+</project>

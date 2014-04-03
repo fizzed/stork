@@ -21,6 +21,8 @@ if [ -z "$JAVA_BIN" ]; then
     exit 1
 fi
 
+JAVA_VERSION=`getJavaVersion "$JAVA_BIN"`
+
 #
 # build classpath either in absolute or relative form
 #
@@ -90,20 +92,26 @@ elif [ ! -z $JAVA_MIN_MEM ]; then
   JAVA_ARGS="-Xmn${r"${JAVA_MIN_MEM}"}M $JAVA_ARGS"
 fi
 
+
 #
 # create java command to execute
 # TODO:
 #
-RUN_CMD="\"$JAVA_BIN\" -Dlauncher.name=$NAME -Dlauncher.type=$TYPE -cp $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
+RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$TYPE -cp $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
+RUN_CMD="$JAVA_BIN $RUN_ARGS"
 
 #
 # debug for either console/daemon apps
 #
 if [[ $DEBUG ]]; then
-    echo "[launcher] app_home: $APP_HOME"
     echo "[launcher] working_dir: `pwd`"
+    echo "[launcher] app_home: $APP_HOME"
+    echo "[launcher] run_dir: $APP_RUN_DIR_DEBUG"
+    echo "[launcher] log_dir: $APP_LOG_DIR_DEBUG"
     echo "[launcher] jar_dir: $JAR_DIR"
-    echo "[launcher] run_dir: $APP_RUN_DIR"
     echo "[launcher] pid_file: $APP_PID_FILE"
+    echo "[launcher] java_min_version_required: $MIN_JAVA_VERSION"
+    echo "[launcher] java_bin: $JAVA_BIN"
+    echo "[launcher] java_version: $JAVA_VERSION"
     echo "[launcher] java_run: $RUN_CMD"
 fi

@@ -64,12 +64,19 @@ public class Configuration {
         APP_HOME
     }
     
+    static public enum DaemonMethod {
+        NOHUP
+    }
+    
     @JsonIgnore
     private File file;
     
+    // standard directories for app layout
     private String binDir = "bin";
     private String runDir = "run";
     private String shareDir = "share";
+    private String logDir = "log";
+    private String jarDir = "lib";
     
     @NotNull @Size(min=1)
     private Set<Platform> platforms;
@@ -86,12 +93,13 @@ public class Configuration {
     private WorkingDirMode workingDirMode;
     private String appArgs = "";
     private String javaArgs = "";
-    private String jarDir = "lib";
     private String minJavaVersion = "1.6";
     private Integer minJavaMemory = null;
     private Integer maxJavaMemory = null;
     private Integer minJavaMemoryPct = null;
     private Integer maxJavaMemoryPct = null;
+    
+    private DaemonMethod daemonMethod = DaemonMethod.NOHUP;
     
     public File getFile() {
         return file;
@@ -123,6 +131,14 @@ public class Configuration {
 
     public void setRunDir(String runDir) {
         this.runDir = runDir;
+    }
+
+    public String getLogDir() {
+        return logDir;
+    }
+
+    public void setLogDir(String logDir) {
+        this.logDir = logDir;
     }
 
     public Set<Platform> getPlatforms() {
@@ -234,6 +250,14 @@ public class Configuration {
 
     public void setMaxJavaMemoryPct(Integer maxJavaMemoryPct) {
         this.maxJavaMemoryPct = maxJavaMemoryPct;
+    }
+
+    public DaemonMethod getDaemonMethod() {
+        return daemonMethod;
+    }
+
+    public void setDaemonMethod(DaemonMethod daemonMethod) {
+        this.daemonMethod = daemonMethod;
     }
     
 }

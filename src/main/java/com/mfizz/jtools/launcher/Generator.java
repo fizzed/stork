@@ -200,6 +200,7 @@ public class Generator {
                     System.out.println(" - launcher: same as for " + unixLauncherGeneratedVia);
                 } else {
                     // generate unix launcher script
+                    binDir.mkdirs();
                     File launcherFile = new File(binDir, config.getName());
 
                     if (config.getType() == Type.CONSOLE) {
@@ -224,6 +225,7 @@ public class Generator {
     }
 
     static public void generateUnixConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
+        // make sure parent of file to be generated exists
         FileOutputStream fos = new FileOutputStream(launcherFile);
         Writer out = new OutputStreamWriter(fos);
 
@@ -261,7 +263,8 @@ public class Generator {
 
             processTemplate("linux/script-java.ftl", out, model);
 
-            processTemplate("linux/script-daemon.ftl", out, model);
+            // method of daemonizing?
+            processTemplate("linux/script-daemon-nohup.ftl", out, model);
             
             // set to executable
             launcherFile.setExecutable(true);

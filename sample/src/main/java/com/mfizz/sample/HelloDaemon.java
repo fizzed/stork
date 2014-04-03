@@ -43,7 +43,20 @@ public class HelloDaemon extends NanoHTTPD {
         // start server
         HelloDaemon server = new HelloDaemon(port);
         System.out.println("Starting http server on port " + port);
-        ServerRunner.executeInstance(server);
+        server.start();
+        
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                System.out.println("Shutting down.");
+            }
+        });
+        
+        // keep running
+        while (true) {
+            System.out.println("Will keep running (will print again in 10 secs)");
+            Thread.sleep(10000);
+        }
     }
     
     @Override public Response serve(IHTTPSession session) {

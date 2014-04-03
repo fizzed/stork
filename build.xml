@@ -40,5 +40,14 @@
         </exec>
         <exec executable="${target}/sample/bin/hello-console${batext}" />
     </target>
+    
+    <target name="hello-daemon" depends="checkos, stage-sample">
+        <exec executable="mvn${batext}">
+            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args='-i src/test/resources/hello-daemon.yml -o ${target}/sample'"/>
+        </exec>
+        <exec executable="${target}/sample/bin/hello-daemon${batext}">
+            <arg value="-run"/>
+        </exec>
+    </target>
 	
 </project>

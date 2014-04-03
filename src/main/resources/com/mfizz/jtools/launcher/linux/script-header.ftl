@@ -21,8 +21,11 @@ JAVA_MAX_MEM="${config.maxJavaMemory!""}"
 JAVA_MIN_MEM_PCT="${config.minJavaMemoryPct!""}"
 JAVA_MAX_MEM_PCT="${config.maxJavaMemoryPct!""}"
 
-# dir for run data such as pid file
+# application run dir (e.g. for pid file)
 RUN_DIR="${config.runDir!""}"
+
+# application log dir (e.g. for [name.out] file)
+LOG_DIR="${config.logDir!""}"
 
 #
 # constants
@@ -55,21 +58,53 @@ if [ $WORKING_DIR_MODE == "RETAIN" ]; then
   cd "$INITIAL_WORKING_DIR"
 fi
 
+
 #
 # is run directory absolute or relative to app home?
 #
 if [[ "$RUN_DIR" == /* ]]; then
     # absolute path
     APP_RUN_DIR="$RUN_DIR"
+    APP_RUN_DIR_DEBUG="$RUN_DIR"
 else
-    # relative path to app home
-    APP_RUN_DIR="$APP_HOME/$RUN_DIR"
+    if [ $WORKING_DIR_MODE == "RETAIN" ]; then
+        # relative path to app home (but use absolute version)
+        APP_RUN_DIR="$APP_HOME/$RUN_DIR"
+    else
+        # relative path to app home (use relative version)
+        APP_RUN_DIR="$RUN_DIR"
+    fi
+    APP_RUN_DIR_DEBUG="<app_home>/$RUN_DIR"
 fi
+
+
+#
+# is log directory absolute or relative to app home?
+#
+if [[ "$LOG_DIR" == /* ]]; then
+    # absolute path
+    APP_LOG_DIR="$LOG_DIR"
+    APP_LOG_DIR_DEBUG="$LOG_DIR"
+else
+    if [ $WORKING_DIR_MODE == "RETAIN" ]; then
+        # relative path to app home (but use absolute version)
+        APP_LOG_DIR="$APP_HOME/$LOG_DIR"
+    else
+        # relative path to app home (use relative version)
+        APP_LOG_DIR="$LOG_DIR"
+    fi
+    APP_LOG_DIR_DEBUG="<app_home>/$LOG_DIR"
+fi
+
 
 #
 # pid handling
 #
 APP_PID_FILE="$APP_RUN_DIR/$NAME.pid"
+
+#
+# do we need verify that the run directory is writable?
+#
 
 # will a pid file be used?
 if [ "$TYPE" == "DAEMON" ]; then

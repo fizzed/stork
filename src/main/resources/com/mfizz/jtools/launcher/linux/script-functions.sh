@@ -190,7 +190,7 @@ findJavaCommands()
             /usr/lib/jvm/* \
             /usr/java/* \
             /Library/Java/JavaVirtualMachines \
-            /System/Library/Java/JavaVirtualMachines
+            /System/Library/Java/JavaVirtualMachines \
         "
 
     for java_install_location in $java_install_locations; do

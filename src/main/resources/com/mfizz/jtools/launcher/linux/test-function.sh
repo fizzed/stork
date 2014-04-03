@@ -10,8 +10,15 @@ echo "java_home: $JAVA_HOME"
 java_cmds=`findJavaCommands`
 echo $java_cmds
 
-java_bin=`findMinJavaVersion "1.7" "$java_cmds"`
-echo $java_bin
+java_min_version="1.8"
+java_bin=`findMinJavaVersion "$java_min_version" "$java_cmds"`
+
+if [ -z "$java_bin" ]; then
+    echo "Unable to find Java runtime version >= $java_min_version"
+    exit 1
+fi
+
+echo "found java: $java_bin"
 
 # split by \n char into array
 #IFS=":" read -a array <<< "$java_cmds"

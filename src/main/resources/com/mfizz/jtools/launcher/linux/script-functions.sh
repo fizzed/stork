@@ -241,13 +241,15 @@ findMinJavaVersion()
     IFS=":" read -a java_cmds <<< "$java_cmds_line"
     for java_cmd in "${java_cmds[@]}"; do
         local java_version=`"$java_cmd" -version 2>&1 | grep "java version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
-        echo "java_version: $java_cmd -> $java_version"
-        
+        #echo "java_version: $java_cmd -> $java_version"
         if [ $java_version -ge $target_java_version ]; then
-             echo "boom -- works!"
+             #echo "boom -- works!"
+             echo $java_cmd
+             return 1
         fi
-
     done
+
+    return 0
 }
 
 

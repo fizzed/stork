@@ -189,17 +189,20 @@ findJavaCommands()
     # search all known java home locations for java binaries
     # openjdk is usually in /usr/lib/jvm
     # sun jdk on centos/redhat in /usr/java
-    local java_home_parents="\
-            /usr/lib/jvm \
-            /usr/java \
-            /System/Library/Frameworks/JavaVM.framework/Versions \
-            /Library/Java/JavaVirtualMachines \
-            /System/Library/Java/JavaVirtualMachines
-        "
+    
+    java_home_parents=(
+        "/usr/lib/jvm"
+        "/usr/java"
+        "/Library/Internet Plug-Ins"
+        "/System/Library/Frameworks/JavaVM.framework/Versions"
+        "/Library/Java/JavaVirtualMachines"
+        "/System/Library/Java/JavaVirtualMachines"
+    )
 
-    for java_home_parent in $java_home_parents; do
-	for maybe_java_home in $java_home_parent/*; do
-            [ -d $maybe_java_home ] || continue   
+    IFS=""
+    for java_home_parent in ${java_home_parents[*]}; do
+	for maybe_java_home in "$java_home_parent"/*; do
+            [ -d "$maybe_java_home" ] || continue   
 
             if [ -x "$maybe_java_home/bin/java" ]; then
                 java_cmds=`appendLine "$java_cmds" "$maybe_java_home/bin/java"`

@@ -46,9 +46,13 @@ else
   APP_JAVA_ARGS="$APP_JAVA_ARGS -classpath $APP_JAVA_CLASSPATH"
 fi
 
+echo "is this working..."
+
 # build min memory java option
 if [ ! -z $JAVA_MIN_MEM_PCT ]; then
   if [ -z $SYS_MEM ]; then SYS_MEM=`systemMemory`; fi
+  echo "system memory: $SYS_MEM"
+  [[ $SYS_MEM = *[[:space:]]* ]] && echo "Unable to detect system memory to set java max memory"; exit 1; fi
   MM=`pctOf $SYS_MEM $JAVA_MIN_MEM_PCT`
   APP_JAVA_OPTIONS="$APP_JAVA_OPTIONS -Xmn${MM}M"
 elif [ ! -z $JAVA_MIN_MEM ]; then
@@ -58,7 +62,8 @@ fi
 # build max memory java option
 if [ ! -z $JAVA_MAX_MEM_PCT ]; then
   if [ -z $SYS_MEM ]; then SYS_MEM=`systemMemory`; fi
-  MM=`pctOf $SYS_MEM $JAVA_MAX_MEM_PCT`
+  [[ $SYS_MEM = *[[:space:]]* ]] && echo "Unable to detect system memory to set java max memory"; exit 1; fi
+  MM=`pctOf "$SYS_MEM" "$JAVA_MAX_MEM_PCT"`
   APP_JAVA_OPTIONS="$APP_JAVA_OPTIONS -Xms${MM}M -Xmx${MM}M"
 elif [ ! -z $JAVA_MAX_MEM ]; then
   APP_JAVA_OPTIONS="$APP_JAVA_OPTIONS -Xms${JAVA_MAX_MEM}M -Xmx${JAVA_MAX_MEM}M"
@@ -137,6 +142,7 @@ done
 #
 if [ ! -z $JAVA_MAX_MEM_PCT ]; then
   if [ -z $SYS_MEM ]; then SYS_MEM=`systemMemory`; fi
+  if [ -z $SYS_MEM ]; then echo "Unable to detect system memory to set java max memory"; exit 1; fi
   MM=`pctOf $SYS_MEM $JAVA_MAX_MEM_PCT`
   JAVA_ARGS="-Xms${r"${MM}"}M -Xmx${r"${MM}"}M $JAVA_ARGS"
 elif [ ! -z $JAVA_MAX_MEM ]; then
@@ -148,6 +154,7 @@ fi
 #
 if [ ! -z $JAVA_MIN_MEM_PCT ]; then
   if [ -z $SYS_MEM ]; then SYS_MEM=`systemMemory`; fi
+  if [ -z $SYS_MEM ]; then echo "Unable to detect system memory to set java max memory"; exit 1; fi
   MM=`pctOf $SYS_MEM $JAVA_MIN_MEM_PCT`
   JAVA_ARGS="-Xmn${r"${MM}"}M $JAVA_ARGS"
 elif [ ! -z $JAVA_MIN_MEM ]; then

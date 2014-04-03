@@ -76,12 +76,16 @@ systemMemory()
     TMPMEMKB=`grep MemTotal /proc/meminfo | awk '{print $2}'`
     TMPMEM=$(expr $TMPMEMKB / 1000)
     echo $TMPMEM
-  elif isOSX; then
+    return 0
+  fi
+
+  if [[ isOSX ]]; then
     #echo "on mac..."
     TMPMEM=`top -l 1 | awk '/PhysMem:/ {print $10}'`
     # strip off last M
     TMPMEMMB=${TMPMEM%%M}
     echo $TMPMEMMB
+    return 0
   fi
 }
 

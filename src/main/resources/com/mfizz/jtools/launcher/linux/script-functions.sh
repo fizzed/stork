@@ -132,6 +132,53 @@ findJavaCommand()
 }
 
 
+appendLine()
+{
+  if [ -z $1 ]; then
+    echo $2
+  else
+    echo "$1\\n$2"
+  fi
+}
+
+
+findJavaCommands()
+{
+    local java_cmds=""
+
+    # is JAVA env var set?
+    if [ ! -z "$JAVA" ]; then
+        java_cmds=`appendLine "$java_cmds" "$JAVA"`
+    fi;
+
+    # is java in path
+    local which_java=`quietWhich java`
+    if [ ! -z $which_java ]; then
+      java_cmds=`appendLine "$java_cmds" "$which_java"`
+    fi
+
+    # is JAVA_HOME set?
+    if [ ! -z "$JAVA_HOME" ]; then
+        java_cmds=`appendLine "$java_cmds" "$JAVA_HOME/bin"`
+    fi;
+
+    # are running on mac osx?
+    if isOSX; then
+        local osx_java_home=""
+        if [ -x '/usr/libexec/java_home' ]; then
+            osx_java_home=`/usr/libexec/java_home`
+        elif [ -d "/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home" ]; then
+            osx_java_home=/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home
+        fi
+        if [ ! -z $osx_java_home ]; then
+            java_cmds=`appendLine "$java_cmds" "$osx_java_home/bin"`
+        fi
+    fi
+
+    echo -e "$java_cmds"
+}
+
+
 #
 # Finds best java home to use -- either JAVA_HOME if set, otherwise it'll attempt
 # to find a JAVA_HOME to use and sort them by version.

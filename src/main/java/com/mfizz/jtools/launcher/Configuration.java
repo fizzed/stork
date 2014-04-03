@@ -84,6 +84,10 @@ public class Configuration {
     private String javaArgs = "";
     private String jarDir = "lib";
     private String minJavaVersion = "1.6";
+    private Integer minJavaMemory = null;
+    private Integer maxJavaMemory = null;
+    private Integer minJavaMemoryPct = null;
+    private Integer maxJavaMemoryPct = null;
     
     public File getFile() {
         return file;
@@ -170,6 +174,38 @@ public class Configuration {
 
     public void setMinJavaVersion(String minJavaVersion) {
         this.minJavaVersion = minJavaVersion;
+    }
+
+    public Integer getMinJavaMemory() {
+        return minJavaMemory;
+    }
+
+    public void setMinJavaMemory(Integer minJavaMemory) {
+        this.minJavaMemory = minJavaMemory;
+    }
+
+    public Integer getMaxJavaMemory() {
+        return maxJavaMemory;
+    }
+
+    public void setMaxJavaMemory(Integer maxJavaMemory) {
+        this.maxJavaMemory = maxJavaMemory;
+    }
+
+    public Integer getMinJavaMemoryPct() {
+        return minJavaMemoryPct;
+    }
+
+    public void setMinJavaMemoryPct(Integer minJavaMemoryPct) {
+        this.minJavaMemoryPct = minJavaMemoryPct;
+    }
+
+    public Integer getMaxJavaMemoryPct() {
+        return maxJavaMemoryPct;
+    }
+
+    public void setMaxJavaMemoryPct(Integer maxJavaMemoryPct) {
+        this.maxJavaMemoryPct = maxJavaMemoryPct;
     }
     
 }

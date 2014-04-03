@@ -1,5 +1,5 @@
 
-# Name of application
+# Name of application (make sure it has no spaces)
 name: "hello-console"
 
 # Type of launcher (CONSOLE or DAEMON)
@@ -11,14 +11,25 @@ main_class: "com.mfizz.sample.HelloConsole"
 # Platform launchers to generate (WINDOWS, LINUX, MAC_OSX)
 platforms: [ WINDOWS, LINUX ]
 
+# Working directory for app
+#  RETAIN will not change the working directory
+#  APP_HOME will change the workding directory to the home of the app
 working_dir_mode: APP_HOME
 
 # Arguments for application (as though user typed them on command-line)
 # These will be added immediately after the main class part of java command
-#app_args:
+#app_args: "-c config.yml"
 
 # Arguments to use with the java command (e.g. way to pass -D arguments)
-#java_args:
+#java_args: "-Dtest=foo"
   
 # minimum version of java required (system will be searched for acceptable jvm)
-min_java_version: "1.6"
+min_java_version: "1.7"
+
+# min/max fixed memory (measured in MB)
+#min_java_memory: 30
+#max_java_memory: 256
+
+# min/max memory by percentage of system
+min_java_memory_pct: 10
+max_java_memory_pct: 20

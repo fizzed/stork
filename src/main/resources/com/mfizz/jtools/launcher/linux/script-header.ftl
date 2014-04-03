@@ -13,13 +13,13 @@
 #
 
 # min and max mem (in MB); leave empty for java defaults
-JAVA_MIN_MEM=
-JAVA_MAX_MEM=
+JAVA_MIN_MEM="${config.minJavaMemory!""}"
+JAVA_MAX_MEM="${config.maxJavaMemory!""}"
 
 # min and max mem as a percent of system memory
 # they have priority over JAVA_MIN_MEM and JAVA_MAX_MEM if set
-JAVA_MIN_MEM_PCT=
-JAVA_MAX_MEM_PCT=
+JAVA_MIN_MEM_PCT="${config.minJavaMemoryPct!""}"
+JAVA_MAX_MEM_PCT="${config.maxJavaMemoryPct!""}"
 
 #
 # constants

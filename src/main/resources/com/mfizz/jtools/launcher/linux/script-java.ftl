@@ -1,22 +1,5 @@
 
 <#--
-APP_JAVA_CMD=`findJavaCommand`
-
-if [ -z $APP_JAVA_CMD ]; then
-  echo "Cannot find a Java JDK. Please set either set JAVA or put java (>=1.5) in your PATH." 2>&2
-  exit 1
-fi
-
-APP_JAVA_VERSION=`getJavaVersion $APP_JAVA_CMD`
-
-if [ $PWD_TO_APP_HOME -eq 1 ]; then
-  # relative to current dir (app home)
-  APP_JAVA_CLASSPATH=`buildJavaClasspath $LIB_DIR`
-else
-  # absolute to app home
-  APP_JAVA_CLASSPATH=`buildJavaClasspath $APP_HOME/$LIB_DIR`
-fi
-
 APP_JAVA_ARGS="$JAVA_ARGS -Dlauncher.app.name=$NAME -D${APP_DIR_PROPERTY_NAME}=$APP_HOME -D${WORKING_DIR_PROPERTY_NAME}=$INITIAL_WORKING_DIR"
 APP_JAVA_OPTIONS=
 SYS_MEM=
@@ -114,11 +97,20 @@ JAVA_BIN=`findMinJavaVersion "$MIN_JAVA_VERSION" "$ALL_JAVA_CMDS"`
 
 if [ -z "$JAVA_BIN" ]; then
     echo "Unable to find Java runtime on system with version >= $MIN_JAVA_VERSION"
+
+    if [ -f "/etc/debian_version" ]; then
+        echo "Try running 'sudo apt-get install openjdk-7-jre' or"
+    elif [ -f "/etc/redhat-release" ]; then
+        echo "Try running 'su -c \"yum install java-1.7.0-openjdk\"' or"
+    fi
+
     echo "Please visit http://java.com to download and install one for your system"
     exit 1
 fi
 
+#
 # build classpath either in absolute or relative form
+#
 if [ $WORKING_DIR_MODE == "RETAIN" ]; then
   # absolute to app home
   APP_JAVA_CLASSPATH=`buildJavaClasspath $APP_HOME/$JAR_DIR`
@@ -127,4 +119,42 @@ else
   APP_JAVA_CLASSPATH=`buildJavaClasspath $JAR_DIR`
 fi
 
-"$JAVA_BIN" -cp $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS
+#
+# any additional command line arguments passed to this script?
+# filter out -D arguments as they should go to java, not app
+#
+for a in "$@"; do
+  if [[ $a == -D* ]]; then
+    JAVA_ARGS="$JAVA_ARGS $a"
+  else
+    APP_ARGS="$APP_ARGS $a"
+  fi
+  shift
+done
+
+#
+# add max memory java option (if specified)
+#
+if [ ! -z $JAVA_MAX_MEM_PCT ]; then
+  if [ -z $SYS_MEM ]; then SYS_MEM=`systemMemory`; fi
+  MM=`pctOf $SYS_MEM $JAVA_MAX_MEM_PCT`
+  JAVA_ARGS="-Xms${r"${MM}"}M -Xmx${r"${MM}"}M $JAVA_ARGS"
+elif [ ! -z $JAVA_MAX_MEM ]; then
+  JAVA_ARGS="-Xms${r"${JAVA_MAX_MEM}"}M -Xmx${r"${JAVA_MAX_MEM}"}M $JAVA_ARGS"
+fi
+
+#
+# add min memory java option (if specified)
+#
+if [ ! -z $JAVA_MIN_MEM_PCT ]; then
+  if [ -z $SYS_MEM ]; then SYS_MEM=`systemMemory`; fi
+  MM=`pctOf $SYS_MEM $JAVA_MIN_MEM_PCT`
+  JAVA_ARGS="-Xmn${r"${MM}"}M $JAVA_ARGS"
+elif [ ! -z $JAVA_MIN_MEM ]; then
+  JAVA_ARGS="-Xmn${r"${JAVA_MIN_MEM}"}M $JAVA_ARGS"
+fi
+
+#
+# create java command to execute
+#
+RUN_CMD="$JAVA_BIN -Dlauncher.name=$NAME -Dlauncher.type=$TYPE -cp $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS"

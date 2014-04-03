@@ -223,6 +223,24 @@ findJavaCommands()
 }
 
 
+# java_bin=`findMinJavaVersion 1.7 <java_bins separated by newline>`
+findMinJavaVersion()
+{
+    min_version=$1
+    shift
+    echo "targeting java version: $min_version"
+    
+    IFS=""
+    for java_bin in $*; do
+        echo "java_bin: $java_bin"
+        java_version=`"$java_bin" -version 2>&1 | grep "java version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
+        #java_version=`getJavaVersion "$java_bin"`
+        echo "java_version: $java_version"
+    done
+}
+
+
+
 #
 # Finds best java home to use -- either JAVA_HOME if set, otherwise it'll attempt
 # to find a JAVA_HOME to use and sort them by version.

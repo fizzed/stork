@@ -35,6 +35,7 @@ package com.mfizz.jtools.launcher;
  * #L%
  */
 
+import com.mfizz.jtools.launcher.Configuration.Platform;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
@@ -48,6 +49,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  *
@@ -175,34 +177,57 @@ public class Generator {
     
     static public void generate(Configuration config, File outputDir) throws Exception {
         
+        Platform unixLauncherGeneratedVia = null;
         
+        // sort platforms by name
+        TreeSet<Platform> sortedPlatforms = new TreeSet<Platform>(config.getPlatforms());
         
-        // create launcher model to render
-        LauncherModel model = new LauncherModel(config);
-        
-        File outputFile = new File(outputDir, config.getName());
-        FileOutputStream fos = new FileOutputStream(outputFile);
-        Writer out = new OutputStreamWriter(fos);
-        
-        try {
-            processTemplate("linux/script-header.ftl", out, model);
+        // generate for each platform
+        for (Configuration.Platform platform : sortedPlatforms) {
+            System.out.println("Generating launcher for platform: " + platform);
+            
+            // create launcher model to render
+            LauncherModel model = new LauncherModel(config);
+            
+            if (platform == Platform.LINUX || platform == Platform.MAC_OSX) {
+                
+                if (unixLauncherGeneratedVia != null) {
+                    // no need to generate again
+                    System.out.println(" - launcher: same as for " + unixLauncherGeneratedVia);
+                } else {
+                    // generate unix launcher script
+                    File outputFile = new File(outputDir, config.getName());
+                    FileOutputStream fos = new FileOutputStream(outputFile);
+                    Writer out = new OutputStreamWriter(fos);
 
-            includeResource("linux/script-functions.sh", fos);
-            
-            processTemplate("linux/script-java.ftl", out, model);
-            
-            processTemplate("linux/script-console.ftl", out, model);
-            
-            // set to executable
-            outputFile.setExecutable(true);
-            
-            System.out.println("Generated launcher: " + outputFile);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-            if (fos != null) {
-                fos.close();
+                    try {
+                        processTemplate("linux/script-header.ftl", out, model);
+
+                        includeResource("linux/script-functions.sh", fos);
+
+                        processTemplate("linux/script-java.ftl", out, model);
+
+                        processTemplate("linux/script-console.ftl", out, model);
+
+                        // set to executable
+                        outputFile.setExecutable(true);
+
+                        System.out.println(" - launcher: " + outputFile);
+                    } finally {
+                        if (out != null) {
+                            out.close();
+                        }
+                        if (fos != null) {
+                            fos.close();
+                        }
+                    }
+                    
+                    unixLauncherGeneratedVia = platform;
+                }
+            } else if (platform == Platform.WINDOWS) {
+                
+            } else {
+                throw new Exception("Unsupported platform " + platform);
             }
         }
     }

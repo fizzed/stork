@@ -49,9 +49,9 @@ import javax.validation.constraints.Size;
 public class Configuration {
     
     static public enum Platform {
-        WINDOWS,
         LINUX,
-        MAC_OSX
+        MAC_OSX,
+        WINDOWS
     }
     
     static public enum Type {

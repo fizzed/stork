@@ -1,4 +1,5 @@
 stage-sample:
+	mkdir -p target/sample
 	cp -R sample/lib target/sample/
 	
 hello-console: stage-sample

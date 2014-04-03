@@ -187,14 +187,17 @@ findJavaCommands()
     # openjdk is usually in /usr/lib/jvm
     # sun jdk on centos/redhat in /usr/java
     local java_install_locations="\
-            /usr/lib/jvm/* \
-            /usr/java/* \
+            /usr/lib/jvm \
+            /usr/java \
             /Library/Java/JavaVirtualMachines \
-            /System/Library/Java/JavaVirtualMachines \
+            /System/Library/Java/JavaVirtualMachines
         "
 
     for java_install_location in $java_install_locations; do
-        [ -d $java_install_location ] || continue   
+	for maybe_java_home in "$java_install_location/*"; do
+        	[ -d $java_install_location ] || continue   
+
+	echo "Searching $java_install_location"
 
         if [ -x "$java_install_location/bin/java" ]; then
             java_cmds=`appendLine "$java_cmds" "$java_install_location/bin/java"`

@@ -24,9 +24,9 @@ package com.mfizz.jtools.launcher;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,45 +56,45 @@ import java.util.TreeSet;
  * @author joelauer
  */
 public class Generator {
-    
+
     static public void printUsage() {
         System.err.println("Usage: -i <input config> -o <output directory>");
     }
-    
+
     static public void printError(String errorMessage) {
         System.err.println("Error: " + errorMessage);
     }
-    
+
     static public void printUsageAndExitWithError() {
         printUsage();
         System.exit(1);
     }
-    
+
     static public void printErrorThenUsageAndExit(String errorMessage) {
         printError(errorMessage);
         printUsageAndExitWithError();
     }
-    
+
     static public String popNextArg(String argSwitch, List<String> argList) {
         if (argList.isEmpty()) {
             printErrorThenUsageAndExit("argument switch [" + argSwitch + "] is missing value as next argument");
         }
         return argList.remove(0);
     }
-    
+
     static public void main(String[] args) {
         if (args.length <= 0) {
             printErrorThenUsageAndExit("required parameters missing");
         }
-        
+
         List<String> argList = new ArrayList<String>(Arrays.asList(args));
         List<File> configFiles = new ArrayList<File>();
         File outputDir = null;
-        
+
         // parse command-line arguments
         while (argList.size() > 0) {
             String argSwitch = argList.remove(0);
-            
+
             if (argSwitch.equals("-i")) {
                 File configFile = new File(popNextArg(argSwitch, argList));
                 if (!configFile.exists() || !configFile.canRead()) {
@@ -120,16 +120,16 @@ public class Generator {
                 printErrorThenUsageAndExit("invalid argument switch [" + argSwitch + "] found");
             }
         }
-        
+
         // validate required arguments
         if (configFiles.isEmpty()) {
             printErrorThenUsageAndExit("no input config files were specified");
         }
-        
+
         if (outputDir == null) {
             printErrorThenUsageAndExit("no output dir was specified");
         }
-        
+
         // parse each configuration file into a configuration object
         List<Configuration> configs = new ArrayList<Configuration>();
         for (File configFile : configFiles) {
@@ -141,7 +141,7 @@ public class Generator {
                 System.exit(1);
             }
         }
-        
+
         // use each configuration object to generate one or more launchers
         for (Configuration config : configs) {
             try {
@@ -153,15 +153,15 @@ public class Generator {
                 System.exit(1);
             }
         }
-        
+
     }
-    
+
     static private freemarker.template.Configuration fmconfig;
     static public freemarker.template.Configuration getOrCreateFreemarker() throws Exception {
         if (fmconfig != null) {
             return fmconfig;
         }
-        
+
         /* Create and adjust the configuration */
         freemarker.template.Configuration cfg = new freemarker.template.Configuration();
         //cfg.setDirectoryForTemplateLoading(new File("/where/you/store/templates"));
@@ -170,27 +170,27 @@ public class Generator {
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         cfg.setIncompatibleImprovements(new Version(2, 3, 20));
-        
+
         fmconfig = cfg;
         return fmconfig;
     }
-    
+
     static public void generate(Configuration config, File outputDir) throws Exception {
-        
+
         Platform unixLauncherGeneratedVia = null;
-        
+
         // sort platforms by name
         TreeSet<Platform> sortedPlatforms = new TreeSet<Platform>(config.getPlatforms());
-        
+
         // generate for each platform
         for (Configuration.Platform platform : sortedPlatforms) {
             System.out.println("Generating launcher for platform: " + platform);
-            
+
             // create launcher model to render
             LauncherModel model = new LauncherModel(config);
-            
+
             if (platform == Platform.LINUX || platform == Platform.MAC_OSX) {
-                
+
                 if (unixLauncherGeneratedVia != null) {
                     // no need to generate again
                     System.out.println(" - launcher: same as for " + unixLauncherGeneratedVia);
@@ -221,23 +221,28 @@ public class Generator {
                             fos.close();
                         }
                     }
-                    
+
                     unixLauncherGeneratedVia = platform;
                 }
             } else if (platform == Platform.WINDOWS) {
-                
+
+				if (config.getType() == Type.DAEMON) {
+					// use java service library wrapper
+
+				}
+
             } else {
                 throw new Exception("Unsupported platform " + platform);
             }
         }
     }
-    
+
     static public void processTemplate(String templateName, Writer out, Object model) throws Exception {
         freemarker.template.Configuration freemarker = getOrCreateFreemarker();
         Template template = freemarker.getTemplate(templateName);
         template.process(model, out);
     }
-    
+
     static public void includeResource(String resourceName, OutputStream os) throws Exception {
         InputStream is = Generator.class.getResourceAsStream(resourceName);
         if (is == null) {
@@ -250,5 +255,5 @@ public class Generator {
         }
         is.close();
     }
-    
+
 }

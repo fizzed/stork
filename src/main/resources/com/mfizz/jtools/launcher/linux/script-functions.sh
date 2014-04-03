@@ -137,13 +137,17 @@ appendLine()
   if [ -z $1 ]; then
     echo $2
   else
-    echo "$1\\n$2"
+    echo "$1:$2"
   fi
 }
 
 
+# `findJavaCommands` -> returns string of paths separated by colon
+# e.g. "/usr/bin/java:/usr/lib/jvm/bin/java"
 findJavaCommands()
 {
+    local min_version=$1
+
     local java_cmds=""
 
     # is JAVA env var set?
@@ -200,6 +204,7 @@ findJavaCommands()
     )
 
     IFS=""
+
     for java_home_parent in ${java_home_parents[*]}; do
 	for maybe_java_home in "$java_home_parent"/*; do
             [ -d "$maybe_java_home" ] || continue   
@@ -219,23 +224,20 @@ findJavaCommands()
         done
     done
 
-    echo -e "$java_cmds"
+    echo "$java_cmds"
 }
 
 
-# java_bin=`findMinJavaVersion 1.7 <java_bins separated by newline>`
+# java_bin=`findMinJavaVersion 1.7 <java_cmd separated by colon>`
 findMinJavaVersion()
 {
-    min_version=$1
-    shift
-    echo "targeting java version: $min_version"
+    local min_version=$1
+    local java_cmds_line=$2
     
-    IFS=""
-    for java_bin in $*; do
-        echo "java_bin: $java_bin"
-        java_version=`"$java_bin" -version 2>&1 | grep "java version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
-        #java_version=`getJavaVersion "$java_bin"`
-        echo "java_version: $java_version"
+    IFS=":" read -a java_cmds <<< "$java_cmds_line"
+    for java_cmd in "${java_cmds[@]}"; do
+        java_version=`"$java_cmd" -version 2>&1 | grep "java version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
+        echo "java_version: $java_cmd -> $java_version"
     done
 }
 

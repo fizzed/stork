@@ -1,5 +1,7 @@
 @ECHO OFF
 
-(set | find "ProgramFiles(x86)" > NUL) && (echo "%ProgramFiles(x86)%" | find "x86") > NUL && set bits=64 || set bits=32
+set bit64=n
+if /I %Processor_Architecture%==AMD64 set bit64=y
+if /I "%PROCESSOR_ARCHITEW6432%"=="AMD64" set bit64=y
 
-echo bits: %bits%
+echo bit64: %bit64%

@@ -8,14 +8,22 @@ Java Native Executable Library
 
 ### Overview
 
-Utility for generating launchers for Java-based applications across Windows,
+Utility for generating native launchers for Java-based applications across Windows,
 Linux, and Mac OSX. Unlike other "service wrappers", this utility can create
-simple console launchers (shell/batch) as well as daemon wrappers using standard
-OS utilities or third-party libraries.
+simple console application
 
 While other Java service wrappers attempt to handle re-spawning via a secondary
 controller process, what about relatively simple console apps / daemons or
 an interest in using better tools for handling re-spawning like monit.
+
+### Canonical layout of application folder
+
+    <app_home>
+     - bin
+     - lib
+     - conf
+     - share
+     - data
 
 #### Windows
 

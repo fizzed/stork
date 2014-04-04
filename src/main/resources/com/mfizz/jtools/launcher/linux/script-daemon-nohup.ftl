@@ -52,15 +52,35 @@ case "$APP_ACTION_ARG" in
     # log start time first into outfile
     echo "$NAME starting at `date`" > "$NOHUP_OUT"
 
-    nohup $RUN_CMD </dev/null >"$NOHUP_OUT" 2>&1 &
+    nohup "$JAVA_BIN" $RUN_ARGS </dev/null >"$NOHUP_OUT" 2>&1 &
     PID=$!
     echo $PID > $APP_PID_FILE
 
-    # TODO: can we confirm it actually started?
+    # confirm the daemon started by making sure its alive for a certain time
+    CONFIRMED=""
+    if [ ! -z $DAEMON_MIN_LIFETIME ]; then
+        # wait for minimum amount of time
+        TIMEOUT=$DAEMON_MIN_LIFETIME
+        while [ $TIMEOUT -gt 0 ]; do
+            sleep 1
+            # check if daemon not running
+            if running "$APP_PID_FILE"; then
+                echo -n "."
+            else
+                echo "failed"
+                tail -n 100 "$NOHUP_OUT"
+                exit 1
+            fi
+            let TIMEOUT=$TIMEOUT-1
+        done
+        CONFIRMED="min_lifetime"
+    fi
 
     echo "OK"
 
-    echo "Please 'tail -f $NOHUP_OUT' for application output"
+    if [ -z $CONFIRMED ]; then
+        echo "Please 'tail -f $NOHUP_OUT' for application output"
+    fi
 
     ;;
 
@@ -86,11 +106,15 @@ case "$APP_ACTION_ARG" in
 
   -status)
     echo "Status for $NAME: "
-    echo "app_home       =  $APP_HOME"
-    echo "pid_file       =  $APP_PID_FILE"
-    echo "java_bin       =  $JAVA_BIN"
-    echo "java_version   =  $JAVA_VERSION"
-    echo "java_run       =  $RUN_CMD"
+    echo "app_home: $APP_HOME"
+    echo "run_dir: $APP_RUN_DIR_DEBUG"
+    echo "log_dir: $APP_LOG_DIR_DEBUG"
+    echo "jar_dir: $JAR_DIR_DEBUG"
+    echo "pid_file: $APP_PID_FILE_DEBUG"
+    echo "java_min_version_required: $MIN_JAVA_VERSION"
+    echo "java_bin: $JAVA_BIN"
+    echo "java_version: $JAVA_VERSION"
+    echo "java_run: $RUN_CMD"
     echo
     if running "$APP_PID_FILE"; then
       echo "$NAME running with pid="`cat $APP_PID_FILE`

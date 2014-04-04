@@ -99,7 +99,14 @@ public class Configuration {
     private Integer minJavaMemoryPct = null;
     private Integer maxJavaMemoryPct = null;
     
+    // http://stackoverflow.com/questions/958249/whats-the-difference-between-nohup-and-a-daemon
+    // really intersting discussion of NOHUP vs. other methods of daemonizing
     private DaemonMethod daemonMethod = DaemonMethod.NOHUP;
+    // daemon pid will be tested after this amount of seconds to confirm it is
+    // still running -- a simple way to verify that it likely started
+    private Integer daemonMinLifetime = 3;
+    // daemon will print this line to stdout/stderr to announce it started successfully
+    private String daemonLaunchConfirm = null;
     
     public File getFile() {
         return file;
@@ -259,5 +266,21 @@ public class Configuration {
     public void setDaemonMethod(DaemonMethod daemonMethod) {
         this.daemonMethod = daemonMethod;
     }
-    
+
+    public Integer getDaemonMinLifetime() {
+        return daemonMinLifetime;
+    }
+
+    public void setDaemonMinLifetime(Integer daemonMinLifetime) {
+        this.daemonMinLifetime = daemonMinLifetime;
+    }
+
+    public String getDaemonLaunchConfirm() {
+        return daemonLaunchConfirm;
+    }
+
+    public void setDaemonLaunchConfirm(String daemonLaunchConfirm) {
+        this.daemonLaunchConfirm = daemonLaunchConfirm;
+    }
+
 }

@@ -29,9 +29,11 @@ JAVA_VERSION=`getJavaVersion "$JAVA_BIN"`
 if [ $WORKING_DIR_MODE == "RETAIN" ]; then
   # absolute to app home
   APP_JAVA_CLASSPATH=`buildJavaClasspath $APP_HOME/$JAR_DIR`
+  JAR_DIR_DEBUG="$APP_HOME/$JAR_DIR"
 else
   # jars will be relative to working dir (app home)
   APP_JAVA_CLASSPATH=`buildJavaClasspath $JAR_DIR`
+  JAR_DIR_DEBUG="<app_home>/$JAR_DIR"
 fi
 
 #
@@ -95,9 +97,15 @@ fi
 
 #
 # create java command to execute
-# TODO:
 #
-RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$TYPE -cp $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
+
+# if a daemon is being run in foreground then the type is still console
+RUN_TYPE=$TYPE
+if [ "$APP_ACTION_ARG" == "-run" ]; then
+    RUN_TYPE="CONSOLE"
+fi
+
+RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE -cp $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
 RUN_CMD="$JAVA_BIN $RUN_ARGS"
 
 #
@@ -108,8 +116,8 @@ if [[ $DEBUG ]]; then
     echo "[launcher] app_home: $APP_HOME"
     echo "[launcher] run_dir: $APP_RUN_DIR_DEBUG"
     echo "[launcher] log_dir: $APP_LOG_DIR_DEBUG"
-    echo "[launcher] jar_dir: $JAR_DIR"
-    echo "[launcher] pid_file: $APP_PID_FILE"
+    echo "[launcher] jar_dir: $JAR_DIR_DEBUG"
+    echo "[launcher] pid_file: $APP_PID_FILE_DEBUG"
     echo "[launcher] java_min_version_required: $MIN_JAVA_VERSION"
     echo "[launcher] java_bin: $JAVA_BIN"
     echo "[launcher] java_version: $JAVA_VERSION"

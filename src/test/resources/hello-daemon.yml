@@ -36,3 +36,6 @@ min_java_version: "1.6"
 
 # method of becoming a daemon (only NOHUP method supported for now)
 daemon_method: NOHUP
+
+
+#run_dir: /var/run

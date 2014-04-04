@@ -10,22 +10,25 @@
 
 #
 # settings
+# either change default in here OR just pass in as environment variable to
+# override the default value here
+# e.g. RUN_DIR=/tmp bin/$NAME
 #
 
 # min and max mem (in MB); leave empty for java defaults
-JAVA_MIN_MEM="${config.minJavaMemory!""}"
-JAVA_MAX_MEM="${config.maxJavaMemory!""}"
+[ -z $JAVA_MIN_MEM ] && JAVA_MIN_MEM="${config.minJavaMemory!""}"
+[ -z $JAVA_MAX_MEM ] && JAVA_MAX_MEM="${config.maxJavaMemory!""}"
 
 # min and max mem as a percent of system memory
 # they have priority over JAVA_MIN_MEM and JAVA_MAX_MEM if set
-JAVA_MIN_MEM_PCT="${config.minJavaMemoryPct!""}"
-JAVA_MAX_MEM_PCT="${config.maxJavaMemoryPct!""}"
+[ -z $JAVA_MIN_MEM_PCT ] && JAVA_MIN_MEM_PCT="${config.minJavaMemoryPct!""}"
+[ -z $JAVA_MAX_MEM_PCT ] && JAVA_MAX_MEM_PCT="${config.maxJavaMemoryPct!""}"
 
 # application run dir (e.g. for pid file)
-RUN_DIR="${config.runDir!""}"
+[ -z $RUN_DIR ] && RUN_DIR="${config.runDir!""}"
 
 # application log dir (e.g. for [name.out] file)
-LOG_DIR="${config.logDir!""}"
+[ -z $LOG_DIR ] && LOG_DIR="${config.logDir!""}"
 
 #
 # constants
@@ -39,6 +42,11 @@ APP_ARGS="${config.appArgs}"
 JAVA_ARGS="${config.javaArgs}"
 JAR_DIR="${config.jarDir}"
 MIN_JAVA_VERSION="${config.minJavaVersion}"
+
+<#if (config.type == "DAEMON")>
+DAEMON_MIN_LIFETIME="${config.daemonMinLifetime!""}"
+DAEMON_LAUNCH_CONFIRM="${config.daemonLaunchConfirm!""}"
+</#if>
 
 #
 # working directory
@@ -101,6 +109,7 @@ fi
 # pid handling
 #
 APP_PID_FILE="$APP_RUN_DIR/$NAME.pid"
+APP_PID_FILE_DEBUG="$APP_RUN_DIR_DEBUG/$NAME.pid"
 
 #
 # do we need verify that the run directory is writable?

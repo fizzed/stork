@@ -336,8 +336,8 @@ public class Generator {
         binDir.mkdirs();
         
         // 4 files required: service.exe, service.ini, service64.exe, and service64.ini
-        File serviceFile = new File(binDir, config.getName() + ".exe");
-        File iniFile = new File(binDir, config.getName() + ".ini");
+        File serviceFile = new File(binDir, config.getName() + "32.exe");
+        File iniFile = new File(binDir, config.getName() + "32.ini");
         File service64File = new File(binDir, config.getName() + "64.exe");
         File ini64File = new File(binDir, config.getName() + "64.ini");
         

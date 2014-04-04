@@ -123,6 +123,7 @@ if NOT "%JAVAVER%"=="" (
 )
 ( endlocal
     set "%2=%java_version%"
+    set "%3=%JAVAVER%"
 )
 GOTO:EOF
 
@@ -133,16 +134,16 @@ setlocal
 SET java_bin=%~1
 SET target_java_ver_num=%~2
 call :JavaSearchDebug "java_bin: %java_bin%"
-call :GetJavaBinMajorVersionNum "%java_bin%" java_bin_ver_num
+call :GetJavaBinMajorVersionNum "%java_bin%" java_bin_ver_num java_full_ver
 if "%java_bin_ver_num%"=="" (
     set java_bin_ver_num=0
 )
 if %java_bin_ver_num% geq %target_java_ver_num% (
     set java_bin_if_accepted=!java_bin!
-    call :JavaSearchDebug " version: 1.!java_bin_ver_num! ^(meets minimum 1.!target_java_ver_num!^)"
+    call :JavaSearchDebug " version: !java_full_ver! ^(meets minimum 1.!target_java_ver_num!^)"
 ) else (
     set java_bin_if_accepted=
-    call :JavaSearchDebug " version: 1.!java_bin_ver_num! ^(^less than 1.!target_java_ver_num! though^)"
+    call :JavaSearchDebug " version: !java_full_ver! ^(^less than 1.!target_java_ver_num! though^)"
 )
 )
 ( endlocal

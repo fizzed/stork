@@ -1,3 +1,6 @@
+@setlocal ENABLEDELAYEDEXPANSION
+@echo OFF
+
 @REM
 @REM Batch script to launch Java app ${config.name}
 @REM
@@ -7,9 +10,6 @@
 @REM  Web: http://mfizz.com
 @REM  Twitter: http://twitter.com/mfizz_inc
 @REM
-
-@setlocal ENABLEDELAYEDEXPANSION
-@echo OFF
 
 @REM
 @REM settings

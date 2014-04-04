@@ -19,8 +19,8 @@
 
 [service]
 appname = ${config.name}
-servicename = ${config.name}
-displayname = ${config.name}
+servicename = ${config.displayName}
+displayname = ${config.displayName}
 servicedescription = ${config.shortDescription}
 
 ;Size of internal buffer for string handling

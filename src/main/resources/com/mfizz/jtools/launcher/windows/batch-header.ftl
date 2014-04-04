@@ -29,23 +29,31 @@ set MIN_JAVA_VERSION=${config.minJavaVersion}
 set WORKING_DIR_MODE=${config.workingDirMode}
 set BIN_DIR=${config.binDir!""}
 set LIB_DIR=${config.jarDir!""}
+set APP_ARGS=${config.appArgs}
+set JAVA_ARGS=${config.javaArgs}
 
 @REM
 @REM working directory setup
 @REM
 
 set INITIAL_WORKING_DIR=%CD%
-set APP_HOME_REL=%~dp0..
+
+SET SCRIPTPATH=%~dp0
+SET SCRIPTPATH=%SCRIPTPATH:~0,-1%
+set APP_HOME_REL=%SCRIPTPATH%\..
+@REM echo app_home_relative %APP_HOME_REL%
 
 @REM do we need to change the current working directory?
 if %WORKING_DIR_MODE%==APP_HOME (
+	@REM echo changing working dir to app_home
     pushd %APP_HOME_REL%
     set APP_HOME=.
 ) else (
-    @REM temporarily change working directory to get good abs path
+    @REM echo temporarily change working directory to get good abs path
     pushd %APP_HOME_REL%
-    set APP_HOME=%CD%
-    rem popd
+    set APP_HOME=!CD!
+    echo app_home now !APP_HOME!
+    popd
 )
 
 @REM setup remaining directories

@@ -36,7 +36,7 @@
 	
     <target name="hello-console" depends="checkos, stage-sample">
         <exec executable="mvn${batext}">
-            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args='-i src/test/resources/hello-console.yml -o ${target}/sample'"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/test/resources/hello-console.yml -o '${target}/sample'&quot;"/>
         </exec>
         <exec executable="${target}/sample/bin/hello-console${batext}" />
     </target>

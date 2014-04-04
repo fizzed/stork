@@ -81,11 +81,18 @@ systemMemory()
   fi
 
   if [[ isOSX ]]; then
-    #echo "on mac..."
-    TMPMEM=`top -l 1 | awk '/PhysMem:/ {print $10}'`
+    # this method failed on some versions of osx
+    #TMPMEM=`top -l 1 | awk '/PhysMem:/ {print $10}'`
     # strip off last M
-    TMPMEMMB=${TMPMEM%%M}
-    echo $TMPMEMMB
+    #TMPMEMMB=${TMPMEM%%M}
+    #echo $TMPMEMMB
+    #return 0
+
+    TMPMEMBYTES=`sysctl -a | grep "hw.physmem" | awk '/ = / {print $3}'`
+    # hw.physmem = 2147483648
+    # convert into MB
+    TMPMEM=$(expr $TMPMEMBYTES / 1000 / 1000)
+    echo $TMPMEM
     return 0
   fi
 }

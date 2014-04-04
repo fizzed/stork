@@ -125,10 +125,10 @@ stopsignature=(I)V
 ;to some other log mechanism.
 ;Default is no redirection
 ;Default is to overwrite file
-;systemout=c:\systemout.log
-;systemoutappend=no
-;systemerr=c:\systemerr.log
-;systemerrappend=no
+systemout=${config.logDir}\${config.name}.out
+systemoutappend=no
+systemerr=${config.logDir}\${config.name}.err
+systemerrappend=no
 
 ;Explicitely call this method and wait for it to return before setting the service to status running
 ;This method will be called before the main method

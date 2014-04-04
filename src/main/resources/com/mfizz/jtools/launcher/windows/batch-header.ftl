@@ -15,11 +15,15 @@
 @REM settings
 @REM
 
-set LOG_DIR=${config.logDir!""}
-set RUN_DIR=${config.runDir!""}
+if "%LOG_DIR%"=="" set LOG_DIR=${config.logDir!""}
+
+if "%RUN_DIR%"=="" set RUN_DIR=${config.runDir!""}
+
+@REM set to 1 if you want to see more info about what the script is doing
+if "%LAUNCHER_DEBUG%"=="" set LAUNCHER_DEBUG=0
 
 @REM set to 1 if you want to see how the script is searching for java exe
-set JAVA_SEARCH_DEBUG=0
+if "%JAVA_SEARCH_DEBUG%"=="" set JAVA_SEARCH_DEBUG=0
 
 @REM
 @REM constants
@@ -65,13 +69,13 @@ set APP_LOG_DIR=%APP_HOME%\%LOG_DIR%
 set APP_LIB_DIR=%APP_HOME%\%LIB_DIR%
 set APP_RUN_DIR=%APP_HOME%\%RUN_DIR%
 
-if "%VERBOSE%"=="1" (
-    echo working_dir: %CD%
-    echo app_home: %APP_HOME%
-    echo app_bin: %APP_BIN_DIR%
-    echo app_log: %APP_LOG_DIR%
-    echo app_lib: %APP_LIB_DIR%
-    echo app_run: %APP_RUN_DIR%
+if "%LAUNCHER_DEBUG%"=="1" (
+    echo ^[LAUNCHER^] working_dir: %CD%
+    echo ^[LAUNCHER^] app_home: %APP_HOME%
+    echo ^[LAUNCHER^] app_bin: %APP_BIN_DIR%
+    echo ^[LAUNCHER^] app_log: %APP_LOG_DIR%
+    echo ^[LAUNCHER^] app_lib: %APP_LIB_DIR%
+    echo ^[LAUNCHER^] app_run: %APP_RUN_DIR%
 )
 
 set bit64=n

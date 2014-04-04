@@ -43,7 +43,7 @@
     
     <target name="hello-daemon" depends="checkos, stage-sample">
         <exec executable="mvn${batext}">
-            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args='-i src/test/resources/hello-daemon.yml -o ${target}/sample'"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/test/resources/hello-daemon.yml -o '${target}/sample'&quot;"/>
         </exec>
         <exec executable="${target}/sample/bin/hello-daemon${batext}">
             <arg value="-run"/>

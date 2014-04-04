@@ -9,8 +9,8 @@ REM
 REM log directory MUST exist or the service will fail to start
 REM
 
-if not exist "%APP_LOG_DIR" (
-    mkdir "%APP_LOG_DIR"
+if not exist "%APP_LOG_DIR%" (
+    mkdir "%APP_LOG_DIR%"
 )
 
 

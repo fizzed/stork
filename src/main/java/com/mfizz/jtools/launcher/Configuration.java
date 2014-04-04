@@ -68,7 +68,8 @@ public class Configuration {
     
     static public enum DaemonMethod {
         NOHUP,
-        JSLWIN
+        JSLWIN,
+        WINSW
     }
     
     @JsonIgnore

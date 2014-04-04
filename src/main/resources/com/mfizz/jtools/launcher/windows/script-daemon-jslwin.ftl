@@ -125,9 +125,9 @@ stopsignature=(I)V
 ;to some other log mechanism.
 ;Default is no redirection
 ;Default is to overwrite file
-systemout=${config.logDir}\${config.name}.out
+systemout=${config.logDir}\${config.name}.out.log
 systemoutappend=no
-systemerr=${config.logDir}\${config.name}.err
+systemerr=${config.logDir}\${config.name}.err.log
 systemerrappend=no
 
 ;Explicitely call this method and wait for it to return before setting the service to status running

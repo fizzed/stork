@@ -225,6 +225,8 @@ public class Generator {
                     DaemonMethod dm = config.getDaemonMethods().get(Platform.WINDOWS);
                     if (dm == DaemonMethod.JSLWIN) {
                         generateWindowsJSLWinLauncher(config, binDir, model);
+                    } else if (dm == DaemonMethod.WINSW) {
+                        generateWindowsWINSWLauncher(config, binDir, model);
                     } else {
                         throw new Exception("Unsupported daemon method [" + dm + "] for platform WINDOWS");
                     }
@@ -287,6 +289,39 @@ public class Generator {
             launcherFile.setExecutable(true);
 
             System.out.println(" - launcher: " + launcherFile);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (fos != null) {
+                fos.close();
+            }
+        }
+    }
+    
+    static public void generateWindowsWINSWLauncher(Configuration config, File binDir, LauncherModel model) throws Exception {
+        binDir.mkdirs();
+        
+        // 4 files required: service.exe, service.ini, service64.exe, and service64.ini
+        File serviceFile = new File(binDir, config.getName() + ".exe");
+        File configFile = new File(binDir, config.getName() + ".xml");
+        File netFile = new File(binDir, config.getName() + ".exe.config");
+        
+        copyResource("windows/winsw/winsw-1.16-bin.exe", serviceFile);
+        System.out.println(" - launcher helper: " + serviceFile);
+        
+        copyResource("windows/winsw/winsw.exe.config", netFile);
+        System.out.println(" - launcher helper: " + serviceFile);
+        
+        generateWindowsWINSWConfig(config, configFile, model);
+    }
+    
+    static public void generateWindowsWINSWConfig(Configuration config, File configFile, LauncherModel model) throws Exception {
+        FileOutputStream fos = new FileOutputStream(configFile);
+        Writer out = new OutputStreamWriter(fos);
+
+        try {
+            processTemplate("windows/script-daemon-winsw.ftl", out, model);
         } finally {
             if (out != null) {
                 out.close();

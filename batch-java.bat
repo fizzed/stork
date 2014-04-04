@@ -3,7 +3,7 @@
 
 @REM https://gist.github.com/djangofan/1445440
 
-set MIN_JAVA_VERSION=1.8
+set MIN_JAVA_VERSION=1.7
 set JAVA_SEARCH_DEBUG=1
 
 @REM 1.7 -> get 7
@@ -27,6 +27,7 @@ if NOT "%JAVA_HOME%"=="" (
     if NOT "!java_bin_accepted!" == "" goto :AcceptableJavaBinFound
 )
 
+
 @REM
 @REM is java in the current path?
 @REM
@@ -39,13 +40,35 @@ IF DEFINED JAVA_IN_PATH (
 
 
 @REM
-@REM query registry
+@REM query registry for java runtime environment
 @REM
+set reg_best_java_bin=
+for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\Java Runtime Environment" /s ^| find "JavaHome"') do (
+    set reg_java_bin=%%j\bin\java
+    call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! java_bin_accepted
+    if NOT "!java_bin_accepted!" == "" set reg_best_java_bin=!java_bin_accepted!
+)
+if NOT "%reg_best_java_bin%"=="" (
+    set java_bin_accepted=!reg_best_java_bin!
+    goto :AcceptableJavaBinFound
+)
 
-REM reg query "HKLM\Software\JavaSoft\Java Runtime Environment"
 
-
-@REM reg query "HKLM\Software\JavaSoft\Java Development Kit"
+@REM
+@REM query registry for java development kit
+@REM
+@REM special case with registry -- it queries in order of earliest installed to latest
+@REM keep searching for the most acceptable version (the last one)
+set reg_best_java_bin=
+for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\Java Development Kit" /s ^| find "JavaHome"') do (
+    set reg_java_bin=%%j\bin\java
+    call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! java_bin_accepted
+    if NOT "!java_bin_accepted!" == "" set reg_best_java_bin=!java_bin_accepted!
+)
+if NOT "%reg_best_java_bin%"=="" (
+    set java_bin_accepted=!reg_best_java_bin!
+    goto :AcceptableJavaBinFound
+)
 
 
 :NoAcceptableJavaBinFound
@@ -116,7 +139,7 @@ if "%java_bin_ver_num%"=="" (
 )
 if %java_bin_ver_num% geq %target_java_ver_num% (
     set java_bin_if_accepted=!java_bin!
-    @REM echo java_bin_if_accepted=!java_bin!
+    call :JavaSearchDebug " version: 1.!java_bin_ver_num! ^(meets minimum 1.!target_java_ver_num!^)"
 ) else (
     set java_bin_if_accepted=
     call :JavaSearchDebug " version: 1.!java_bin_ver_num! ^(^less than 1.!target_java_ver_num! though^)"

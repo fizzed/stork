@@ -3,17 +3,19 @@
 
 @REM https://gist.github.com/djangofan/1445440
 
-set MIN_JAVA_VERSION=1.7
+
+set MIN_JAVA_VERSION=1.8
 set JAVA_SEARCH_DEBUG=1
 
-@REM 1.7 -> get 7
-call :ExtractJavaMajorVersionNum %MIN_JAVA_VERSION% target_java_ver_num
-IF "%target_java_ver_num%"=="0" (
+
+set target_java_ver_num=0
+call :ExtractJavaMajorVersionNum "%MIN_JAVA_VERSION%" target_java_ver_num
+if "%target_java_ver_num%"=="0" (
     echo Unable to extract major version from "%MIN_JAVA_VERSION%"
     exit /B
 )
 
-echo target_java_ver_num: %target_java_ver_num%
+call :JavaSearchDebug "target_java_ver_num: %target_java_ver_num%"
 
 @REM
 @REM is java or jre in JAVA_HOME acceptable?
@@ -42,6 +44,7 @@ IF DEFINED JAVA_IN_PATH (
 @REM
 @REM query registry for java runtime environment
 @REM
+call :JavaSearchDebug "Searching registry for JRE entries..."
 set reg_best_java_bin=
 for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\Java Runtime Environment" /s ^| find "JavaHome"') do (
     set reg_java_bin=%%j\bin\java
@@ -59,6 +62,7 @@ if NOT "%reg_best_java_bin%"=="" (
 @REM
 @REM special case with registry -- it queries in order of earliest installed to latest
 @REM keep searching for the most acceptable version (the last one)
+call :JavaSearchDebug "Searching registry for JDK entries..."
 set reg_best_java_bin=
 for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\Java Development Kit" /s ^| find "JavaHome"') do (
     set reg_java_bin=%%j\bin\java
@@ -73,12 +77,12 @@ if NOT "%reg_best_java_bin%"=="" (
 
 :NoAcceptableJavaBinFound
 @REM if we get here then the search above failed
-echo No acceptable java found
-goto :END
+call :JavaSearchDebug "No acceptable java found"
+goto :JavaSearchEnd
 
 :AcceptableJavaBinFound
-echo Acceptable java bin found: %java_bin_accepted%
-goto :END
+call :JavaSearchDebug "Acceptable java bin found: %java_bin_accepted%"
+goto :JavaSearchEnd
 
 
 @REM 1.7 -> returns 7 in param 2 or 0 if not found
@@ -125,7 +129,7 @@ if NOT "%JAVAVER%"=="" (
     set "%2=%java_version%"
     set "%3=%JAVAVER%"
 )
-GOTO:EOF
+GOTO :EOF
 
 
 @REM call :IsJavaBinVersionAcceptable java_bin target_java_ver_num java_bin_if_accepted
@@ -149,7 +153,7 @@ if %java_bin_ver_num% geq %target_java_ver_num% (
 ( endlocal
     set "%3=%java_bin_if_accepted%"
 )
-GOTO:EOF
+GOTO :EOF
 
 
 @REM Strip quotes and extra backslash from string
@@ -173,4 +177,4 @@ if "%JAVA_SEARCH_DEBUG%"=="1" (
 )
 GOTO :EOF
 
-:END
+:JavaSearchEnd

@@ -38,10 +38,8 @@ package com.mfizz.jtools.launcher;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -88,6 +86,8 @@ public class Configuration {
     
     @NotNull
     private String name;
+    
+    private String displayName;
     
     @NotNull
     private String shortDescription;

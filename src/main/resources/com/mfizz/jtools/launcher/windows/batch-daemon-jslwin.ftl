@@ -21,15 +21,15 @@ if %bit64%==y set TargetExe=hello-daemon64.exe
 IF %1==-console (
     "%java_bin_accepted%" -cp %APP_CLASSPATH% %JAVA_ARGS% %MAIN_CLASS% %APP_ARGS%
 ) ELSE IF %1==-run (
-    "%BIN_HOME%\%TargetExe%" -debug
+    "%APP_BIN_DIR%\%TargetExe%" -debug
 ) ELSE IF %1==-start (
     net start ${config.displayName}
 ) ELSE IF %1==-stop (
     net stop ${config.displayName}
 ) ELSE IF %1==-install (
-    "%BIN_HOME%\%TargetExe%" -install
+    "%APP_BIN_DIR%\%TargetExe%" -install
 ) ELSE IF %1==-uninstall (
-    "%BIN_HOME%\%TargetExe%" -remove
+    "%APP_BIN_DIR%\%TargetExe%" -remove
 ) ELSE (
     echo Error unsupported argument
     GOTO PrintUsageJSLWin

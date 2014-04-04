@@ -1,4 +1,0 @@
-
-@REM
-@REM functions
-@REM

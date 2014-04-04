@@ -321,8 +321,6 @@ public class Generator {
             processTemplate("windows/batch-java.ftl", out, model);
             
             processTemplate("windows/batch-console.ftl", out, model);
-            
-            includeResource("windows/batch-functions.bat", fos);
 
             processTemplate("windows/batch-footer.ftl", out, model);
             
@@ -343,7 +341,6 @@ public class Generator {
     static public void generateWindowsWINSWLauncher(Configuration config, File binDir, LauncherModel model) throws Exception {
         binDir.mkdirs();
         
-        // 4 files required: service.exe, service.ini, service64.exe, and service64.ini
         File serviceFile = new File(binDir, config.getName() + ".exe");
         File configFile = new File(binDir, config.getName() + ".xml");
         File netFile = new File(binDir, config.getName() + ".exe.config");
@@ -362,7 +359,7 @@ public class Generator {
         Writer out = new OutputStreamWriter(fos);
 
         try {
-            processTemplate("windows/script-daemon-winsw.ftl", out, model);
+            processTemplate("windows/config-daemon-winsw.ftl", out, model);
         } finally {
             if (out != null) {
                 out.close();
@@ -375,6 +372,36 @@ public class Generator {
     
     static public void generateWindowsJSLWinLauncher(Configuration config, File binDir, LauncherModel model) throws Exception {
         binDir.mkdirs();
+        
+        File launcherFile = new File(binDir, config.getName() + ".bat");
+        
+        // 1 main launcher file required
+        FileOutputStream fos = new FileOutputStream(launcherFile);
+        Writer out = new OutputStreamWriter(fos);
+
+        try {
+            processTemplate("windows/batch-header.ftl", out, model);
+            
+            includeResource("windows/batch-find-java.bat", fos);
+
+            processTemplate("windows/batch-java.ftl", out, model);
+            
+            processTemplate("windows/batch-daemon-jslwin.ftl", out, model);
+
+            processTemplate("windows/batch-footer.ftl", out, model);
+            
+            // set to executable
+            launcherFile.setExecutable(true);
+
+            System.out.println(" - launcher: " + launcherFile);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (fos != null) {
+                fos.close();
+            }
+        }
         
         // 4 files required: service.exe, service.ini, service64.exe, and service64.ini
         File serviceFile = new File(binDir, config.getName() + "32.exe");
@@ -401,7 +428,7 @@ public class Generator {
         Writer out = new OutputStreamWriter(fos);
 
         try {
-            processTemplate("windows/script-daemon-jslwin.ftl", out, model);
+            processTemplate("windows/config-daemon-jslwin.ftl", out, model);
         } finally {
             if (out != null) {
                 out.close();

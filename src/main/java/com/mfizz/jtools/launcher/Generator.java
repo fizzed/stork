@@ -221,7 +221,15 @@ public class Generator {
                 
             } else if (platform == Platform.WINDOWS) {
 
-                if (config.getType() == Type.DAEMON) {
+                if (config.getType() == Type.CONSOLE) {
+                    
+                    // generate unix launcher script
+                    binDir.mkdirs();
+                    File launcherFile = new File(binDir, config.getName() + ".bat");
+                    generateWindowsConsoleLauncher(config, launcherFile, model);
+                            
+                } else if (config.getType() == Type.DAEMON) {
+                    
                     DaemonMethod dm = config.getDaemonMethods().get(Platform.WINDOWS);
                     if (dm == DaemonMethod.JSLWIN) {
                         generateWindowsJSLWinLauncher(config, binDir, model);
@@ -230,6 +238,7 @@ public class Generator {
                     } else {
                         throw new Exception("Unsupported daemon method [" + dm + "] for platform WINDOWS");
                     }
+                    
                 }
 
             } else {
@@ -284,6 +293,34 @@ public class Generator {
             } else {
                 throw new Exception("Unsupported daemon method [" + dm + "] for platform LINUX");
             }
+            
+            // set to executable
+            launcherFile.setExecutable(true);
+
+            System.out.println(" - launcher: " + launcherFile);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (fos != null) {
+                fos.close();
+            }
+        }
+    }
+    
+    static public void generateWindowsConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
+        // make sure parent of file to be generated exists
+        FileOutputStream fos = new FileOutputStream(launcherFile);
+        Writer out = new OutputStreamWriter(fos);
+
+        try {
+            processTemplate("windows/batch-header.ftl", out, model);
+
+            processTemplate("windows/batch-console.ftl", out, model);
+            
+            includeResource("windows/batch-functions.bat", fos);
+
+            processTemplate("windows/batch-footer.ftl", out, model);
             
             // set to executable
             launcherFile.setExecutable(true);

@@ -1,6 +1,3 @@
-@setlocal ENABLEDELAYEDEXPANSION
-@echo OFF
-
 @REM
 @REM Batch script to launch Java app ${config.name}
 @REM
@@ -10,6 +7,9 @@
 @REM  Web: http://mfizz.com
 @REM  Twitter: http://twitter.com/mfizz_inc
 @REM
+
+@setlocal ENABLEDELAYEDEXPANSION
+@echo OFF
 
 @REM
 @REM settings
@@ -28,10 +28,10 @@ set MAIN_CLASS=${config.mainClass}
 set MIN_JAVA_VERSION=${config.minJavaVersion}
 set WORKING_DIR_MODE=${config.workingDirMode}
 set BIN_DIR=${config.binDir!""}
-set LIB_DIR=${config.libDir!""}
+set LIB_DIR=${config.jarDir!""}
 
 @REM
-@REM working directories
+@REM working directory setup
 @REM
 
 set INITIAL_WORKING_DIR=%CD%
@@ -63,55 +63,7 @@ if "%VERBOSE%"=="1" (
     echo app_run: %APP_RUN_DIR%
 )
 
-@REM echo Relative home: !APP_HOME:%CD%\=!
-
-@REM
-@REM usage with no parameters?
-@REM
-
-IF %1.==. GOTO PrintUsage
-
-
 set bit64=n
 if /I %Processor_Architecture%==AMD64 set bit64=y
 if /I "%PROCESSOR_ARCHITEW6432%"=="AMD64" set bit64=y
-
-REM echo bit64: %bit64%
-
-
-
-REM
-REM log directory MUST exist for service to start correctly
-REM
-
-REM
-REM execute argument command
-REM
-
-if %bit64%==n set TargetExe=hello-daemon32.exe
-if %bit64%==y set TargetExe=hello-daemon64.exe
-
-IF %1==-run (
-	"%BIN_HOME%\%TargetExe%" -debug
-) ELSE IF %1==-start (
-	net start Hello Server
-) ELSE IF %1==-stop (
-	net stop Hello Server
-) ELSE IF %1==-install (
-	"%BIN_HOME%\%TargetExe%" -install
-) ELSE IF %1==-uninstall (
-	"%BIN_HOME%\%TargetExe%" -remove
-) ELSE (
-	echo Error unsupported argument
-	GOTO PrintUsage
-)
-
-GOTO endLabel
-
-:PrintUsage
-REM annoying string escaping
-echo Usage: ^[-run^|-^s^t^a^r^t^|-^s^t^o^p^|^-^ins^tall^|^-^un^inst^a^ll^]
-exit /b
-GOTO endLabel
-
-:endLabel
+@REM echo bit64: %bit64%

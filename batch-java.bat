@@ -3,54 +3,150 @@
 
 @REM https://gist.github.com/djangofan/1445440
 
-@REM first java_home env
-IF DEFINED JAVA_HOME (
-  ECHO JAVA_HOME is already set to !JAVA_HOME!
-  CALL :STRIP "!JAVA_HOME!" JHOME
-  ECHO java_home: !JHOME!
-  
-  call :IsJavaBin "!JHOME!\bin\java"
-  
-  call :IsJavaBin "!JHOME!\jre\bin\java2"
+set MIN_JAVA_VERSION=1.8
+set JAVA_SEARCH_DEBUG=1
+
+@REM 1.7 -> get 7
+call :ExtractJavaMajorVersionNum %MIN_JAVA_VERSION% target_java_ver_num
+IF "%target_java_ver_num%"=="0" (
+    echo Unable to extract major version from "%MIN_JAVA_VERSION%"
+    exit /B
 )
 
+echo target_java_ver_num: %target_java_ver_num%
+
+@REM
+@REM is java or jre in JAVA_HOME acceptable?
+@REM
+call :JavaSearchDebug "Searching JAVA_HOME env var..."
+if NOT "%JAVA_HOME%"=="" (
+    call :IsJavaBinVersionAcceptable "!JAVA_HOME!\jre\bin\java" !target_java_ver_num! java_bin_accepted
+    if NOT "!java_bin_accepted!" == "" goto :AcceptableJavaBinFound
+
+    call :IsJavaBinVersionAcceptable "!JAVA_HOME!\bin\java" !target_java_ver_num! java_bin_accepted
+    if NOT "!java_bin_accepted!" == "" goto :AcceptableJavaBinFound
+)
+
+@REM
+@REM is java in the current path?
+@REM
+call :JavaSearchDebug "Searching PATH..."
+for %%X in (java.exe) do (set JAVA_IN_PATH=%%~$PATH:X)
+IF DEFINED JAVA_IN_PATH (
+    call :IsJavaBinVersionAcceptable !JAVA_IN_PATH! !target_java_ver_num! java_bin_accepted
+    if NOT "!java_bin_accepted!" == "" goto :AcceptableJavaBinFound
+)
+
+
+@REM
 @REM query registry
-reg query "HKLM\Software\JavaSoft\Java Runtime Environment"
+@REM
 
-reg query "HKLM\Software\JavaSoft\Java Development Kit"
+REM reg query "HKLM\Software\JavaSoft\Java Runtime Environment"
 
 
-@echo off
-"%JAVA_HOME%"\bin\java -version:1.8 -version > nul 2>&1
-if %ERRORLEVEL% == 0 goto found
-echo NOT FOUND
-goto :end
+@REM reg query "HKLM\Software\JavaSoft\Java Development Kit"
 
-:found
-echo FOUND
 
-:IsJavaBin
+:NoAcceptableJavaBinFound
+@REM if we get here then the search above failed
+echo No acceptable java found
+goto :END
+
+:AcceptableJavaBinFound
+echo Acceptable java bin found: %java_bin_accepted%
+goto :END
+
+
+@REM 1.7 -> returns 7 in param 2 or 0 if not found
+:ExtractJavaMajorVersionNum
 setlocal
-SET java_bin=%~1
-echo checking if %java_bin% is valid
-"%java_bin%" -version > nul 2>&1
-if %ERRORLEVEL% == 0 (
-	echo  valid 
-) else (
-	echo not valid
+SET full_ver=%~1
+for /f "delims=. tokens=1-2" %%v in ("%full_ver%") do (
+    @REM @echo Major: %%v
+    @REM @echo Minor: %%w
+    set maj_ver_num=%%w
 )
-exit /b %ERRORLEVEL%
+if "%maj_ver_num%"=="" (
+    set maj_ver_num=0
+)
+( endlocal
+    set "%2=%maj_ver_num%"
+)
 GOTO:EOF
 
-:STRIP
+
+@REM java_exe -> returns major version like 7 in param 2
+:GetJavaBinMajorVersionNum
 setlocal
-REM Strip quotes and extra backslash from string
+SET java_bin=%~1
+
+@REM echo getting ver for: %java_bin%
+
+for /f "tokens=3" %%g in ('cmd /c "%java_bin%" -version 2^>^&1 ^| findstr /i "version"') do (
+    REM @echo Output: %%g
+    set JAVAVER=%%g
+)
+SET java_version=
+if NOT "%JAVAVER%"=="" (
+    set JAVAVER=%JAVAVER:"=%
+    @REM @echo Output: %JAVAVER%
+    for /f "delims=. tokens=1-3" %%v in ("%JAVAVER%") do (
+        @REM @echo Major: %%v
+        @REM @echo Minor: %%w
+        @REM @echo Build: %%x
+        set java_version=%%w
+    )
+)
+( endlocal
+    set "%2=%java_version%"
+)
+GOTO:EOF
+
+
+@REM call :IsJavaBinVersionAcceptable java_bin target_java_ver_num java_bin_if_accepted
+:IsJavaBinVersionAcceptable
+setlocal
+SET java_bin=%~1
+SET target_java_ver_num=%~2
+call :JavaSearchDebug "java_bin: %java_bin%"
+call :GetJavaBinMajorVersionNum "%java_bin%" java_bin_ver_num
+if "%java_bin_ver_num%"=="" (
+    set java_bin_ver_num=0
+)
+if %java_bin_ver_num% geq %target_java_ver_num% (
+    set java_bin_if_accepted=!java_bin!
+    @REM echo java_bin_if_accepted=!java_bin!
+) else (
+    set java_bin_if_accepted=
+    call :JavaSearchDebug " version: 1.!java_bin_ver_num! ^(^less than 1.!target_java_ver_num! though^)"
+)
+)
+( endlocal
+    set "%3=%java_bin_if_accepted%"
+)
+GOTO:EOF
+
+
+@REM Strip quotes and extra backslash from string
+:StripQuotesAndBackslash
+setlocal
+set o=%~1
 SET n=%~1
 SET n=%n:\\=\%
 SET n=%n:"=%
 ( endlocal
-	set "%2=%n%"
+    IF NOT "%n%"=="" set "%2=%n%" ELSE set "%2=%o%"
 )
-GOTO:EOF
+GOTO :EOF
+
+
+:JavaSearchDebug
+setlocal
+SET v=%~1
+if "%JAVA_SEARCH_DEBUG%"=="1" (
+    echo ^[JAVA_SEARCH^] !v!
+)
+GOTO :EOF
 
 :END

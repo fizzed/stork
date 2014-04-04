@@ -212,6 +212,12 @@ public class Generator {
                     unixLauncherGeneratedVia = platform;
                 }
                 
+                if (platform == Platform.LINUX && config.getType() == Type.DAEMON) {
+                    // create init.d script
+                    shareDir.mkdirs();
+                    File initdFile = new File(binDir, config.getName());
+                }
+                
             } else if (platform == Platform.WINDOWS) {
 
                 if (config.getType() == Type.DAEMON) {

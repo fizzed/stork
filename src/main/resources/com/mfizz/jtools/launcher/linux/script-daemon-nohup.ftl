@@ -40,9 +40,6 @@ if [ "$APP_HOME" != "$INITIAL_WORKING_DIR" ]; then
 fi
 
 
-
-
-
 case "$APP_ACTION_ARG" in
 
   -start)

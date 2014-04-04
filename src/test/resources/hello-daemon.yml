@@ -2,6 +2,10 @@
 # Name of application (make sure it has no spaces)
 name: "hello-daemon"
 
+short_description: "Demo daemon app"
+
+long_description: "Demo of daemon app for mfizz jtools launcher"
+
 # Type of launcher (CONSOLE or DAEMON)
 type: DAEMON
 
@@ -37,5 +41,6 @@ min_java_version: "1.6"
 # method of becoming a daemon (only NOHUP method supported for now)
 daemon_method: NOHUP
 
+symlink_java: true
 
 #run_dir: /var/run

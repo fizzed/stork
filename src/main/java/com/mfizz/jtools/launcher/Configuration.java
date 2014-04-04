@@ -83,6 +83,10 @@ public class Configuration {
     
     @NotNull
     private String name;
+    
+    @NotNull
+    private String shortDescription;
+    private String longDescription;
 
     @NotNull
     private String mainClass;
@@ -98,6 +102,11 @@ public class Configuration {
     private Integer maxJavaMemory = null;
     private Integer minJavaMemoryPct = null;
     private Integer maxJavaMemoryPct = null;
+    
+    // best effort to symlink java binary so process is named something more
+    // friendly for users (only safe for daemons with unique names)
+    // default name is "<app name>-java"
+    private boolean symlinkJava = false;
     
     // http://stackoverflow.com/questions/958249/whats-the-difference-between-nohup-and-a-daemon
     // really intersting discussion of NOHUP vs. other methods of daemonizing
@@ -162,6 +171,22 @@ public class Configuration {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public String getLongDescription() {
+        return longDescription;
+    }
+
+    public void setLongDescription(String longDescription) {
+        this.longDescription = longDescription;
     }
 
     public String getMainClass() {
@@ -257,6 +282,14 @@ public class Configuration {
 
     public void setMaxJavaMemoryPct(Integer maxJavaMemoryPct) {
         this.maxJavaMemoryPct = maxJavaMemoryPct;
+    }
+
+    public boolean isSymlinkJava() {
+        return symlinkJava;
+    }
+
+    public void setSymlinkJava(boolean symlinkJava) {
+        this.symlinkJava = symlinkJava;
     }
 
     public DaemonMethod getDaemonMethod() {

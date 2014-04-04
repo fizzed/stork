@@ -94,16 +94,35 @@ elif [ ! -z $JAVA_MIN_MEM ]; then
   JAVA_ARGS="-Xmn${r"${JAVA_MIN_MEM}"}M $JAVA_ARGS"
 fi
 
-
 #
-# create java command to execute
-#
-
 # if a daemon is being run in foreground then the type is still console
+#
 RUN_TYPE=$TYPE
 if [ "$APP_ACTION_ARG" == "-run" ]; then
     RUN_TYPE="CONSOLE"
 fi
+
+#
+# symlink of java requested?
+#
+if [ "$SYMLINK_JAVA" == "1" ]; then
+    TARGET_SYMLINK="$APP_RUN_DIR/$NAME-java"
+    # if link already exists then try to delete it
+    if [ -L "$TARGET_SYMLINK" ]; then
+        rm -f "$TARGET_SYMLINK"
+    fi
+    ln -s "$JAVA_BIN" "$TARGET_SYMLINK" > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        # symlink succeeded
+        NON_SYMLINK_JAVA_BIN="$JAVA_BIN"
+        JAVA_BIN="$TARGET_SYMLINK"
+    fi
+fi
+
+
+#
+# create java command to execute
+#
 
 RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE -cp $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
 RUN_CMD="$JAVA_BIN $RUN_ARGS"
@@ -119,7 +138,12 @@ if [[ $DEBUG ]]; then
     echo "[launcher] jar_dir: $JAR_DIR_DEBUG"
     echo "[launcher] pid_file: $APP_PID_FILE_DEBUG"
     echo "[launcher] java_min_version_required: $MIN_JAVA_VERSION"
-    echo "[launcher] java_bin: $JAVA_BIN"
+    if [ ! -z $NON_SYMLINK_JAVA_BIN ]; then
+        echo "[launcher] java_bin: $NON_SYMLINK_JAVA_BIN"
+        echo "[launcher] java_symlink: $JAVA_BIN"
+    else
+        echo "[launcher] java_bin: $JAVA_BIN"
+    fi
     echo "[launcher] java_version: $JAVA_VERSION"
     echo "[launcher] java_run: $RUN_CMD"
 fi

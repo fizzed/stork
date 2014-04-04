@@ -18,9 +18,9 @@ REM
 if %bit64%==n set TargetExe=hello-daemon32.exe
 if %bit64%==y set TargetExe=hello-daemon64.exe
 
-IF %1==-run (
+IF %1==-console (
     "%java_bin_accepted%" -cp %APP_CLASSPATH% %JAVA_ARGS% %MAIN_CLASS% %APP_ARGS%
-) ELSE IF %1==-startdebug (
+) ELSE IF %1==-run (
     "%BIN_HOME%\%TargetExe%" -debug
 ) ELSE IF %1==-start (
     net start ${config.displayName}

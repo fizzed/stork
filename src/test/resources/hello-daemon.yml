@@ -25,7 +25,8 @@ platforms: [ WINDOWS, LINUX, MAC_OSX ]
 #app_args: "-c config.yml"
 
 # Arguments to use with the java command (e.g. way to pass -D arguments)
-#java_args: "-Dtest=foo"
+# "-Xrs" is good to include with daemons
+java_args: "-Xrs"
   
 # minimum version of java required (system will be searched for acceptable jvm)
 min_java_version: "1.6"
@@ -39,7 +40,7 @@ min_java_version: "1.6"
 #max_java_memory_pct: 20
 
 # method of becoming a daemon (only NOHUP method supported for now)
-daemon_method: NOHUP
+daemon_methods: { LINUX: NOHUP, WINDOWS: JSLWIN }
 
 symlink_java: true
 

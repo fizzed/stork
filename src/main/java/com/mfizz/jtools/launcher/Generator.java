@@ -35,6 +35,7 @@ package com.mfizz.jtools.launcher;
  * #L%
  */
 
+import com.mfizz.jtools.launcher.Configuration.DaemonMethod;
 import com.mfizz.jtools.launcher.Configuration.Platform;
 import com.mfizz.jtools.launcher.Configuration.Type;
 import freemarker.template.DefaultObjectWrapper;
@@ -221,7 +222,12 @@ public class Generator {
             } else if (platform == Platform.WINDOWS) {
 
                 if (config.getType() == Type.DAEMON) {
-                    // use java service library wrapper
+                    DaemonMethod dm = config.getDaemonMethods().get(Platform.WINDOWS);
+                    if (dm == DaemonMethod.JSLWIN) {
+                        generateWindowsJSLWinLauncher(config, binDir, model);
+                    } else {
+                        throw new Exception("Unsupported daemon method [" + dm + "] for platform WINDOWS");
+                    }
                 }
 
             } else {
@@ -269,8 +275,13 @@ public class Generator {
 
             processTemplate("linux/script-java.ftl", out, model);
 
-            // method of daemonizing?
-            processTemplate("linux/script-daemon-nohup.ftl", out, model);
+            DaemonMethod dm = config.getDaemonMethods().get(Platform.LINUX);
+            
+            if (dm == DaemonMethod.NOHUP) {
+                processTemplate("linux/script-daemon-nohup.ftl", out, model);
+            } else {
+                throw new Exception("Unsupported daemon method [" + dm + "] for platform LINUX");
+            }
             
             // set to executable
             launcherFile.setExecutable(true);
@@ -286,10 +297,60 @@ public class Generator {
         }
     }
     
+    static public void generateWindowsJSLWinLauncher(Configuration config, File binDir, LauncherModel model) throws Exception {
+        binDir.mkdirs();
+        
+        // 4 files required: service.exe, service.ini, service64.exe, and service64.ini
+        File serviceFile = new File(binDir, config.getName() + ".exe");
+        File iniFile = new File(binDir, config.getName() + ".ini");
+        File service64File = new File(binDir, config.getName() + "64.exe");
+        File ini64File = new File(binDir, config.getName() + "64.ini");
+        
+        copyResource("windows/jslwin/jsl_static.exe", serviceFile);
+        System.out.println(" - launcher helper: " + serviceFile);
+        
+        generateWindowsJSLWinINI(config, iniFile, model);
+        System.out.println(" - launcher helper: " + iniFile);
+        
+        copyResource("windows/jslwin/jsl_static64.exe", service64File);
+        System.out.println(" - launcher helper: " + service64File);
+        
+        generateWindowsJSLWinINI(config, ini64File, model);
+        System.out.println(" - launcher helper: " + ini64File);
+        
+    }
+    
+    static public void generateWindowsJSLWinINI(Configuration config, File iniFile, LauncherModel model) throws Exception {
+        FileOutputStream fos = new FileOutputStream(iniFile);
+        Writer out = new OutputStreamWriter(fos);
+
+        try {
+            processTemplate("windows/script-daemon-jslwin.ftl", out, model);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (fos != null) {
+                fos.close();
+            }
+        }
+    }
+    
     static public void processTemplate(String templateName, Writer out, Object model) throws Exception {
         freemarker.template.Configuration freemarker = getOrCreateFreemarker();
         Template template = freemarker.getTemplate(templateName);
         template.process(model, out);
+    }
+    
+    static public void copyResource(String resourceName, File targetFile) throws Exception {
+        FileOutputStream fos = new FileOutputStream(targetFile);
+        try {
+            includeResource(resourceName, fos);
+        } finally {
+            if (fos != null) {
+                fos.close();
+            }
+        }
     }
 
     static public void includeResource(String resourceName, OutputStream os) throws Exception {

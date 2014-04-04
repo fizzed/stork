@@ -37,7 +37,11 @@ package com.mfizz.jtools.launcher;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -65,7 +69,8 @@ public class Configuration {
     }
     
     static public enum DaemonMethod {
-        NOHUP
+        NOHUP,
+        JSLWIN
     }
     
     @JsonIgnore
@@ -110,12 +115,19 @@ public class Configuration {
     
     // http://stackoverflow.com/questions/958249/whats-the-difference-between-nohup-and-a-daemon
     // really intersting discussion of NOHUP vs. other methods of daemonizing
-    private DaemonMethod daemonMethod = DaemonMethod.NOHUP;
+    //private DaemonMethod daemonMethod = DaemonMethod.NOHUP;
+    private Map<Platform,DaemonMethod> daemonMethods;
     // daemon pid will be tested after this amount of seconds to confirm it is
     // still running -- a simple way to verify that it likely started
     private Integer daemonMinLifetime = 3;
     // daemon will print this line to stdout/stderr to announce it started successfully
     private String daemonLaunchConfirm = null;
+    
+    public Configuration() {
+        this.daemonMethods = new HashMap<Platform,DaemonMethod>();
+        this.daemonMethods.put(Platform.LINUX, DaemonMethod.NOHUP);
+        this.daemonMethods.put(Platform.WINDOWS, DaemonMethod.JSLWIN);
+    }
     
     public File getFile() {
         return file;
@@ -292,12 +304,12 @@ public class Configuration {
         this.symlinkJava = symlinkJava;
     }
 
-    public DaemonMethod getDaemonMethod() {
-        return daemonMethod;
+    public Map<Platform, DaemonMethod> getDaemonMethods() {
+        return daemonMethods;
     }
 
-    public void setDaemonMethod(DaemonMethod daemonMethod) {
-        this.daemonMethod = daemonMethod;
+    public void setDaemonMethods(Map<Platform, DaemonMethod> daemonMethods) {
+        this.daemonMethods = daemonMethods;
     }
 
     public Integer getDaemonMinLifetime() {

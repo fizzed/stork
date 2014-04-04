@@ -29,12 +29,13 @@ findDirectory()
 # fi
 running()
 {
+    local PID=$(cat "$1" 2>/dev/null) || return 1
     #[ -f $1 ] || return 1
     #PID=$(cat $1)
-    #ps -p $PID >/dev/null 2>/dev/null || return 1
+    ps -p $PID >/dev/null 2>/dev/null || return 1
     #return 0
-  local PID=$(cat "$1" 2>/dev/null) || return 1
-  kill -0 "$PID" 2>/dev/null
+    # kill -0 does not work if the daemon was started with a different user
+    #kill -0 "$PID" 2>/dev/null
 }
 
 isOSX()
@@ -425,10 +426,10 @@ stopJavaApp()
   TMPPID=$1
   PID=`cat $TMPPID 2>/dev/null`
   TIMEOUT=60
-  while running $TMPPID && [ $TIMEOUT -gt 0 ]
-  do
+  while running $TMPPID && [ $TIMEOUT -gt 0 ]; do
     kill $PID 2>/dev/null
     sleep 1
+    echo -n "."
     let TIMEOUT=$TIMEOUT-1
   done
   if [ ! $TIMEOUT -gt 0 ]

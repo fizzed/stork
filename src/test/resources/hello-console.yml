@@ -2,6 +2,9 @@
 # Name of application (make sure it has no spaces)
 name: "hello-console"
 
+# Display name of application (can have spaces)
+display_name: "Hello Console App"
+
 short_description: "Demo console app"
 
 long_description: "Demo of console app for mfizz jtools launcher"

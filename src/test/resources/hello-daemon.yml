@@ -2,6 +2,9 @@
 # Name of application (make sure it has no spaces)
 name: "hello-daemon"
 
+# Display name of application (can have spaces)
+display_name: "Hello Server"
+
 short_description: "Demo daemon app"
 
 long_description: "Demo of daemon app for mfizz jtools launcher"

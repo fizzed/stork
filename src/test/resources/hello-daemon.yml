@@ -43,7 +43,7 @@ min_java_version: "1.6"
 #max_java_memory_pct: 20
 
 # method of becoming a daemon (only NOHUP method supported for now)
-daemon_methods: { LINUX: NOHUP, WINDOWS: WINSW }
+daemon_methods: { LINUX: NOHUP, WINDOWS: JSLWIN }
 
 symlink_java: true
 

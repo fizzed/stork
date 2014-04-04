@@ -54,11 +54,24 @@ DAEMON_LAUNCH_CONFIRM="${config.daemonLaunchConfirm!""}"
 # working directory
 #
 
+# resolve links - $0 may be a softlink
+PRG="$0"
+
+while [ -h "$PRG" ] ; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`/"$link"
+  fi
+done
+
 # save current working directory
 INITIAL_WORKING_DIR="`pwd`"
 
 # change working directory to app home
-cd $(dirname $0)/..
+cd $(dirname "$PRG")/..
 
 # application home is now current directory
 APP_HOME="`pwd`"

@@ -42,7 +42,7 @@ fi
 APP_ACTION_ARG=
 
 # first arg for a daemon is the action to do such as start vs. stop
-if [ "$TYPE" == "DAEMON" ] && [ $# -gt 0 ]; then
+if [ "$TYPE" == "DAEMON" ] && [[ $# -gt 0 ]]; then
   APP_ACTION_ARG=$1
   shift
   # append system property

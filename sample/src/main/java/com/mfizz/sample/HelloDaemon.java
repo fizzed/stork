@@ -17,13 +17,17 @@ package com.mfizz.sample;
 
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.ServerRunner;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
  * @author joelauer
  */
 public class HelloDaemon extends NanoHTTPD {
+    
+    private List<String> lines;
     
     public HelloDaemon(int port) {
         super(port);
@@ -42,6 +46,7 @@ public class HelloDaemon extends NanoHTTPD {
         
         // start server
         HelloDaemon server = new HelloDaemon(port);
+        server.lines = HelloDaemon.createLines(args);
         System.out.println("Starting http server on port " + port);
         server.start();
         
@@ -59,17 +64,38 @@ public class HelloDaemon extends NanoHTTPD {
         }
     }
     
-    @Override public Response serve(IHTTPSession session) {
+    @Override
+    public Response serve(IHTTPSession session) {
         StringBuilder sb = new StringBuilder();
         sb.append("<html>");
         sb.append("<head><title>Hello Daemon!</title></head>");
         sb.append("<body>");
         sb.append("<h1>Hi, i am an example daemon.</h1>");
         sb.append("Date: ").append(new Date()).append("<br/>");
-        sb.append("Java Version: ").append(System.getProperty("java.version")).append("<br/>");
+        for (String line : lines) {
+            sb.append(line).append("<br/>");
+        }
         sb.append("</body>");
         sb.append("</html>");
         return new Response(sb.toString());
+    }
+    
+    static public List<String> createLines(String[] args) {
+        List<String> lines = new ArrayList<String>();
+        lines.add("working.dir: " + System.getProperty("user.dir"));
+        lines.add("home.dir: " + System.getProperty("user.home"));
+        lines.add("java.class.path: " + System.getProperty("java.class.path"));
+        lines.add("java.home: " + System.getProperty("java.home"));
+        lines.add("java.version: " + System.getProperty("java.version"));
+        lines.add("java.vendor: " + System.getProperty("java.vendor"));
+        lines.add("os.arch: " + System.getProperty("os.arch"));
+        lines.add("os.name: " + System.getProperty("os.name"));
+        lines.add("os.version: " + System.getProperty("os.version"));
+        lines.add("arguments:");
+        for (String s : args) {
+            lines.add(" - argument: " + s);
+        }
+        return lines;
     }
     
 }

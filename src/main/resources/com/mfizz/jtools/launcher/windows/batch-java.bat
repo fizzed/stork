@@ -1,11 +1,11 @@
-@echo off
-@setlocal ENABLEDELAYEDEXPANSION
 
-@REM https://gist.github.com/djangofan/1445440
-
-
-set MIN_JAVA_VERSION=1.8
-set JAVA_SEARCH_DEBUG=1
+@REM
+@REM for testing this independently (in your shell)
+@REM   echo off
+@REM   setlocal ENABLEDELAYEDEXPANSION
+@REM   set MIN_JAVA_VERSION=1.8
+@REM   JAVA_SEARCH_DEBUG=1
+@REM
 
 
 set target_java_ver_num=0

@@ -315,6 +315,8 @@ public class Generator {
 
         try {
             processTemplate("windows/batch-header.ftl", out, model);
+            
+            includeResource("windows/batch-java.bat", fos);
 
             processTemplate("windows/batch-console.ftl", out, model);
             

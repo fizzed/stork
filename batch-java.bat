@@ -1,4 +1,5 @@
 @echo off
+@setlocal ENABLEDELAYEDEXPANSION
 
 @REM https://gist.github.com/djangofan/1445440
 

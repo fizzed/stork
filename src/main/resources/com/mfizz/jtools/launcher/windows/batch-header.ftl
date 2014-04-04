@@ -18,6 +18,9 @@
 set LOG_DIR=${config.logDir!""}
 set RUN_DIR=${config.runDir!""}
 
+@REM set to 1 if you want to see how the script is searching for java exe
+set JAVA_SEARCH_DEBUG=0
+
 @REM
 @REM constants
 @REM

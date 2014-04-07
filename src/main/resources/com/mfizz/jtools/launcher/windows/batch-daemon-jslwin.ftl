@@ -6,13 +6,12 @@
 IF %1.==. GOTO PrintUsageJSLWin
 
 REM
-REM log directory MUST exist or the service will fail to start
+REM log directory MUST MUST MUST exist or the service will fail to start
 REM
 
 if not exist "%APP_LOG_DIR%" (
     mkdir "%APP_LOG_DIR%"
 )
-
 
 REM
 REM execute argument command

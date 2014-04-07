@@ -33,21 +33,39 @@
             <fileset dir="sample/lib"/>
         </copy>	
     </target>
-	
-    <target name="hello-console" depends="checkos, stage-sample">
+    
+    <target name="compile-hello-console" depends="checkos, stage-sample">
         <exec executable="mvn${batext}">
             <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/test/resources/hello-console.yml -o '${target}/sample'&quot;"/>
         </exec>
-        <exec executable="${target}/sample/bin/hello-console${batext}" />
     </target>
     
-    <target name="hello-daemon" depends="checkos, stage-sample">
+    <target name="compile-hello-daemon" depends="checkos, stage-sample">
         <exec executable="mvn${batext}">
             <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/test/resources/hello-daemon.yml -o '${target}/sample'&quot;"/>
         </exec>
+    </target>
+	
+    <target name="hello-console" depends="compile-hello-console">
+        <exec executable="${target}/sample/bin/hello-console${batext}" />
+    </target>
+    
+    <target name="hello-daemon" depends="compile-hello-daemon">
         <exec executable="${target}/sample/bin/hello-daemon${batext}">
             <arg value="-run"/>
         </exec>
+    </target>
+    
+    <target name="sample-dist" depends="clean, compile-hello-console, compile-hello-daemon">
+        <tar destfile="${basedir}/target/launcher-sample.tar.gz" compression="gzip" >
+            <tarfileset dir="${target}/sample" prefix="launcher-sample">
+                <include name="lib/**"/>
+                <include name="share/**"/>
+            </tarfileset>
+            <tarfileset dir="${target}/sample" prefix="launcher-sample" filemode="755">
+                <include name="bin/**"/>
+            </tarfileset>
+        </tar>
     </target>
 	
 </project>

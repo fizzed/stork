@@ -25,11 +25,27 @@ an interest in using better tools for handling re-spawning like monit.
      - share
      - data
 
+
+LAUNCHER_DEBUG=1 bin/app_name
+
+
+
+
 #### Windows
 
 http://jslwin.sourceforge.net/
 
 https://github.com/kohsuke/winsw
+
+
+#### Resources
+
+Jenkins project
+
+https://github.com/sbt/sbt-native-packager/tree/master/src/main/resources/com/typesafe/sbt/packager/archetypes
+
+https://gist.github.com/djangofan/1445440
+
 
 
 ### License

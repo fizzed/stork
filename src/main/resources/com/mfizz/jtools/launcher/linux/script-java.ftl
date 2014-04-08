@@ -42,7 +42,7 @@ fi
 APP_ACTION_ARG=
 
 # first arg for a daemon is the action to do such as start vs. stop
-if [ "$TYPE" = "DAEMON" ] && [[ $# -gt 0 ]]; then
+if [ "$TYPE" = "DAEMON" ] && [ $# -gt 0 ]; then
   APP_ACTION_ARG=$1
   shift
   # append system property
@@ -55,7 +55,7 @@ fi
 #
 for a in "$@"; do
 
-  if [[ $DEBUG ]]; then echo "[launcher] processing arg: $a"; fi
+  if [ $LAUNCHER_DEBUG = "1" ]; then echo "[LAUNCHER] processing arg: $a"; fi
 
   if [[ $a == -D* ]]; then
     JAVA_ARGS="$JAVA_ARGS $a"
@@ -130,7 +130,7 @@ RUN_CMD="$JAVA_BIN $RUN_ARGS"
 #
 # debug for either console/daemon apps
 #
-if [[ $LAUNCHER_DEBUG ]]; then
+if [ $LAUNCHER_DEBUG = "1" ]; then
     echo "[LAUNCHER] working_dir: `pwd`"
     echo "[LAUNCHER] app_home: $APP_HOME"
     echo "[LAUNCHER] run_dir: $APP_RUN_DIR_DEBUG"

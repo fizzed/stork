@@ -29,6 +29,15 @@ an interest in using better tools for handling re-spawning like monit.
 LAUNCHER_DEBUG=1 bin/app_name
 
 
+Features
+
+ * Supports launching apps with retaining the working dir of the shell or setting
+   the working directory to the home of app.
+ * Sets the working directory of the app without annoyingly changing the working
+   directory of the shell that launched the app (even on Windows).
+ * 
+
+
 
 
 #### Windows

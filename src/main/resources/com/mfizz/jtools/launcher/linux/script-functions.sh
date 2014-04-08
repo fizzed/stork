@@ -5,11 +5,11 @@
 
 quietWhich()
 {
-  # $(which bad) results in output we want to ignore
-  W=$(which $1 2>/dev/null)
-  if [ $? -eq 0 ]; then
-    echo $W
-  fi
+    # $(which bad) results in output we want to ignore
+    W=$(which $1 2>/dev/null)
+    if [ $? -eq 0 ]; then
+        echo $W
+    fi
 }
 
 # RUN_DIR=`findDirectory -w /var/run /usr/var/run /tmp`
@@ -40,32 +40,34 @@ running()
 
 isOSX()
 {
-  if [ platform == "osx" ]; then
-    return 0
-  else
-    return 1
-  fi
+    local p=`platform`
+    if [ "$p" = "osx" ]; then
+      return 0
+    else
+      return 1
+    fi
 }
 
 isLinux()
 {
-  if [ platform == "Linux" ]; then
-    return 0
-  else
-    return 1
-  fi
+    local p=`platform`
+    if [ "$p" = "linux" ]; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 platform()
 {
-  UNAME=$(uname)
-  if [ "$UNAME" == "Linux" ]; then
-    echo "linux"
-  elif [ "$UNAME" == "Darwin" ]; then
-    echo "osx"
-  else
-    echo "unknown"
-  fi
+    local u=$(uname)
+    if [ "$u" = "Linux" ]; then
+      echo "linux"
+    elif [ "$u" = "Darwin" ]; then
+      echo "osx"
+    else
+      echo "unknown"
+    fi
 }
 
 systemMemory()
@@ -146,8 +148,8 @@ findJavaCommand()
 
 appendLine()
 {
-  if [ -z $1 ]; then
-    echo $2
+  if [ -z "$1" ]; then
+    echo "$2"
   else
     echo "$1:$2"
   fi
@@ -158,8 +160,6 @@ appendLine()
 # e.g. "/usr/bin/java:/usr/lib/jvm/bin/java"
 findJavaCommands()
 {
-    local min_version=$1
-
     local java_cmds=""
 
     # is JAVA env var set?
@@ -206,19 +206,11 @@ findJavaCommands()
     # openjdk is usually in /usr/lib/jvm
     # sun jdk on centos/redhat in /usr/java
     
-    java_home_parents=(
-        "/usr/lib/jvm"
-        "/usr/java"
-        "/Library/Internet Plug-Ins"
-        "/System/Library/Frameworks/JavaVM.framework/Versions"
-        "/Library/Java/JavaVirtualMachines"
-        "/System/Library/Java/JavaVirtualMachines"
-    )
-
-    IFS=""
-
-    for java_home_parent in ${java_home_parents[*]}; do
-	for maybe_java_home in "$java_home_parent"/*; do
+    java_home_parents_line="/usr/lib/jvm:/usr/java:/Library/Internet Plug-Ins:/System/Library/Frameworks/JavaVM.framework/Versions:/Library/Java/JavaVirtualMachines:/System/Library/Java/JavaVirtualMachines"
+    IFS=":"
+    for java_home_parent in $java_home_parents_line; do
+        echo "searching java_home_parent: $java_home_parent"
+	for maybe_java_home in $java_home_parent/*; do
             [ -d "$maybe_java_home" ] || continue   
 
             if [ -x "$maybe_java_home/bin/java" ]; then
@@ -243,7 +235,7 @@ findJavaCommands()
 # returns: "7"
 extractPrimaryJavaVersion()
 {
-    local min_version=$1
+    local min_version="$1"
     
     # "1.7" -> extract java version
     local target_java_version=`echo $min_version | awk '{split($0, array, ".")} END{print array[2]}'`
@@ -255,17 +247,18 @@ extractPrimaryJavaVersion()
 # java_bin=`findMinJavaVersion 1.7 <java_cmd separated by colon>`
 findMinJavaVersion()
 {
-    local min_version=$1
-    local java_cmds_line=$2
+    local min_version="$1"
+    local java_cmds_line="$2"
     
     # "1.7" -> extract java version
     local target_java_version=`extractPrimaryJavaVersion "$min_version"`
 
-    IFS=":" read -a java_cmds <<< "$java_cmds_line"
-    for java_cmd in "${java_cmds[@]}"; do
-        local java_version=`"$java_cmd" -version 2>&1 | grep "java version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
+    IFS=":"
+    for java_cmd in $java_cmds_line; do
+        #echo "getting version from: $java_cmd"
+        java_version=`"$java_cmd" -version 2>&1 | grep "java version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
         #echo "java_version: $java_cmd -> $java_version"
-        if [[ $java_version -ge $target_java_version ]]; then
+        if [ "$java_version" != "" ] && [ $java_version -ge $target_java_version ]; then
              #echo "boom -- works!"
              echo $java_cmd
              return 1

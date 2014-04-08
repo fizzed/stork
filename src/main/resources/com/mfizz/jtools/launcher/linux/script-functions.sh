@@ -226,7 +226,10 @@ findJavaCommands()
     local java_home_parents=""
     java_home_parents=`appendPath "$java_home_parents" "/usr/lib/jvm/*"`
     java_home_parents=`appendPath "$java_home_parents" "/usr/java/*"`
-
+    
+    # on freebsd
+    java_home_parents=`appendPath "$java_home_parents" "/usr/local/openjdk*"`
+    
     if isOperatingSystemOSX; then
         java_home_parents=`appendPath "$java_home_parents" "/Library/Internet Plug-Ins/Java*/Contents/Home"`
         #java_home_parents=`appendPath "$java_home_parents" "/System/Library/Frameworks/JavaVM.framework/Versions/*"`

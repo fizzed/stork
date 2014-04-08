@@ -223,17 +223,22 @@ findJavaCommands()
     # linux openjdk: /usr/lib/jvm
     # centos/redhat sunjdk: /usr/java
     
-    java_home_parents="/usr/lib/jvm:/usr/java"
+    local java_home_parents=""
+    java_home_parents=`appendPath "$java_home_parents" "/usr/lib/jvm/*"`
+    java_home_parents=`appendPath "$java_home_parents" "/usr/java/*"`
 
     if isOperatingSystemOSX; then
-        java_home_parents=`appendPath "$java_home_parents" "/Library/Internet Plug-Ins:/System/Library/Frameworks/JavaVM.framework/Versions:/Library/Java/JavaVirtualMachines:/System/Library/Java/JavaVirtualMachines"`
+        java_home_parents=`appendPath "$java_home_parents" "/Library/Internet Plug-Ins/Java*/Contents/Home"`
+        #java_home_parents=`appendPath "$java_home_parents" "/System/Library/Frameworks/JavaVM.framework/Versions/*"`
+        java_home_parents=`appendPath "$java_home_parents" "/Library/Java/JavaVirtualMachines/*/Contents/Home"`
+        java_home_parents=`appendPath "$java_home_parents" "/System/Library/Java/JavaVirtualMachines/*/Contents/Home"`
     fi
     
     logJavaSearchDebug "trying well-known java homes..."
     local IFS=":"
     for java_home_parent in $java_home_parents; do
         #echo "searching java_home_parent: $java_home_parent"
-	for maybe_java_home in $java_home_parent/*; do
+	for maybe_java_home in $java_home_parent; do
             [ -d "$maybe_java_home" ] || continue   
 
             local jre_bin="$maybe_java_home/jre/bin/java"

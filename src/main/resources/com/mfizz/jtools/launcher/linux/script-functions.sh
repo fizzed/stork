@@ -83,7 +83,7 @@ systemMemory()
     return 0
   fi
 
-  if [[ isOSX ]]; then
+  if isOSX; then
     # this method failed on some versions of osx
     #TMPMEM=`top -l 1 | awk '/PhysMem:/ {print $10}'`
     # strip off last M

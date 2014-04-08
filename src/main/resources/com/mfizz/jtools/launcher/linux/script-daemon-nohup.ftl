@@ -84,7 +84,7 @@ case "$APP_ACTION_ARG" in
   -stop)
     echo -n "Stopping $NAME: "
     if running "$APP_PID_FILE"; then
-      stopJavaApp $APP_PID_FILE
+      stopJavaApp "$APP_PID_FILE"
       echo "OK"
     else
       echo "not running"

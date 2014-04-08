@@ -74,12 +74,14 @@ logLauncherDebug "detected system memory: $SYS_MEM_MB MB"
 # add max memory java option (if specified)
 #
 if [ ! -z $JAVA_MAX_MEM_PCT ]; then
-  if [ -z $SYS_MEM ]; then SYS_MEM=`getSystemMemoryMB`; fi
-  if [ -z $SYS_MEM ]; then echo "Unable to detect system memory to set java max memory"; exit 1; fi
-  MM=`pctOf $SYS_MEM $JAVA_MAX_MEM_PCT`
-  JAVA_ARGS="-Xms${r"${MM}"}M -Xmx${r"${MM}"}M $JAVA_ARGS"
+    if [ $SYS_MEM_MB -le 0 ]; then
+        echo "Unable to detect system memory to set java max memory"
+        exit 1
+    fi
+    MM=`pctOf $SYS_MEM_MB $JAVA_MAX_MEM_PCT`
+    JAVA_ARGS="-Xms${r"${MM}"}M -Xmx${r"${MM}"}M $JAVA_ARGS"
 elif [ ! -z $JAVA_MAX_MEM ]; then
-  JAVA_ARGS="-Xms${r"${JAVA_MAX_MEM}"}M -Xmx${r"${JAVA_MAX_MEM}"}M $JAVA_ARGS"
+    JAVA_ARGS="-Xms${r"${JAVA_MAX_MEM}"}M -Xmx${r"${JAVA_MAX_MEM}"}M $JAVA_ARGS"
 fi
 
 
@@ -87,12 +89,14 @@ fi
 # add min memory java option (if specified)
 #
 if [ ! -z $JAVA_MIN_MEM_PCT ]; then
-  if [ -z $SYS_MEM ]; then SYS_MEM=`getSystemMemoryMB`; fi
-  if [ -z $SYS_MEM ]; then echo "Unable to detect system memory to set java min memory"; exit 1; fi
-  MM=`pctOf $SYS_MEM $JAVA_MIN_MEM_PCT`
-  JAVA_ARGS="-Xmn${r"${MM}"}M $JAVA_ARGS"
+    if [ $SYS_MEM_MB -le 0 ]; then
+        echo "Unable to detect system memory to set java min memory"
+        exit 1
+    fi
+    MM=`pctOf $SYS_MEM_MB $JAVA_MIN_MEM_PCT`
+    JAVA_ARGS="-Xmn${r"${MM}"}M $JAVA_ARGS"
 elif [ ! -z $JAVA_MIN_MEM ]; then
-  JAVA_ARGS="-Xmn${r"${JAVA_MIN_MEM}"}M $JAVA_ARGS"
+    JAVA_ARGS="-Xmn${r"${JAVA_MIN_MEM}"}M $JAVA_ARGS"
 fi
 
 

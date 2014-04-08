@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 #
 # Shell script to launch Java app ${config.name}

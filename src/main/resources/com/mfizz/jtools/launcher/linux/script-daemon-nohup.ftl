@@ -43,7 +43,7 @@ fi
 case "$APP_ACTION_ARG" in
 
   -start)
-    echo -n "Starting $NAME: "
+    printf "Starting $NAME: "
     verifyNotRunning $APP_PID_FILE
 
     # log start time first into outfile
@@ -82,7 +82,7 @@ case "$APP_ACTION_ARG" in
     ;;
 
   -stop)
-    echo -n "Stopping $NAME: "
+    printf "Stopping $NAME: "
     if running "$APP_PID_FILE"; then
       stopJavaApp "$APP_PID_FILE"
       echo "OK"

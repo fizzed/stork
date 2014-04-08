@@ -2,6 +2,9 @@
 # Name of application (make sure it has no spaces)
 name: "hello-daemon"
 
+# Domain of application (e.g. com.example)
+domain: "com.example"
+
 # Display name of application (can have spaces)
 display_name: "Hello Server"
 
@@ -49,7 +52,5 @@ daemon_methods: { LINUX: NOHUP, WINDOWS: JSLWIN }
 daemon_users: { LINUX: "daemon" }
 
 symlink_java: true
-
-app_domain: "com.mfizz.hello-daemon"
 
 #run_dir: /var/run

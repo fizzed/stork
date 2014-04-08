@@ -90,7 +90,8 @@ public class Configuration {
     
     private String displayName;
     
-    private String appDomain;
+    @NotNull
+    private String domain;
     
     @NotNull
     private String shortDescription;
@@ -190,6 +191,14 @@ public class Configuration {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
     public String getDisplayName() {
@@ -363,14 +372,6 @@ public class Configuration {
             return daemonUsers.get(platform);
         }
         return null;
-    }
-
-    public String getAppDomain() {
-        return appDomain;
-    }
-
-    public void setAppDomain(String appDomain) {
-        this.appDomain = appDomain;
     }
     
 }

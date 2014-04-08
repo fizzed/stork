@@ -229,7 +229,7 @@ public class Generator {
                     osxDir.mkdirs();
                     
                     // generate osx compatible launchd script
-                    File launchdFile = new File(osxDir, config.getName() + ".plist");
+                    File launchdFile = new File(osxDir, config.getDomain() + "." + config.getName() + ".plist");
                     generateOSXLaunchdScript(config, launchdFile, model);
                 }
                 

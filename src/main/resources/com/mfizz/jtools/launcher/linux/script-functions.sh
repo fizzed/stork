@@ -3,6 +3,13 @@
 # functions
 #
 
+logLauncherDebug()
+{
+    if [ "$LAUNCHER_DEBUG" = "1" ]; then
+        echo "[LAUNCHER] $1" >&2
+    fi
+}
+
 quietWhich()
 {
     # $(which bad) results in output we want to ignore
@@ -39,31 +46,15 @@ running()
     #kill -0 "$PID" 2>/dev/null
 }
 
-isOSX()
-{
-    local p=`platform`
-    if [ "$p" = "osx" ]; then
-      return 0
-    else
-      return 1
-    fi
-}
-
-isLinux()
-{
-    local p=`platform`
-    if [ "$p" = "linux" ]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-platform()
+getOperatingSystemName()
 {
     local u=$(uname)
     if [ "$u" = "Linux" ]; then
       echo "linux"
+    elif [ "$u" = "FreeBSD" ]; then
+      echo "freebsd"
+    elif [ "$u" = "OpenBSD" ]; then
+      echo "openbsd"
     elif [ "$u" = "Darwin" ]; then
       echo "osx"
     else
@@ -71,7 +62,47 @@ platform()
     fi
 }
 
-systemMemory()
+isOperatingSystemOSX()
+{
+    local p=`getOperatingSystemName`
+    if [ "$p" = "osx" ]; then
+      return 0
+    else
+      return 1
+    fi
+}
+
+isOperatingSystemLinux()
+{
+    local p=`getOperatingSystemName`
+    if [ "$p" = "linux" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+isOperatingSystemFreeBSD()
+{
+    local p=`getOperatingSystemName`
+    if [ "$p" = "freebsd" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+isOperatingSystemOpenBSD()
+{
+    local p=`getOperatingSystemName`
+    if [ "$p" = "openbsd" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+getSystemMemoryMB()
 {
   # osx: top -l 1 | awk '/PhysMem:/ {print $10}' -> 8006M
   # linux: grep MemTotal /proc/meminfo | awk '{print $2}' -> 32930344 (as KB)
@@ -83,14 +114,7 @@ systemMemory()
     return 0
   fi
 
-  if isOSX; then
-    # this method failed on some versions of osx
-    #TMPMEM=`top -l 1 | awk '/PhysMem:/ {print $10}'`
-    # strip off last M
-    #TMPMEMMB=${TMPMEM%%M}
-    #echo $TMPMEMMB
-    #return 0
-
+  if isOperatingSystemOSX; then
     TMPMEMBYTES=`sysctl -a | grep "hw.physmem" | awk '/ = / {print $3}'`
     # hw.physmem = 2147483648
     # convert into MB
@@ -130,22 +154,6 @@ getJavaVersion()
   echo `expr "$($TMPJAVA -version 2>&1 | head -1)" : '.*version.*"\([0-9._]*\)"'`
 }
 
-# JAVA_CMD=`findJavaCommand`
-findJavaCommand()
-{
-  if [ -z "$JAVA" ]; then
-    TMPJAVACMD=`quietWhich java`
-    if [ ! -z $TMPJAVACMD ]; then
-      # osx does not have -f, manually do search
-      #TMPJAVACMD=$(readlink -f $TMPJAVACMD)
-      TMPJAVACMD=`readAllLinks $TMPJAVACMD`
-      echo $TMPJAVACMD
-    fi
-  else
-    echo $JAVA
-  fi
-}
-
 
 # `appendPath $1 $2`
 appendPath()
@@ -164,10 +172,11 @@ findJavaCommands()
 {
     local java_cmds=""
 
-    # is JAVA env var set?
-    if [ ! -z "$JAVA" ]; then
-        if [ -x "$JAVA" ]; then
-            java_cmds=`appendPath "$java_cmds" "$JAVA"`
+    # is JAVA_HOME set?
+    logLauncherDebug "searching JAVA_HOME..."
+    if [ ! -z "$JAVA_HOME" ]; then
+        if [ -x "$JAVA_HOME/bin/java" ]; then
+            java_cmds=`appendPath "$java_cmds" "$JAVA_HOME/bin/java"`
         fi
     fi;
 
@@ -179,20 +188,13 @@ findJavaCommands()
         fi
     fi
 
-    # is JAVA_HOME set?
-    if [ ! -z "$JAVA_HOME" ]; then
-        if [ -x "$JAVA_HOME/bin/java" ]; then
-            java_cmds=`appendPath "$java_cmds" "$JAVA_HOME/bin/java"`
-        fi
-    fi;
-
     # is java in /usr/bin?
     if [ -x "/usr/bin/java" ]; then
         java_cmds=`appendPath "$java_cmds" "/usr/bin/java"`
     fi
 
     # are running on mac osx?
-    if isOSX; then
+    if isOperatingSystemOSX; then
         local osx_java_home=""
         if [ -x '/usr/libexec/java_home' ]; then
             osx_java_home=`/usr/libexec/java_home`
@@ -246,7 +248,7 @@ extractPrimaryJavaVersion()
 }
 
 
-# java_bin=`findMinJavaVersion 1.7 <java_cmd separated by colon>`
+# java_bin=`findMinJavaVersion 1.7 <java_cmds separated by colon>`
 findMinJavaVersion()
 {
     local min_version="$1"

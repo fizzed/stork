@@ -23,6 +23,7 @@ fi
 
 JAVA_VERSION=`getJavaVersion "$JAVA_BIN"`
 
+
 #
 # build classpath either in absolute or relative form
 #
@@ -35,6 +36,7 @@ else
   APP_JAVA_CLASSPATH=`buildJavaClasspath $JAR_DIR`
   JAR_DIR_DEBUG="<app_home>/$JAR_DIR"
 fi
+
 
 #
 # special case for daemon: first argument to script should be action
@@ -63,11 +65,16 @@ for a in "$@"; do
     shift
 done
 
+
+SYS_MEM_MB=`getSystemMemoryMB`
+logLauncherDebug "detected system memory: $SYS_MEM_MB MB"
+
+
 #
 # add max memory java option (if specified)
 #
 if [ ! -z $JAVA_MAX_MEM_PCT ]; then
-  if [ -z $SYS_MEM ]; then SYS_MEM=`systemMemory`; fi
+  if [ -z $SYS_MEM ]; then SYS_MEM=`getSystemMemoryMB`; fi
   if [ -z $SYS_MEM ]; then echo "Unable to detect system memory to set java max memory"; exit 1; fi
   MM=`pctOf $SYS_MEM $JAVA_MAX_MEM_PCT`
   JAVA_ARGS="-Xms${r"${MM}"}M -Xmx${r"${MM}"}M $JAVA_ARGS"
@@ -75,17 +82,19 @@ elif [ ! -z $JAVA_MAX_MEM ]; then
   JAVA_ARGS="-Xms${r"${JAVA_MAX_MEM}"}M -Xmx${r"${JAVA_MAX_MEM}"}M $JAVA_ARGS"
 fi
 
+
 #
 # add min memory java option (if specified)
 #
 if [ ! -z $JAVA_MIN_MEM_PCT ]; then
-  if [ -z $SYS_MEM ]; then SYS_MEM=`systemMemory`; fi
-  if [ -z $SYS_MEM ]; then echo "Unable to detect system memory to set java max memory"; exit 1; fi
+  if [ -z $SYS_MEM ]; then SYS_MEM=`getSystemMemoryMB`; fi
+  if [ -z $SYS_MEM ]; then echo "Unable to detect system memory to set java min memory"; exit 1; fi
   MM=`pctOf $SYS_MEM $JAVA_MIN_MEM_PCT`
   JAVA_ARGS="-Xmn${r"${MM}"}M $JAVA_ARGS"
 elif [ ! -z $JAVA_MIN_MEM ]; then
   JAVA_ARGS="-Xmn${r"${JAVA_MIN_MEM}"}M $JAVA_ARGS"
 fi
+
 
 #
 # if a daemon is being run in foreground then the type is still console
@@ -94,6 +103,7 @@ RUN_TYPE=$TYPE
 if [ "$APP_ACTION_ARG" = "-run" ]; then
     RUN_TYPE="CONSOLE"
 fi
+
 
 #
 # symlink of java requested?

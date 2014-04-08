@@ -79,7 +79,7 @@ if [ ! -z $JAVA_MAX_MEM_PCT ]; then
         exit 1
     fi
     MM=`pctOf $SYS_MEM_MB $JAVA_MAX_MEM_PCT`
-    JAVA_ARGS="-Xms${r"${MM}"}M -Xmx${r"${MM}"}M $JAVA_ARGS"
+    JAVA_ARGS="-Xmx${r"${MM}"}m $JAVA_ARGS"
 elif [ ! -z $JAVA_MAX_MEM ]; then
     JAVA_ARGS="-Xmx${r"${JAVA_MAX_MEM}"}m $JAVA_ARGS"
 fi
@@ -94,7 +94,7 @@ if [ ! -z $JAVA_MIN_MEM_PCT ]; then
         exit 1
     fi
     MM=`pctOf $SYS_MEM_MB $JAVA_MIN_MEM_PCT`
-    JAVA_ARGS="-Xmn${r"${MM}"}M $JAVA_ARGS"
+    JAVA_ARGS="-Xms${r"${MM}"}m $JAVA_ARGS"
 elif [ ! -z $JAVA_MIN_MEM ]; then
     JAVA_ARGS="-Xms${r"${JAVA_MIN_MEM}"}m $JAVA_ARGS"
 fi

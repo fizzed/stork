@@ -49,25 +49,18 @@ if [ "$TYPE" = "DAEMON" ] && [ $# -gt 0 ]; then
   JAVA_ARGS="$JAVA_ARGS -Dlauncher.action=$APP_ACTION_ARG"
 fi
 
-#
-# any additional command line arguments passed to this script?
-# filter out -D arguments as they should go to java, not app
-#
+
 for a in "$@"; do
+    if [ $LAUNCHER_DEBUG = "1" ]; then echo "[LAUNCHER] processing arg: $a"; fi
 
-  if [ $LAUNCHER_DEBUG = "1" ]; then echo "[LAUNCHER] processing arg: $a"; fi
-
-  if [[ $a == -D* ]]; then
-    JAVA_ARGS="$JAVA_ARGS $a"
-  else
     # does the argument need escaped?
     if [[ "$a" = "${"$"}{a% *}" ]]; then
         APP_ARGS="$APP_ARGS $a"
     else
         APP_ARGS="$APP_ARGS \"$a\""
     fi
-  fi
-  shift
+
+    shift
 done
 
 #

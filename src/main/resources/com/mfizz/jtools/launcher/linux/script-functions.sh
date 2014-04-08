@@ -147,7 +147,8 @@ findJavaCommand()
 }
 
 
-appendLine()
+# `appendPath $1 $2`
+appendPath()
 {
   if [ -z "$1" ]; then
     echo "$2"
@@ -166,7 +167,7 @@ findJavaCommands()
     # is JAVA env var set?
     if [ ! -z "$JAVA" ]; then
         if [ -x "$JAVA" ]; then
-            java_cmds=`appendLine "$java_cmds" "$JAVA"`
+            java_cmds=`appendPath "$java_cmds" "$JAVA"`
         fi
     fi;
 
@@ -174,20 +175,20 @@ findJavaCommands()
     local which_java=`quietWhich java`
     if [ ! -z $which_java ]; then
         if [ -x "$which_java" ]; then
-            java_cmds=`appendLine "$java_cmds" "$which_java"`
+            java_cmds=`appendPath "$java_cmds" "$which_java"`
         fi
     fi
 
     # is JAVA_HOME set?
     if [ ! -z "$JAVA_HOME" ]; then
         if [ -x "$JAVA_HOME/bin/java" ]; then
-            java_cmds=`appendLine "$java_cmds" "$JAVA_HOME/bin/java"`
+            java_cmds=`appendPath "$java_cmds" "$JAVA_HOME/bin/java"`
         fi
     fi;
 
     # is java in /usr/bin?
     if [ -x "/usr/bin/java" ]; then
-        java_cmds=`appendLine "$java_cmds" "/usr/bin/java"`
+        java_cmds=`appendPath "$java_cmds" "/usr/bin/java"`
     fi
 
     # are running on mac osx?
@@ -198,7 +199,7 @@ findJavaCommands()
         fi
         if [ ! -z $osx_java_home ]; then
             if [ -x "$osx_java_home/bin" ]; then
-                java_cmds=`appendLine "$java_cmds" "$osx_java_home/bin"`
+                java_cmds=`appendPath "$java_cmds" "$osx_java_home/bin"`
             fi
         fi
     fi
@@ -208,23 +209,23 @@ findJavaCommands()
     # sun jdk on centos/redhat in /usr/java
     
     java_home_parents_line="/usr/lib/jvm:/usr/java:/Library/Internet Plug-Ins:/System/Library/Frameworks/JavaVM.framework/Versions:/Library/Java/JavaVirtualMachines:/System/Library/Java/JavaVirtualMachines"
-    IFS=":"
+    local IFS=":"
     for java_home_parent in $java_home_parents_line; do
         #echo "searching java_home_parent: $java_home_parent"
 	for maybe_java_home in $java_home_parent/*; do
             [ -d "$maybe_java_home" ] || continue   
 
             if [ -x "$maybe_java_home/bin/java" ]; then
-                java_cmds=`appendLine "$java_cmds" "$maybe_java_home/bin/java"`
+                java_cmds=`appendPath "$java_cmds" "$maybe_java_home/bin/java"`
             elif [ -x "$maybe_java_home/jre/bin/java" ]; then
-                java_cmds=`appendLine "$java_cmds" "$maybe_java_home/jre/bin/java"`
+                java_cmds=`appendPath "$java_cmds" "$maybe_java_home/jre/bin/java"`
             fi
 
             # osx path
             if [ -x "$maybe_java_home/Contents/Home/bin/java" ]; then
-                java_cmds=`appendLine "$java_cmds" "$maybe_java_home/Contents/Home/bin/java"`
+                java_cmds=`appendPath "$java_cmds" "$maybe_java_home/Contents/Home/bin/java"`
             elif [ -x "$maybe_java_home/Contents/Home/jre/bin/java" ]; then
-                java_cmds=`appendLine "$java_cmds" "$maybe_java_home/Contents/Home/jre/bin/java"`
+                java_cmds=`appendPath "$java_cmds" "$maybe_java_home/Contents/Home/jre/bin/java"`
             fi
         done
     done
@@ -254,7 +255,7 @@ findMinJavaVersion()
     # "1.7" -> extract java version
     local target_java_version=`extractPrimaryJavaVersion "$min_version"`
 
-    IFS=":"
+    local IFS=":"
     for java_cmd in $java_cmds_line; do
         #echo "getting version from: $java_cmd"
         java_version=`"$java_cmd" -version 2>&1 | grep "version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
@@ -269,105 +270,7 @@ findMinJavaVersion()
     return 0
 }
 
-
-
-#
-# Finds best java home to use -- either JAVA_HOME if set, otherwise it'll attempt
-# to find a JAVA_HOME to use and sort them by version.
-#
-findJavaHome()
-{
-    # if the JAVA_HOME env var is set use it
-    if [ ! -z "$JAVA_HOME" ]; then
-        # resolve symbolic link, if needed ('-f' doesn't work in OS X...)
-        [ -L $JAVA_HOME ] && echo `readlink -f $JAVA_HOME`
-        [ -L $JAVA_HOME ] || echo $JAVA_HOME
-    # try to the find the latest JAVA_HOME by looking in certain locations
-    else
-        # temp file based on this shell's process id
-        TMPJ=/tmp/j$$
-
-        # If a java runtime is not defined, search the following
-        # directories for a JVM and sort by version. Use the highest
-        # version number.
-        # Java search path
-        JAVA_LOCATIONS="\
-            /usr/java \
-            /usr/bin \
-            /usr/local/bin \
-            /usr/local/java \
-            /usr/local/jdk \
-            /usr/local/jre \
-            /usr/lib/jvm \
-            /opt/java \
-            /opt/jdk \
-            /opt/jre \
-        "
-        JAVA_NAMES="java jdk jre"
-        for N in $JAVA_NAMES ; do
-            for L in $JAVA_LOCATIONS ; do
-                [ -d $L ] || continue
-                find $L -name "$N" ! -type d | grep -v threads | while read J ; do
-                    [ -x $J ] || continue
-                    VERSION=`eval $J -version 2>&1`
-                    [ $? = 0 ] || continue
-                    VERSION=`expr "$VERSION" : '.*version.*"\([0-9._]*\)"'`
-                    [ "$VERSION" = "" ] && continue
-                    expr $VERSION \< 1.2 >/dev/null && continue
-                    # while [ -L $J ] ; do
-                    #    J=`readlink $J`
-                    # done
-                    echo $VERSION:$J
-                done
-            done
-        done | sort | tail -1 > $TMPJ
-        TMPJAVA=`cat $TMPJ | cut -d: -f2`
-        TMPJVERSION=`cat $TMPJ | cut -d: -f1`
-
-        TMPJAVA_HOME=`dirname $TMPJAVA`
-#        while [ ! -z "$TMPJAVA_HOME" -a "$TMPJAVA_HOME" != "/" -a \
-#            ! -f "$TMPJAVA_HOME/lib/tools.jar" -a ! -f "$TMPJAVA_HOME/Classes/classes.jar" ] ; do
-        while [ ! -z "$TMPJAVA_HOME" -a "$TMPJAVA_HOME" != "/" -a ! -f "$TMPJAVA_HOME/lib/tools.jar" ] ; do
-            TMPJAVA_HOME=`dirname $TMPJAVA_HOME`
-        done
-        [ "$TMPJAVA_HOME" = "" ] && TMPJAVA_HOME=
-
-        # remove the temporary file
-        rm -f $TMPJ
-
-        echo $TMPJAVA_HOME
-    fi
-}
-
-# JAVA_CMD=`findJavaHomeJavaCommand $JAVA_HOME`
-findJavaHomeJavaCommand()
-{
-  TMPJAVA_HOME=$1
-  # search for $JAVA_HOME/jre/bin/java first
-  if [ -x $TMPJAVA_HOME/jre/bin/java ]
-  then
-    echo $TMPJAVA_HOME/jre/bin/java
-  else
-    if [ -x $TMPJAVA_HOME/bin/java ]
-    then
-      echo $TMPJAVA_HOME/bin/java
-    else
-      echo "Cannot find a valid JRE or JDK command in JAVA_HOME=$JAVA_HOME. Please correct and re-run" 2>&2
-      exit 1
-    fi
-  fi
-}
-
-appendJavaClasspath()
-{
-  if [ -z $1 ]; then
-    echo $2
-  else
-    echo "$1:$2"
-  fi
-}
-
-# JAVA_CLASSPATH=`buildJavaClasspath dirToSearch`
+# JAVA_CLASSPATH=`buildJavaClasspath $jarDir`
 buildJavaClasspath()
 {
   # path to main application directory
@@ -375,7 +278,7 @@ buildJavaClasspath()
 
   if [ -d $TMPAPPDIR ]; then
     for file in $TMPAPPDIR/*.jar; do
-      TMPCLASSPATH=`appendJavaClasspath "$TMPCLASSPATH" "$file"`
+      TMPCLASSPATH=`appendPath "$TMPCLASSPATH" "$file"`
     done
   fi
 

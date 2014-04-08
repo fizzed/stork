@@ -34,8 +34,8 @@ working_dir_mode: RETAIN
 min_java_version: "1.6"
 
 # min/max fixed memory (measured in MB)
-#min_java_memory: 30
-#max_java_memory: 256
+min_java_memory: 30
+max_java_memory: 256
 
 # min/max memory by percentage of system
 #min_java_memory_pct: 10

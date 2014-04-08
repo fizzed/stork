@@ -221,8 +221,16 @@ public class Generator {
                     // generate debian compatible init.d startup script
                     File initdFile = new File(initdDir, config.getName() + ".init");
                     generateInitdScript(config, initdFile, model);
+                }
+                
+                if (platform == Platform.MAC_OSX && config.getType() == Type.DAEMON) {
+                    // create init.d scripts
+                    File osxDir = new File(shareDir, "osx");
+                    osxDir.mkdirs();
                     
-                    
+                    // generate osx compatible launchd script
+                    File launchdFile = new File(osxDir, config.getName() + ".plist");
+                    generateOSXLaunchdScript(config, launchdFile, model);
                 }
                 
             } else if (platform == Platform.WINDOWS) {
@@ -325,6 +333,24 @@ public class Generator {
             initdFile.setExecutable(true);
 
             System.out.println(" - init.d: " + initdFile);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (fos != null) {
+                fos.close();
+            }
+        }
+    }
+    
+    static public void generateOSXLaunchdScript(Configuration config, File launchdFile, LauncherModel model) throws Exception {
+        FileOutputStream fos = new FileOutputStream(launchdFile);
+        Writer out = new OutputStreamWriter(fos);
+
+        try {
+            processTemplate("osx/launchd.ftl", out, model);
+
+            System.out.println(" - launchd: " + launchdFile);
         } finally {
             if (out != null) {
                 out.close();

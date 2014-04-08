@@ -50,4 +50,6 @@ daemon_users: { LINUX: "daemon" }
 
 symlink_java: true
 
+app_domain: "com.mfizz.hello-daemon"
+
 #run_dir: /var/run

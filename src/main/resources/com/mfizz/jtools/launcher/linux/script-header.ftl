@@ -77,20 +77,31 @@ cd $(dirname "$PRG")/..
 APP_HOME="`pwd`"
 
 # revert to initial working directory?
-if [ $WORKING_DIR_MODE == "RETAIN" ]; then
+if [ "$WORKING_DIR_MODE" = "RETAIN" ]; then
   cd "$INITIAL_WORKING_DIR"
 fi
+
+
+isAbsolutePath()
+{
+    local p="$1"
+    if [ "$(echo $p | cut -c 1)" = "/" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
 
 
 #
 # is run directory absolute or relative to app home?
 #
-if [[ "$RUN_DIR" == /* ]]; then
+if [ `isAbsolutePath "$RUN_DIR"` ]; then
     # absolute path
     APP_RUN_DIR="$RUN_DIR"
     APP_RUN_DIR_DEBUG="$RUN_DIR"
 else
-    if [ $WORKING_DIR_MODE == "RETAIN" ]; then
+    if [ "$WORKING_DIR_MODE" = "RETAIN" ]; then
         # relative path to app home (but use absolute version)
         APP_RUN_DIR="$APP_HOME/$RUN_DIR"
     else
@@ -104,12 +115,12 @@ fi
 #
 # is log directory absolute or relative to app home?
 #
-if [[ "$LOG_DIR" == /* ]]; then
+if [ `isAbsolutePath "$LOG_DIR"` ]; then
     # absolute path
     APP_LOG_DIR="$LOG_DIR"
     APP_LOG_DIR_DEBUG="$LOG_DIR"
 else
-    if [ $WORKING_DIR_MODE == "RETAIN" ]; then
+    if [ $WORKING_DIR_MODE = "RETAIN" ]; then
         # relative path to app home (but use absolute version)
         APP_LOG_DIR="$APP_HOME/$LOG_DIR"
     else
@@ -131,7 +142,7 @@ APP_PID_FILE_DEBUG="$APP_RUN_DIR_DEBUG/$NAME.pid"
 #
 
 # will the run directory be used for something?
-if [ "$TYPE" == "DAEMON" ] || [ "$SYMLINK_JAVA" == "1" ]; then
+if [ "$TYPE" = "DAEMON" ] || [ "$SYMLINK_JAVA" = "1" ]; then
     if [ ! -d $APP_RUN_DIR ]; then 
         mkdir -p "$APP_RUN_DIR"
     fi

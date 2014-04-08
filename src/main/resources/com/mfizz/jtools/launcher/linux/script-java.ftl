@@ -26,7 +26,7 @@ JAVA_VERSION=`getJavaVersion "$JAVA_BIN"`
 #
 # build classpath either in absolute or relative form
 #
-if [ $WORKING_DIR_MODE == "RETAIN" ]; then
+if [ $WORKING_DIR_MODE = "RETAIN" ]; then
   # absolute to app home
   APP_JAVA_CLASSPATH=`buildJavaClasspath $APP_HOME/$JAR_DIR`
   JAR_DIR_DEBUG="$APP_HOME/$JAR_DIR"
@@ -42,7 +42,7 @@ fi
 APP_ACTION_ARG=
 
 # first arg for a daemon is the action to do such as start vs. stop
-if [ "$TYPE" == "DAEMON" ] && [[ $# -gt 0 ]]; then
+if [ "$TYPE" = "DAEMON" ] && [[ $# -gt 0 ]]; then
   APP_ACTION_ARG=$1
   shift
   # append system property

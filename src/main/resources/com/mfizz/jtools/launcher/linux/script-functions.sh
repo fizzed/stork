@@ -24,6 +24,7 @@ findDirectory()
     done
 }
 
+
 # if running $PID_FILE; then
 #   echo "running..."
 # fi
@@ -374,12 +375,7 @@ buildJavaClasspath()
 
   if [ -d $TMPAPPDIR ]; then
     for file in $TMPAPPDIR/*.jar; do
-      # ignore anything ending in -sources.jar
-      if [[ ! "$file" == *-sources.jar ]]; then
-        TMPCLASSPATH=`appendJavaClasspath "$TMPCLASSPATH" "$file"`
-        #if [ ! -z $TMPCLASSPATH ]; then TMPCLASSPATH="$TMPCLASSPATH:"; fi
-        #TMPCLASSPATH=$TMPCLASSPATH$file
-      fi
+      TMPCLASSPATH=`appendJavaClasspath "$TMPCLASSPATH" "$file"`
     done
   fi
 

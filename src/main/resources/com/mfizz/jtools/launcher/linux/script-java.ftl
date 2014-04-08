@@ -113,6 +113,8 @@ if [ "$SYMLINK_JAVA" = "1" ]; then
             # symlink worked
             NON_SYMLINK_JAVA_BIN="$JAVA_BIN"
             JAVA_BIN="$TARGET_SYMLINK"
+        else
+            if [ $LAUNCHER_DEBUG = "1" ] echo "[LAUNCHER] symlink failed for java; ignoring"
         fi
     fi
 fi

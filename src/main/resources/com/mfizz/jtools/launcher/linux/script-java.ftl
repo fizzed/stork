@@ -140,20 +140,18 @@ RUN_CMD="$JAVA_BIN $RUN_ARGS"
 #
 # debug for either console/daemon apps
 #
-if [ $LAUNCHER_DEBUG = "1" ]; then
-    echo "[LAUNCHER] working_dir: `pwd`"
-    echo "[LAUNCHER] app_home: $APP_HOME"
-    echo "[LAUNCHER] run_dir: $APP_RUN_DIR_DEBUG"
-    echo "[LAUNCHER] log_dir: $APP_LOG_DIR_DEBUG"
-    echo "[LAUNCHER] jar_dir: $JAR_DIR_DEBUG"
-    echo "[LAUNCHER] pid_file: $APP_PID_FILE_DEBUG"
-    echo "[LAUNCHER] java_min_version_required: $MIN_JAVA_VERSION"
-    if [ ! -z $NON_SYMLINK_JAVA_BIN ]; then
-        echo "[LAUNCHER] java_bin: $NON_SYMLINK_JAVA_BIN"
-        echo "[LAUNCHER] java_symlink: $JAVA_BIN"
-    else
-        echo "[LAUNCHER] java_bin: $JAVA_BIN"
-    fi
-    echo "[LAUNCHER] java_version: $JAVA_VERSION"
-    echo "[LAUNCHER] java_run: $RUN_CMD"
+logLauncherDebug "working_dir: `pwd`"
+logLauncherDebug "app_home: $APP_HOME"
+logLauncherDebug "run_dir: $APP_RUN_DIR_DEBUG"
+logLauncherDebug "log_dir: $APP_LOG_DIR_DEBUG"
+logLauncherDebug "jar_dir: $JAR_DIR_DEBUG"
+logLauncherDebug "pid_file: $APP_PID_FILE_DEBUG"
+logLauncherDebug "java_min_version_required: $MIN_JAVA_VERSION"
+if [ ! -z $NON_SYMLINK_JAVA_BIN ]; then
+    logLauncherDebug "java_bin: $NON_SYMLINK_JAVA_BIN"
+    logLauncherDebug "java_symlink: $JAVA_BIN"
+else
+    logLauncherDebug "java_bin: $JAVA_BIN"
 fi
+logLauncherDebug "java_version: $JAVA_VERSION"
+logLauncherDebug "java_run: $RUN_CMD"

@@ -111,7 +111,6 @@ isOperatingSystemOpenBSD()
 
 getSystemMemoryMB()
 {
-  # osx: top -l 1 | awk '/PhysMem:/ {print $10}' -> 8006M
   # linux: grep MemTotal /proc/meminfo | awk '{print $2}' -> 32930344 (as KB)
   if [ -f /proc/meminfo ]; then
     #echo "on linux.."
@@ -122,7 +121,7 @@ getSystemMemoryMB()
   fi
 
   if isOperatingSystemOSX; then
-    TMPMEMBYTES=`sysctl -a | grep "hw.physmem" | awk '/ = / {print $3}'`
+    TMPMEMBYTES=`sysctl -a | grep "hw.memsize" | head -n 1 | awk -F'=' '{print $2}'`
     # hw.physmem = 2147483648
     # convert into MB
     TMPMEM=$(expr $TMPMEMBYTES / 1000 / 1000)

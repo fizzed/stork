@@ -62,7 +62,7 @@ case "$APP_ACTION_ARG" in
             sleep 1
             # check if daemon not running
             if running "$APP_PID_FILE"; then
-                echo -n "."
+                printf "."
             else
                 echo "failed"
                 tail -n 100 "$NOHUP_OUT"

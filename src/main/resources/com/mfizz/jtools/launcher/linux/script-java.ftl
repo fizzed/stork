@@ -54,7 +54,7 @@ for a in "$@"; do
     if [ $LAUNCHER_DEBUG = "1" ]; then echo "[LAUNCHER] processing arg: $a"; fi
 
     # does the argument need escaped?
-    if [[ "$a" = "${"$"}{a% *}" ]]; then
+    if [ "$a" = `echo "$a" | sed 's/ //g'` ]; then
         APP_ARGS="$APP_ARGS $a"
     else
         APP_ARGS="$APP_ARGS \"$a\""

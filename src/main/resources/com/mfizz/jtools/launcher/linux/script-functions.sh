@@ -421,14 +421,14 @@ stopJavaApp()
 {
   TMPPID=$1
   PID=`cat $TMPPID 2>/dev/null`
-  TIMEOUT=60
-  while running $TMPPID && [ $TIMEOUT -gt 0 ]; do
+  local timeout=60
+  while running $TMPPID && [ $timeout -gt 0 ]; do
     kill $PID 2>/dev/null
     sleep 1
     echo -n "."
-    let TIMEOUT=$TIMEOUT-1
+    timeout=`expr $timeout - 1`
   done
-  if [ ! $TIMEOUT -gt 0 ]
+  if [ ! $timeout -gt 0 ]
   then 
       echo "Unable to kill app within timeout; may need to kill it manually [pid: $TMPPID]"
   else

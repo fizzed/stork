@@ -57,8 +57,8 @@ case "$APP_ACTION_ARG" in
     CONFIRMED=""
     if [ ! -z $DAEMON_MIN_LIFETIME ]; then
         # wait for minimum amount of time
-        TIMEOUT=$DAEMON_MIN_LIFETIME
-        while [ $TIMEOUT -gt 0 ]; do
+        timeout=$DAEMON_MIN_LIFETIME
+        while [ $timeout -gt 0 ]; do
             sleep 1
             # check if daemon not running
             if running "$APP_PID_FILE"; then
@@ -68,7 +68,7 @@ case "$APP_ACTION_ARG" in
                 tail -n 100 "$NOHUP_OUT"
                 exit 1
             fi
-            let TIMEOUT=TIMEOUT-1
+            timeout=`expr $timeout - 1`
         done
         CONFIRMED="min_lifetime"
     fi

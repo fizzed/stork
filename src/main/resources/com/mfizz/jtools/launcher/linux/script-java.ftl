@@ -91,7 +91,7 @@ fi
 # if a daemon is being run in foreground then the type is still console
 #
 RUN_TYPE=$TYPE
-if [ "$APP_ACTION_ARG" == "-run" ]; then
+if [ "$APP_ACTION_ARG" = "-run" ]; then
     RUN_TYPE="CONSOLE"
 fi
 
@@ -99,7 +99,7 @@ fi
 # symlink of java requested?
 # this may break on some systems so we need to test it works
 #
-if [ "$SYMLINK_JAVA" == "1" ]; then
+if [ "$SYMLINK_JAVA" = "1" ]; then
     TARGET_SYMLINK="$APP_RUN_DIR/$NAME-java"
     # if link already exists then try to delete it
     if [ -L "$TARGET_SYMLINK" ]; then

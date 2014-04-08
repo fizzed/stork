@@ -425,7 +425,7 @@ stopJavaApp()
   while running $TMPPID && [ $timeout -gt 0 ]; do
     kill $PID 2>/dev/null
     sleep 1
-    echo -n "."
+    `echo -n "."`
     timeout=`expr $timeout - 1`
   done
   if [ ! $timeout -gt 0 ]

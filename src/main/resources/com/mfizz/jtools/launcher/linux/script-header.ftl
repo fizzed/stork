@@ -45,7 +45,7 @@ WORKING_DIR_MODE="${config.workingDirMode}"
 APP_ARGS="${config.appArgs}"
 JAVA_ARGS="${config.javaArgs}"
 JAR_DIR="${config.jarDir}"
-MIN_JAVA_VERSION="${config.minJavaVersion}"
+[ -z $MIN_JAVA_VERSION ] && MIN_JAVA_VERSION="${config.minJavaVersion}"
 SYMLINK_JAVA="${config.symlinkJava?string("1", "0")}"
 <#if (config.type == "DAEMON")>
 DAEMON_MIN_LIFETIME="${config.daemonMinLifetime!""}"

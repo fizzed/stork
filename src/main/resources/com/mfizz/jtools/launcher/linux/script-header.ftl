@@ -32,6 +32,8 @@
 # application log dir (e.g. for [name.out] file)
 [ -z $LOG_DIR ] && LOG_DIR="${config.logDir!""}"
 
+[ -z $LAUNCHER_DEBUG ] && LAUNCHER_DEBUG="0"
+
 #
 # constants
 #

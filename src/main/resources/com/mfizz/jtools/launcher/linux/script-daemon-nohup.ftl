@@ -9,7 +9,7 @@ usage()
     exit 1
 }
 
-[[ ! -z $APP_ACTION_ARG ]] || usage
+[ ! -z "$APP_ACTION_ARG" ] || usage
 
 
 #

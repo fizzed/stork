@@ -251,17 +251,6 @@ findJavaCommands()
                 logJavaSearchDebug "found $jdk_bin"
                 java_cmds=`appendPath "$java_cmds" "$jdk_bin"`
             fi
-
-            # osx path
-            local osx_jre_bin="$maybe_java_home/Contents/Home/jre/bin/java"
-            local osx_jdk_bin="$maybe_java_home/Contents/Home/bin/java"
-            if [ -x "$osx_jre_bin" ]; then
-                logJavaSearchDebug "found $osx_jre_bin"
-                java_cmds=`appendPath "$java_cmds" "$osx_jre_bin"`
-            elif [ -x "$osx_jdk_bin" ]; then
-                logJavaSearchDebug "found $osx_jdk_bin"
-                java_cmds=`appendPath "$java_cmds" "$osx_jdk_bin"`
-            fi
         done
     done
 

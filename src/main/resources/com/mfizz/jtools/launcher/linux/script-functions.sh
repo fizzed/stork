@@ -130,6 +130,15 @@ getSystemMemoryMB()
         fi
     fi
 
+    # try sysctl for hw.physmem which works on freebsd/openbsd
+    if [ -z $mem_mb ]; then
+        local mem_bytes=`sysctl -a 2>/dev/null | grep "hw.physmem" | head -n 1 | awk -F'[:=]' '{print $2}'`
+        if [ ! -z $mem_bytes ]; then
+            # convert bytes to megabytes
+            mem_mb=$(expr $mem_bytes / 1024 / 1024)
+        fi
+    fi
+
     if [ -z $mem_mb ]; then
         echo 0
     else

@@ -29,11 +29,11 @@ JAVA_VERSION=`getJavaVersion "$JAVA_BIN"`
 #
 if [ $WORKING_DIR_MODE = "RETAIN" ]; then
   # absolute to app home
-  APP_JAVA_CLASSPATH=`buildJavaClasspath $APP_HOME/$LIB_DIR`
+  APP_JAVA_CLASSPATH=`buildJavaClasspath "$APP_HOME/$LIB_DIR"`
   APP_LIB_DIR_DEBUG="$APP_HOME/$LIB_DIR"
 else
   # jars will be relative to working dir (app home)
-  APP_JAVA_CLASSPATH=`buildJavaClasspath $LIB_DIR`
+  APP_JAVA_CLASSPATH=`buildJavaClasspath "$LIB_DIR"`
   APP_LIB_DIR_DEBUG="<app_home>/$LIB_DIR"
 fi
 
@@ -138,7 +138,7 @@ fi
 # create java command to execute
 #
 
-RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE -cp $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
+RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE -cp \"$APP_JAVA_CLASSPATH\" $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
 RUN_CMD="$JAVA_BIN $RUN_ARGS"
 
 #

@@ -319,10 +319,10 @@ findMinJavaVersion()
 buildJavaClasspath()
 {
   # path to main application directory
-  TMPAPPDIR=$1
+  TMPAPPDIR="$1"
 
-  if [ -d $TMPAPPDIR ]; then
-    for file in $TMPAPPDIR/*.jar; do
+  if [ -d "$TMPAPPDIR" ]; then
+    for file in "$TMPAPPDIR"/*.jar; do
       TMPCLASSPATH=`appendPath "$TMPCLASSPATH" "$file"`
     done
   fi

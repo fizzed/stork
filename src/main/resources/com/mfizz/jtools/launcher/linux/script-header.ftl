@@ -41,7 +41,7 @@
 NAME="${config.name}"
 TYPE="${config.type}"
 MAIN_CLASS="${config.mainClass}"
-WORKING_DIR_MODE="${config.workingDirMode}"
+[ -z $WORKING_DIR_MODE ] && WORKING_DIR_MODE="${config.workingDirMode}"
 APP_ARGS="${config.appArgs}"
 JAVA_ARGS="${config.javaArgs}"
 LIB_DIR="${config.libDir}"
@@ -72,8 +72,9 @@ done
 # save current working directory
 INITIAL_WORKING_DIR="`pwd`"
 
-# change working directory to app home
-cd $(dirname "$PRG")/..
+# change working directory to app home (handle spaces)
+PRGDIR=$(dirname "$PRG")
+cd "$PRGDIR/.."
 
 # application home is now current directory
 APP_HOME="`pwd`"

@@ -38,7 +38,7 @@ min_java_version: "1.6"
 #max_java_memory: 256
 
 # min/max memory by percentage of system
-min_java_memory_pct: 10
-max_java_memory_pct: 20
+#min_java_memory_pct: 10
+#max_java_memory_pct: 20
 
 symlink_java: false

@@ -68,7 +68,7 @@ case "$APP_ACTION_ARG" in
                 tail -n 100 "$NOHUP_OUT"
                 exit 1
             fi
-            let TIMEOUT=$TIMEOUT-1
+            let TIMEOUT=TIMEOUT-1
         done
         CONFIRMED="min_lifetime"
     fi

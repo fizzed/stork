@@ -44,7 +44,7 @@ MAIN_CLASS="${config.mainClass}"
 WORKING_DIR_MODE="${config.workingDirMode}"
 APP_ARGS="${config.appArgs}"
 JAVA_ARGS="${config.javaArgs}"
-JAR_DIR="${config.jarDir}"
+LIB_DIR="${config.libDir}"
 [ -z $MIN_JAVA_VERSION ] && MIN_JAVA_VERSION="${config.minJavaVersion}"
 SYMLINK_JAVA="${config.symlinkJava?string("1", "0")}"
 <#if (config.type == "DAEMON")>
@@ -102,6 +102,7 @@ if [ `isAbsolutePath "$RUN_DIR"` ]; then
     # absolute path
     APP_RUN_DIR="$RUN_DIR"
     APP_RUN_DIR_DEBUG="$RUN_DIR"
+    APP_RUN_DIR_ABS="$RUN_DIR"
 else
     if [ "$WORKING_DIR_MODE" = "RETAIN" ]; then
         # relative path to app home (but use absolute version)
@@ -111,6 +112,7 @@ else
         APP_RUN_DIR="$RUN_DIR"
     fi
     APP_RUN_DIR_DEBUG="<app_home>/$RUN_DIR"
+    APP_RUN_DIR_ABS="$APP_HOME/$RUN_DIR"
 fi
 
 
@@ -121,6 +123,7 @@ if [ `isAbsolutePath "$LOG_DIR"` ]; then
     # absolute path
     APP_LOG_DIR="$LOG_DIR"
     APP_LOG_DIR_DEBUG="$LOG_DIR"
+    APP_LOG_DIR_ABS="$LOG_DIR"
 else
     if [ $WORKING_DIR_MODE = "RETAIN" ]; then
         # relative path to app home (but use absolute version)
@@ -130,6 +133,7 @@ else
         APP_LOG_DIR="$LOG_DIR"
     fi
     APP_LOG_DIR_DEBUG="<app_home>/$LOG_DIR"
+    APP_LOG_DIR_ABS="$APP_HOME/$LOG_DIR"
 fi
 
 
@@ -145,11 +149,15 @@ APP_PID_FILE_DEBUG="$APP_RUN_DIR_DEBUG/$NAME.pid"
 
 # will the run directory be used for something?
 if [ "$TYPE" = "DAEMON" ] || [ "$SYMLINK_JAVA" = "1" ]; then
-    if [ ! -d $APP_RUN_DIR ]; then 
-        mkdir -p "$APP_RUN_DIR"
+    if [ ! -d "$APP_RUN_DIR" ]; then
+        mkdir -p "$APP_RUN_DIR" 2>/dev/null
+        if [ ! -d "$APP_RUN_DIR" ]; then
+            echo "Unable to create run dir: $APP_RUN_DIR_ABS (check permissions; is user `whoami` owner?)"
+            exit 1
+        fi
     fi
-    if [ ! -w $APP_RUN_DIR ]; then
-        echo "Error: run directory is not writable by app! [run_dir=$APP_RUN_DIR]"
+    if [ ! -w "$APP_RUN_DIR" ]; then
+        echo "Unable to write files in run dir: $APP_RUN_DIR_ABS (check permissions; is user `whoami` owner?)"
         exit 1
     fi
 fi

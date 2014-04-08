@@ -214,9 +214,15 @@ public class Generator {
                 }
                 
                 if (platform == Platform.LINUX && config.getType() == Type.DAEMON) {
-                    // create init.d script
-                    shareDir.mkdirs();
-                    File initdFile = new File(binDir, config.getName());
+                    // create init.d scripts
+                    File initdDir = new File(shareDir, "init.d");
+                    initdDir.mkdirs();
+                    
+                    // generate debian compatible init.d startup script
+                    File initdFile = new File(initdDir, config.getName() + ".init");
+                    generateInitdScript(config, initdFile, model);
+                    
+                    
                 }
                 
             } else if (platform == Platform.WINDOWS) {
@@ -298,6 +304,27 @@ public class Generator {
             launcherFile.setExecutable(true);
 
             System.out.println(" - launcher: " + launcherFile);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (fos != null) {
+                fos.close();
+            }
+        }
+    }
+    
+    static public void generateInitdScript(Configuration config, File initdFile, LauncherModel model) throws Exception {
+        FileOutputStream fos = new FileOutputStream(initdFile);
+        Writer out = new OutputStreamWriter(fos);
+
+        try {
+            processTemplate("linux/initd-daemon.ftl", out, model);
+
+            // set to executable
+            initdFile.setExecutable(true);
+
+            System.out.println(" - init.d: " + initdFile);
         } finally {
             if (out != null) {
                 out.close();

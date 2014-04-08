@@ -80,7 +80,7 @@ public class Configuration {
     private String runDir = "run";
     private String shareDir = "share";
     private String logDir = "log";
-    private String jarDir = "lib";
+    private String libDir = "lib";
     
     @NotNull @Size(min=1)
     private Set<Platform> platforms;
@@ -124,10 +124,14 @@ public class Configuration {
     // daemon will print this line to stdout/stderr to announce it started successfully
     private String daemonLaunchConfirm = null;
     
+    // user that a daemon should run as (via startup scripts)
+    private Map<Platform,String> daemonUsers;
+    
     public Configuration() {
         this.daemonMethods = new HashMap<Platform,DaemonMethod>();
         this.daemonMethods.put(Platform.LINUX, DaemonMethod.NOHUP);
         this.daemonMethods.put(Platform.WINDOWS, DaemonMethod.JSLWIN);
+        this.daemonUsers = new HashMap<Platform,String>();
     }
     
     public File getFile() {
@@ -257,12 +261,12 @@ public class Configuration {
         this.javaArgs = javaArgs;
     }
 
-    public String getJarDir() {
-        return jarDir;
+    public String getLibDir() {
+        return libDir;
     }
 
-    public void setJarDir(String jarDir) {
-        this.jarDir = jarDir;
+    public void setLibDir(String libDir) {
+        this.libDir = libDir;
     }
 
     public String getMinJavaVersion() {
@@ -337,4 +341,26 @@ public class Configuration {
         this.daemonLaunchConfirm = daemonLaunchConfirm;
     }
 
+    public Map<Platform, String> getDaemonUsers() {
+        return daemonUsers;
+    }
+
+    public void setDaemonUsers(Map<Platform, String> daemonUsers) {
+        this.daemonUsers = daemonUsers;
+    }
+
+    public String getDaemonUser(String platformName) {
+        Platform platform = Platform.valueOf(platformName);
+        
+        if (platform != null) {
+            if (platform == Platform.MAC_OSX) {
+                if (!daemonUsers.containsKey(platform)) {
+                    platform = Platform.LINUX;
+                }
+            }
+            return daemonUsers.get(platform);
+        }
+        return null;
+    }
+    
 }

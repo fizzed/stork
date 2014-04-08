@@ -17,8 +17,12 @@ package com.mfizz.sample;
 
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.ServerRunner;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -49,6 +53,16 @@ public class HelloDaemon extends NanoHTTPD {
         server.lines = HelloDaemon.createLines(args);
         System.out.println("Starting http server on port " + port);
         server.start();
+        
+        // what interfaces
+        System.out.println("In your browser visit (all possible options):");
+        Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+        for (NetworkInterface netint : Collections.list(nets)) {
+            Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+            for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+                System.out.println("  http://" + inetAddress.getHostAddress() + ":" + port);
+            }
+        }
         
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override

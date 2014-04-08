@@ -29,12 +29,12 @@ JAVA_VERSION=`getJavaVersion "$JAVA_BIN"`
 #
 if [ $WORKING_DIR_MODE = "RETAIN" ]; then
   # absolute to app home
-  APP_JAVA_CLASSPATH=`buildJavaClasspath $APP_HOME/$JAR_DIR`
-  JAR_DIR_DEBUG="$APP_HOME/$JAR_DIR"
+  APP_JAVA_CLASSPATH=`buildJavaClasspath $APP_HOME/$LIB_DIR`
+  APP_LIB_DIR_DEBUG="$APP_HOME/$LIB_DIR"
 else
   # jars will be relative to working dir (app home)
-  APP_JAVA_CLASSPATH=`buildJavaClasspath $JAR_DIR`
-  JAR_DIR_DEBUG="<app_home>/$JAR_DIR"
+  APP_JAVA_CLASSPATH=`buildJavaClasspath $LIB_DIR`
+  APP_LIB_DIR_DEBUG="<app_home>/$LIB_DIR"
 fi
 
 
@@ -148,7 +148,7 @@ logLauncherDebug "working_dir: `pwd`"
 logLauncherDebug "app_home: $APP_HOME"
 logLauncherDebug "run_dir: $APP_RUN_DIR_DEBUG"
 logLauncherDebug "log_dir: $APP_LOG_DIR_DEBUG"
-logLauncherDebug "jar_dir: $JAR_DIR_DEBUG"
+logLauncherDebug "lib_dir: $APP_LIB_DIR_DEBUG"
 logLauncherDebug "pid_file: $APP_PID_FILE_DEBUG"
 logLauncherDebug "java_min_version_required: $MIN_JAVA_VERSION"
 if [ ! -z $NON_SYMLINK_JAVA_BIN ]; then

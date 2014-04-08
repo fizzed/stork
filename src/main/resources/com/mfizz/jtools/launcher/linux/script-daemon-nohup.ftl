@@ -13,30 +13,31 @@ usage()
 
 
 #
-# can we write to log and run directories as target group/user?
-#
-if [ ! -d "$APP_RUN_DIR" ]; then
-    mkdir -p "$APP_RUN_DIR"
-    if [ ! -d "$APP_RUN_DIR" ]; then
-        echo "Unable to create run dir: $APP_RUN_DIR"
+# can we write to log directory (run directory checked previously)?
+#    
+if [ ! -d "$APP_LOG_DIR" ]; then
+    mkdir -p "$APP_LOG_DIR" 2>/dev/null
+    if [ ! -d "$APP_LOG_DIR" ]; then
+        echo "Unable to create log dir: $APP_LOG_DIR_ABS (check permissions; is user `whoami` owner?)"
         exit 1
     fi
 fi
-    
-if [ ! -d "$APP_LOG_DIR" ]; then
-    mkdir -p "$APP_LOG_DIR"
-    if [ ! -d "$APP_LOG_DIR" ]; then
-        echo "Unable to create log dir: $APP_LOG_DIR"
-        exit 1
-    fi
+if [ ! -w "$APP_LOG_DIR" ]; then
+    echo "Unable to write files in log dir: $APP_LOG_DIR_ABS (check permissions; is user `whoami` owner?)"
+    exit 1
 fi
 
 # more intelligent info on location of nohup output
 # if the initial working directory is not the same as the app home then
 # use the full path to the outfile
-NOHUP_OUT="$APP_LOG_DIR/$NAME.out"
+NOHUP_OUT="$APP_LOG_DIR_ABS/$NAME.out"
 if [ "$APP_HOME" != "$INITIAL_WORKING_DIR" ]; then
     NOHUP_OUT="$APP_HOME/$APP_LOG_DIR/$NAME.out"
+fi
+# if outfile already exists, make sure it its writable by us
+if [ -f "$NOHUP_OUT" ] && [ ! -w "$NOHUP_OUT" ]; then
+    echo "Unable to overwrite existing nohup log file: $NOHUP_OUT (check permissions; is user `whoami` owner?)"
+    exit 1
 fi
 
 
@@ -106,7 +107,7 @@ case "$APP_ACTION_ARG" in
     echo "app_home: $APP_HOME"
     echo "run_dir: $APP_RUN_DIR_DEBUG"
     echo "log_dir: $APP_LOG_DIR_DEBUG"
-    echo "jar_dir: $JAR_DIR_DEBUG"
+    echo "lib_dir: $APP_LIB_DIR_DEBUG"
     echo "pid_file: $APP_PID_FILE_DEBUG"
     echo "java_min_version_required: $MIN_JAVA_VERSION"
     echo "java_bin: $JAVA_BIN"

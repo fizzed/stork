@@ -40,10 +40,13 @@ min_java_version: "1.6"
 
 # min/max memory by percentage of system
 #min_java_memory_pct: 10
-max_java_memory_pct: 80
+#max_java_memory_pct: 80
 
 # method of becoming a daemon (only NOHUP method supported for now)
 daemon_methods: { LINUX: NOHUP, WINDOWS: JSLWIN }
+
+# run daemon as a specific user (mac_osx inherits linux if not defined)
+daemon_users: { LINUX: "daemon" }
 
 symlink_java: true
 

@@ -111,23 +111,30 @@ isOperatingSystemOpenBSD()
 
 getSystemMemoryMB()
 {
-  # linux: grep MemTotal /proc/meminfo | awk '{print $2}' -> 32930344 (as KB)
-  if [ -f /proc/meminfo ]; then
-    #echo "on linux.."
-    TMPMEMKB=`grep MemTotal /proc/meminfo | awk '{print $2}'`
-    TMPMEM=$(expr $TMPMEMKB / 1000)
-    echo $TMPMEM
-    return 0
-  fi
+    local mem_mb=""
 
-  if isOperatingSystemOSX; then
-    TMPMEMBYTES=`sysctl -a | grep "hw.memsize" | head -n 1 | awk -F'=' '{print $2}'`
-    # hw.physmem = 2147483648
-    # convert into MB
-    TMPMEM=$(expr $TMPMEMBYTES / 1000 / 1000)
-    echo $TMPMEM
-    return 0
-  fi
+    # linux: grep MemTotal /proc/meminfo | awk '{print $2}' -> 32930344 (as KB)
+    if [ -f /proc/meminfo ]; then
+        local mem_kb=`grep MemTotal /proc/meminfo | awk '{print $2}'`
+        if [ ! -z $mem_kb ]; then
+            # convert kilobytes to megabytes
+            mem_mb=$(expr $mem_kb / 1024)
+        fi
+    fi
+
+    if [ -z $mem_mb ] && isOperatingSystemOSX; then
+        local mem_bytes=`sysctl -a 2>/dev/null | grep "hw.memsize" | head -n 1 | awk -F'=' '{print $2}'`
+        if [ ! -z $mem_bytes ]; then
+            # convert bytes to megabytes
+            mem_mb=$(expr $mem_bytes / 1024 / 1024)
+        fi
+    fi
+
+    if [ -z $mem_mb ]; then
+        echo 0
+    else
+        echo $mem_mb
+    fi
 }
 
 pctOf()

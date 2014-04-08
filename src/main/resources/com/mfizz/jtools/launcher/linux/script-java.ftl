@@ -97,6 +97,7 @@ fi
 
 #
 # symlink of java requested?
+# this may break on some systems so we need to test it works
 #
 if [ "$SYMLINK_JAVA" == "1" ]; then
     TARGET_SYMLINK="$APP_RUN_DIR/$NAME-java"
@@ -106,9 +107,13 @@ if [ "$SYMLINK_JAVA" == "1" ]; then
     fi
     ln -s "$JAVA_BIN" "$TARGET_SYMLINK" > /dev/null 2>&1
     if [ $? -eq 0 ]; then
-        # symlink succeeded
-        NON_SYMLINK_JAVA_BIN="$JAVA_BIN"
-        JAVA_BIN="$TARGET_SYMLINK"
+        # symlink succeeded (test if it works)
+        local symlink_test=$("$TARGET_SYMLINK" -version 2>/dev/null)
+        if [ $? -eq 0 ]; then
+            # symlink worked
+            NON_SYMLINK_JAVA_BIN="$JAVA_BIN"
+            JAVA_BIN="$TARGET_SYMLINK"
+        fi
     fi
 fi
 

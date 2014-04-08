@@ -108,7 +108,7 @@ if [ "$SYMLINK_JAVA" == "1" ]; then
     ln -s "$JAVA_BIN" "$TARGET_SYMLINK" > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         # symlink succeeded (test if it works)
-        local symlink_test=$("$TARGET_SYMLINK" -version 2>/dev/null)
+        symlink_test=$("$TARGET_SYMLINK" -version 2>/dev/null)
         if [ $? -eq 0 ]; then
             # symlink worked
             NON_SYMLINK_JAVA_BIN="$JAVA_BIN"

@@ -10,6 +10,13 @@ logLauncherDebug()
     fi
 }
 
+logJavaSearchDebug()
+{
+    if [ "$LAUNCHER_DEBUG" = "1" ]; then
+        echo "[JAVA_SEARCH] $1" >&2
+    fi
+}
+
 quietWhich()
 {
     # $(which bad) results in output we want to ignore
@@ -173,61 +180,82 @@ findJavaCommands()
     local java_cmds=""
 
     # is JAVA_HOME set?
-    logLauncherDebug "searching JAVA_HOME..."
+    logJavaSearchDebug "searching JAVA_HOME..."
     if [ ! -z "$JAVA_HOME" ]; then
-        if [ -x "$JAVA_HOME/bin/java" ]; then
-            java_cmds=`appendPath "$java_cmds" "$JAVA_HOME/bin/java"`
+        local jre_bin="$JAVA_HOME/jre/bin/java"
+        local jdk_bin="$JAVA_HOME/bin/java"
+        if [ -x "$jre_bin" ]; then
+            logJavaSearchDebug "found $jre_bin"
+            java_cmds=`appendPath "$java_cmds" "$jre_bin"`
+        fi
+        if [ -x "$jdk_bin" ]; then
+            logJavaSearchDebug "found $jdk_bin"
+            java_cmds=`appendPath "$java_cmds" "$jdk_bin"`
         fi
     fi;
 
     # is java in path
+    logJavaSearchDebug "searching PATH..."
     local which_java=`quietWhich java`
     if [ ! -z $which_java ]; then
         if [ -x "$which_java" ]; then
+            logJavaSearchDebug "found $which_java"
             java_cmds=`appendPath "$java_cmds" "$which_java"`
         fi
     fi
 
-    # is java in /usr/bin?
-    if [ -x "/usr/bin/java" ]; then
-        java_cmds=`appendPath "$java_cmds" "/usr/bin/java"`
-    fi
-
-    # are running on mac osx?
+    # special case on mac os x
     if isOperatingSystemOSX; then
         local osx_java_home=""
+        logJavaSearchDebug "trying /usr/libexec/java_home..."
         if [ -x '/usr/libexec/java_home' ]; then
             osx_java_home=`/usr/libexec/java_home`
         fi
         if [ ! -z $osx_java_home ]; then
             if [ -x "$osx_java_home/bin" ]; then
+                logJavaSearchDebug "found $osx_java_home/bin"
                 java_cmds=`appendPath "$java_cmds" "$osx_java_home/bin"`
             fi
         fi
     fi
 
     # search all known java home locations for java binaries
-    # openjdk is usually in /usr/lib/jvm
-    # sun jdk on centos/redhat in /usr/java
+    # linux openjdk: /usr/lib/jvm
+    # centos/redhat sunjdk: /usr/java
     
-    java_home_parents_line="/usr/lib/jvm:/usr/java:/Library/Internet Plug-Ins:/System/Library/Frameworks/JavaVM.framework/Versions:/Library/Java/JavaVirtualMachines:/System/Library/Java/JavaVirtualMachines"
+    java_home_parents="/usr/lib/jvm:/usr/java"
+
+    if isOperatingSystemOSX; then
+        java_home_parents=`appendPath "$java_home_parents" "/Library/Internet Plug-Ins:/System/Library/Frameworks/JavaVM.framework/Versions:/Library/Java/JavaVirtualMachines:/System/Library/Java/JavaVirtualMachines"`
+    fi
+    
+    logJavaSearchDebug "trying well-known java homes..."
     local IFS=":"
-    for java_home_parent in $java_home_parents_line; do
+    for java_home_parent in $java_home_parents; do
         #echo "searching java_home_parent: $java_home_parent"
 	for maybe_java_home in $java_home_parent/*; do
             [ -d "$maybe_java_home" ] || continue   
 
-            if [ -x "$maybe_java_home/bin/java" ]; then
-                java_cmds=`appendPath "$java_cmds" "$maybe_java_home/bin/java"`
-            elif [ -x "$maybe_java_home/jre/bin/java" ]; then
-                java_cmds=`appendPath "$java_cmds" "$maybe_java_home/jre/bin/java"`
+            local jre_bin="$maybe_java_home/jre/bin/java"
+            local jdk_bin="$maybe_java_home/bin/java"
+
+            if [ -x "$jre_bin" ]; then
+                logJavaSearchDebug "found $jre_bin"
+                java_cmds=`appendPath "$java_cmds" "$jre_bin"`
+            elif [ -x "$jdk_bin" ]; then
+                logJavaSearchDebug "found $jdk_bin"
+                java_cmds=`appendPath "$java_cmds" "$jdk_bin"`
             fi
 
             # osx path
-            if [ -x "$maybe_java_home/Contents/Home/bin/java" ]; then
-                java_cmds=`appendPath "$java_cmds" "$maybe_java_home/Contents/Home/bin/java"`
-            elif [ -x "$maybe_java_home/Contents/Home/jre/bin/java" ]; then
-                java_cmds=`appendPath "$java_cmds" "$maybe_java_home/Contents/Home/jre/bin/java"`
+            local osx_jre_bin="$maybe_java_home/Contents/Home/jre/bin/java"
+            local osx_jdk_bin="$maybe_java_home/Contents/Home/bin/java"
+            if [ -x "$osx_jre_bin" ]; then
+                logJavaSearchDebug "found $osx_jre_bin"
+                java_cmds=`appendPath "$java_cmds" "$osx_jre_bin"`
+            elif [ -x "$osx_jdk_bin" ]; then
+                logJavaSearchDebug "found $osx_jdk_bin"
+                java_cmds=`appendPath "$java_cmds" "$osx_jdk_bin"`
             fi
         done
     done
@@ -263,7 +291,6 @@ findMinJavaVersion()
         java_version=`"$java_cmd" -version 2>&1 | grep "version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
         #echo "java_version: $java_cmd -> $java_version"
         if [ "$java_version" != "" ] && [ $java_version -ge $target_java_version ]; then
-             #echo "boom -- works!"
              echo $java_cmd
              return 1
         fi

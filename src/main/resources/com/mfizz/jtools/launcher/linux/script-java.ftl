@@ -28,13 +28,22 @@ JAVA_VERSION=`getJavaVersion "$JAVA_BIN"`
 # build classpath either in absolute or relative form
 #
 if [ $WORKING_DIR_MODE = "RETAIN" ]; then
-  # absolute to app home
-  APP_JAVA_CLASSPATH=`buildJavaClasspath "$APP_HOME/$LIB_DIR"`
-  APP_LIB_DIR_DEBUG="$APP_HOME/$LIB_DIR"
+    # absolute to app home
+    APP_JAVA_CLASSPATH=`buildJavaClasspath "$APP_HOME/$LIB_DIR"`
+    APP_LIB_DIR_DEBUG="$APP_HOME/$LIB_DIR"
 else
-  # jars will be relative to working dir (app home)
-  APP_JAVA_CLASSPATH=`buildJavaClasspath "$LIB_DIR"`
-  APP_LIB_DIR_DEBUG="<app_home>/$LIB_DIR"
+    # jars will be relative to working dir (app home)
+    APP_JAVA_CLASSPATH=`buildJavaClasspath "$LIB_DIR"`
+    APP_LIB_DIR_DEBUG="<app_home>/$LIB_DIR"
+fi
+
+
+#
+# classpath have anything?
+#
+if [ -z $APP_JAVA_CLASSPATH ]; then
+    echo "No jars found for loading into classpath (empty lib dir? $APP_HOME/$LIB_DIR)"
+    exit 1
 fi
 
 

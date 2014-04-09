@@ -17,8 +17,8 @@ REM
 REM execute argument command
 REM
 
-if %bit64%==n set TargetExe=hello-daemon32.exe
-if %bit64%==y set TargetExe=hello-daemon64.exe
+if %bit64%==n set TargetExe=${config.name}32.exe
+if %bit64%==y set TargetExe=${config.name}64.exe
 
 IF "%1"=="-run" (
     "%java_bin_accepted%" -cp %APP_CLASSPATH% %JAVA_ARGS% %MAIN_CLASS% %APP_ARGS%

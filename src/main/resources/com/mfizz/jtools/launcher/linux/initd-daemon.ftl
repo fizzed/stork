@@ -13,7 +13,7 @@
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: ${config.shortDescription}
-# Description:       ${config.longDescription}
+# Description:       ${config.longDescription!""}
 ### END INIT INFO
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin

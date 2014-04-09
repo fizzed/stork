@@ -61,7 +61,10 @@ import java.util.TreeSet;
 public class Generator {
 
     static public void printUsage() {
-        System.err.println("Usage: -i <input config> -o <output directory>");
+        System.err.println("Usage: jtools-launcher-generate -i <input config> -o <output directory>");
+        System.err.println("-v                      Print version and exit");
+        System.err.println("-i <input config>       Input file");
+        System.err.println("-o <output directory>   Output directory");
     }
 
     static public void printError(String errorMessage) {
@@ -98,7 +101,10 @@ public class Generator {
         while (argList.size() > 0) {
             String argSwitch = argList.remove(0);
 
-            if (argSwitch.equals("-i")) {
+            if (argSwitch.equals("-v")) {
+                System.err.println("jtools-launcher-generate version: " + com.mfizz.jtools.launcher.Version.getLongVersion());
+                System.exit(0);
+            } else if (argSwitch.equals("-i")) {
                 File configFile = new File(popNextArg(argSwitch, argList));
                 if (!configFile.exists() || !configFile.canRead()) {
                     printErrorThenUsageAndExit("input config file [" + configFile + "] does not exist or is not readable");

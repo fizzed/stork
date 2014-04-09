@@ -2,7 +2,8 @@
 	
     <property name="target" location="target"/>
     <property name="batext" value=""/>
-	
+    <property name="version" value="1.0.0-SNAPSHOT"/>
+    	
     <scriptdef name="propertyreset" language="javascript">
         <attribute name="name"/>
         <attribute name="value"/>
@@ -26,7 +27,40 @@
     <target name="clean">
         <delete dir="${target}"/>
     </target>
-
+    
+    <!--
+    <target name="compile-generate" depends="checkos, stage-sample">
+        <exec executable="mvn${batext}">
+            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/main/resources/jtools-launcher-generate.yml -o '${target}/stage'&quot;"/>
+        </exec>
+    </target>
+    -->
+    
+    <target name="stage" depends="clean">
+        <exec executable="mvn${batext}">
+            <arg line="package"/>
+        </exec>
+        <copy todir="${target}/stage/lib">
+            <fileset dir="${target}/dependency"/>
+            <fileset dir="${target}" includes="*.jar" excludes="*-sources.jar"/>
+        </copy>
+        <exec executable="mvn${batext}">
+            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/main/resources/jtools-launcher-generate.yml -o '${target}/stage'&quot;"/>
+        </exec>
+    </target>
+    
+    <target name="dist" depends="stage">
+        <tar destfile="${basedir}/target/jtools-launcher-${version}.tar.gz" compression="gzip" >
+            <tarfileset dir="${target}/stage" prefix="jtools-launcher-${version}" filemode="755">
+                <include name="bin/**"/>
+            </tarfileset>
+            <tarfileset dir="${target}/stage" prefix="jtools-launcher-${version}">
+                <exclude name="bin/**"/>
+            </tarfileset>
+        </tar>
+    </target>
+    
+    
     <target name="stage-sample" depends="init">
         <mkdir dir="${target}/sample"/>
         <copy todir="${target}/sample/lib">
@@ -45,7 +79,7 @@
             <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/test/resources/hello-daemon.yml -o '${target}/sample'&quot;"/>
         </exec>
     </target>
-	
+        
     <target name="hello-console" depends="compile-hello-console">
         <exec executable="${target}/sample/bin/hello-console${batext}" />
     </target>

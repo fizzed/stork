@@ -172,7 +172,7 @@ GOTO :EOF
 :JavaSearchDebug
 setlocal
 SET v=%~1
-if "%JAVA_SEARCH_DEBUG%"=="1" (
+if "%LAUNCHER_DEBUG%"=="1" (
     echo ^[JAVA_SEARCH^] !v!
 )
 GOTO :EOF

@@ -50,6 +50,11 @@ Features
 
 #### Mac OSX
 
+Good references:
+    http://couchdb.readthedocs.org/en/latest/install/mac.html
+    http://vincent.bernat.im/en/blog/2013-autoconf-osx-packaging.html
+    https://github.com/jenkinsci/jenkins/tree/master/osx
+
 Standard install location for daemons:
     /Library/Application Support/<app_display_name>
 
@@ -70,6 +75,8 @@ To see what is going on (should have a PID value):
 
 To unload (stop) daemon:
     sudo launchctl unload /Library/LaunchDaemons/com.example.hello-daemon.plist
+
+
 
 
 #### Windows

@@ -19,8 +19,8 @@
             <string>1</string>
         </dict>
         <!-- relative to working directory above -->
-        <key>StandardOutPath</key><string>log/hello-daemon.stdout</string>
-        <key>StandardErrorPath</key><string>log/hello-daemon.stderr</string>
+        <key>StandardOutPath</key><string>log/${config.name}.stdout</string>
+        <key>StandardErrorPath</key><string>log/${config.name}.stderr</string>
         <key>ProgramArguments</key>
         <array>
             <string>bin/${config.name}</string>

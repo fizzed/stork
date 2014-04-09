@@ -22,9 +22,6 @@ if "%RUN_DIR%"=="" set RUN_DIR=${config.runDir!""}
 @REM set to 1 if you want to see more info about what the script is doing
 if "%LAUNCHER_DEBUG%"=="" set LAUNCHER_DEBUG=0
 
-@REM set to 1 if you want to see how the script is searching for java exe
-if "%JAVA_SEARCH_DEBUG%"=="" set JAVA_SEARCH_DEBUG=0
-
 @REM
 @REM constants
 @REM

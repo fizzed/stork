@@ -27,6 +27,7 @@ if [ ! -w "$APP_LOG_DIR" ]; then
     exit 1
 fi
 
+
 # more intelligent info on location of nohup output
 # if the initial working directory is not the same as the app home then
 # use the full path to the outfile
@@ -97,9 +98,9 @@ case "$APP_ACTION_ARG" in
     verifyNotRunning $APP_PID_FILE
     # take pid of shell for pid lock
     echo $$ > $APP_PID_FILE
+    # best effor to remove pid file upon exit via trap
+    trap 'echo "cleaning up pid file: $APP_PID_FILE"; rm -f "$APP_PID_FILE"' 2 3 6 15
     eval $RUN_CMD
-    # cleanup pid if it exists
-    rm -f $APP_PID_FILE
     ;;
 
   -status)

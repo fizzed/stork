@@ -6,6 +6,7 @@ name: "hello-daemon"
 domain: "com.example"
 
 # Display name of application (can have spaces)
+# Usually also the application directory for Windows/Mac OSX (e.g. Program Files\Hello Server)
 display_name: "Hello Server"
 
 short_description: "Demo daemon app"

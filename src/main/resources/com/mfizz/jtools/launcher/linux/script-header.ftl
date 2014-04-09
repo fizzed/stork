@@ -17,6 +17,10 @@
 # e.g. RUN_DIR=/tmp bin/$NAME
 #
 
+# if empty pid file will be created in <run_dir>/<app_name>.pid
+# provide full path if you want to override
+[ -z $PID_FILE ] && PID_FILE=""
+
 # min and max mem (in MB); leave empty for java defaults
 [ -z $JAVA_MIN_MEM ] && JAVA_MIN_MEM="${config.minJavaMemory!""}"
 [ -z $JAVA_MAX_MEM ] && JAVA_MAX_MEM="${config.maxJavaMemory!""}"
@@ -141,8 +145,14 @@ fi
 #
 # pid handling
 #
-APP_PID_FILE="$APP_RUN_DIR/$NAME.pid"
-APP_PID_FILE_DEBUG="$APP_RUN_DIR_DEBUG/$NAME.pid"
+if [ ! -z $PID_FILE ]; then
+    APP_PID_FILE="$PID_FILE"
+    APP_PID_FILE_DEBUG="$PID_FILE"
+else
+    APP_PID_FILE="$APP_RUN_DIR/$NAME.pid"
+    APP_PID_FILE_DEBUG="$APP_RUN_DIR_DEBUG/$NAME.pid"
+fi
+
 
 #
 # do we need verify that the run directory is writable?

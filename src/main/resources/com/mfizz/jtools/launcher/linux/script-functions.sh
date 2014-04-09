@@ -38,21 +38,6 @@ findDirectory()
     done
 }
 
-
-# if running $PID_FILE; then
-#   echo "running..."
-# fi
-running()
-{
-    local PID=$(cat "$1" 2>/dev/null) || return 1
-    #[ -f $1 ] || return 1
-    #PID=$(cat $1)
-    ps -p $PID >/dev/null 2>/dev/null || return 1
-    #return 0
-    # kill -0 does not work if the daemon was started with a different user
-    #kill -0 "$PID" 2>/dev/null
-}
-
 getOperatingSystemName()
 {
     local u=$(uname)
@@ -328,6 +313,21 @@ buildJavaClasspath()
   fi
 
   echo $TMPCLASSPATH
+}
+
+
+# if running $PID_FILE; then
+#   echo "running..."
+# fi
+running()
+{
+    local PID=$(cat "$1" 2>/dev/null) || return 1
+    #[ -f $1 ] || return 1
+    #PID=$(cat $1)
+    ps -p $PID >/dev/null 2>/dev/null || return 1
+    #return 0
+    # kill -0 does not work if the daemon was started with a different user
+    #kill -0 "$PID" 2>/dev/null
 }
 
 # verifyNotRunning $JAVA_PID

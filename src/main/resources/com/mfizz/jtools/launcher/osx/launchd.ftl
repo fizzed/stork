@@ -2,29 +2,37 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
-        <!--
-        <key>StandardOutPath</key>
-        <string>/var/log/jenkins/jenkins.log</string>
-        <key>StandardErrorPath</key>
-        <string>/var/log/jenkins/jenkins.log</string>
-        -->
+        <!-- application directory must be owned by the user below -->
         <!--
         <key>UserName</key>
 	<string>daemon</string>
 	<key>GroupName</key>
 	<string>daemon</string>
         -->
-	<key>KeepAlive</key>
+        <key>KeepAlive</key>
 	<true/>
         <key>RunAtLoad</key>
 	<true/>
-        <!-- Contains a unique string that identifies your daemon to launchd -->
 	<key>Label</key>
-	<string>${config.domain}.${config.name}</string>
-	<key>ProgramArguments</key>
-	<array>
-            <string>/Library/Application Support/Jenkins/jenkins-runner.sh</string>
-	</array>
-	
+	<string>${config.domain}.${config.name}</string>	
+        <key>WorkingDirectory</key>
+        <string>/Library/Application Support/${config.displayName}</string>
+        <key>EnvironmentVariables</key>
+        <dict>
+                <key>LAUNCHER_DEBUG</key>
+                <string>1</string>
+        </dict>
+        <!-- relative to working directory above -->
+        <key>StandardOutPath</key>
+        <string>log/hello-daemon.stdout</string>
+        <key>StandardErrorPath</key>
+        <string>log/hello-daemon.stderr</string>
+        <key>ProgramArguments</key>
+        <array>
+                <string>bin/${config.name}</string>
+                <!-- launchd does not permit daemonizing -->
+                <string>-run</string>
+        </array>
+
     </dict>
 </plist>

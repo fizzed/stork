@@ -11,22 +11,20 @@
         <!-- application directory must be owned by the user below -->
         <!--<key>UserName</key><string>daemon</string>-->
 	<!--<key>GroupName</key><string>daemon</string>-->
-        
-		
-        
         <key>EnvironmentVariables</key>
         <dict>
-                <key>LAUNCHER_DEBUG</key>
-                <string>1</string>
+            <key>LAUNCHER_DEBUG</key>
+            <string>1</string>
+            <key>SKIP_PID_CHECK</key>
+            <string>1</string>
         </dict>
         <!-- relative to working directory above -->
         <key>StandardOutPath</key><string>log/hello-daemon.stdout</string>
         <key>StandardErrorPath</key><string>log/hello-daemon.stderr</string>
         <key>ProgramArguments</key>
         <array>
-                <string>bin/${config.name}</string>
-                <string>-run</string>
+            <string>bin/${config.name}</string>
+            <string>-run</string>
         </array>
-
     </dict>
 </plist>

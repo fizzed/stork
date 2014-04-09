@@ -48,6 +48,27 @@ Features
 
 
 
+#### Mac OSX
+
+Standard install location for daemons:
+    /Library/Application Support/<app_display_name>
+
+    sudo mkdir -p /Library/Application\ Support/Hello\ Server
+    sudo cp -R target/sample/* /Library/Application\ Support/Hello\ Server/
+
+Standard install location for launchd startup script:
+    sudo cp target/sample/share/osx/com.example.hello-daemon.plist /Library/LaunchDaemons/
+
+/Library/LaunchDaemons System-wide daemons provided by the administrator.
+started and available at boot (even if no user logged in yet).
+    
+To load (and start) daemon. Required in order to trigger on next boot.
+    sudo launchctl load -F /Library/LaunchDaemons/com.example.hello-daemon.plist
+
+To see what is going on (should have a PID value):
+    sudo launchctl list com.example.hello-daemon
+
+
 
 #### Windows
 

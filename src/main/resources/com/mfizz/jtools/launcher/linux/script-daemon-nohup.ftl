@@ -95,10 +95,14 @@ case "$APP_ACTION_ARG" in
 
   -run)
     echo "Running $NAME: "
-    verifyNotRunning $APP_PID_FILE
+    # some launcher frameworks manage the PID (this skips the check entirely)
+    # only enable this env var if you know what you're doing
+    if [ "$SKIP_PID_CHECK" = "0" ]; then
+        verifyNotRunning $APP_PID_FILE
+    fi
     # take pid of shell for pid lock
     echo $$ > $APP_PID_FILE
-    # best effor to remove pid file upon exit via trap
+    # best effort to remove pid file upon exit via trap
     trap 'echo "cleaning up pid file: $APP_PID_FILE"; rm -f "$APP_PID_FILE"' 2 3 6 15
     eval $RUN_CMD
     ;;

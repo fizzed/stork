@@ -16,7 +16,6 @@
 package com.mfizz.sample;
 
 import fi.iki.elonen.NanoHTTPD;
-import fi.iki.elonen.ServerRunner;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
@@ -32,9 +31,11 @@ import java.util.List;
 public class HelloDaemon extends NanoHTTPD {
     
     private List<String> lines;
+    private Date startedAt;
     
     public HelloDaemon(int port) {
         super(port);
+        this.startedAt = new Date();
     }
  
     static public void main(String[] args) throws Exception {
@@ -85,7 +86,8 @@ public class HelloDaemon extends NanoHTTPD {
         sb.append("<head><title>Hello Daemon!</title></head>");
         sb.append("<body>");
         sb.append("<h1>Hi, i am an example daemon.</h1>");
-        sb.append("Date: ").append(new Date()).append("<br/>");
+        sb.append("Now: ").append(new Date()).append("<br/>");
+        sb.append("Started: ").append(this.startedAt).append("<br/>");
         for (String line : lines) {
             sb.append(line).append("<br/>");
         }
@@ -98,6 +100,7 @@ public class HelloDaemon extends NanoHTTPD {
         List<String> lines = new ArrayList<String>();
         lines.add("working.dir: " + System.getProperty("user.dir"));
         lines.add("home.dir: " + System.getProperty("user.home"));
+        lines.add("user.name: " + System.getProperty("user.name"));
         lines.add("java.class.path: " + System.getProperty("java.class.path"));
         lines.add("java.home: " + System.getProperty("java.home"));
         lines.add("java.version: " + System.getProperty("java.version"));

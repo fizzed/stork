@@ -49,6 +49,7 @@ MAIN_CLASS="${config.mainClass}"
 APP_ARGS="${config.appArgs}"
 JAVA_ARGS="${config.javaArgs}"
 LIB_DIR="${config.libDir}"
+[ -z $SKIP_PID_CHECK ] && SKIP_PID_CHECK="0"
 [ -z $MIN_JAVA_VERSION ] && MIN_JAVA_VERSION="${config.minJavaVersion}"
 SYMLINK_JAVA="${config.symlinkJava?string("1", "0")}"
 <#if (config.type == "DAEMON")>

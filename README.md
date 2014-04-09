@@ -68,6 +68,8 @@ To load (and start) daemon. Required in order to trigger on next boot.
 To see what is going on (should have a PID value):
     sudo launchctl list com.example.hello-daemon
 
+To unload (stop) daemon:
+    sudo launchctl unload /Library/LaunchDaemons/com.example.hello-daemon.plist
 
 
 #### Windows

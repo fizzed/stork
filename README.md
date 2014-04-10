@@ -16,15 +16,88 @@ While other Java service wrappers attempt to handle re-spawning via a secondary
 controller process, what about relatively simple console apps / daemons or
 an interest in using better tools for handling re-spawning like monit.
 
-### Canonical layout of application folder
+### Canonical application layout
 
-    <app_home>
-     - bin
-     - lib
-     - conf
-     - share
-     - data
+A standard Java app has the following layout:
 
+    <app_name>/
+        bin/
+        lib/
+        conf/
+        share/   (architecture independent read-only data optionally included during install)
+        data/    (not present at install time; ignored during upgrade)
+        log/     (not present at install time; ignored during upgrade)
+        run/     (not present at install time; ignored during upgrade)
+
+#### bin/ (executables)
+
+For all read-only executables.  These are the binaries the user will execute.
+Assume the user may place these in a read-only filesystem.
+
+Examples include batch files or shell scripts to start your Java app.
+
+#### lib/ (libraries)
+
+All shared files and libraries required for running the application(s).
+
+Examples include jar files containing compiled Java classes.
+
+#### conf/ (configuration data)
+
+All configuration files for the application(s). Any files in this directory
+need to be carefully examined during an upgrade -- since the user may have
+edited the config for their specific system.
+
+#### share/ (architecture-independent data)
+
+For all read-only architecture independent data files.
+
+Examples would include sql scripts to setup databases; linux setup scripts, or
+documentation.
+
+#### data/ (variable state information)
+
+State information is data that programs modify while they run, and that pertains
+to one specific host.  State information should generally remain valid after a
+reboot, should not be logging output, and should not be spooled data.
+
+Files in this directory should be retained between upgrades.
+
+Examples would include an application's database.
+
+#### log/ (logfiles)
+
+Logfiles for application (startup, runtime, etc.). It must be acceptable to
+truncate or delete files in this directory w/o affecting the application on
+its next invocation.
+
+Files in this directory may be retained between upgrades, but assume they will
+be deleted.
+
+#### run/ (run-time variable data)
+
+This directory contains system information data describing the system since it
+was booted. Files under this directory may/will be cleared (removed or truncated
+as appropriate) at the beginning of the boot process. On some versions of linux,
+/var/run is mounted as a temporary file system.
+
+Examples would include an application's process id (pid) file or named sockets.
+
+
+
+
+For Linux/UNIX, good reference of standard filesystem:
+
+    http://www.pathname.com/fhs/pub/fhs-2.3.html
+    
+    /opt/<app_name>/
+        bin/
+        lib/
+        conf/
+        share/
+        data    -> soft link to /var/lib/<app_name>
+        log     -> soft link to /var/log/<app_name>
+        run     -> soft link to /var/run/<app_name>
 
 LAUNCHER_DEBUG=1 bin/app_name
 

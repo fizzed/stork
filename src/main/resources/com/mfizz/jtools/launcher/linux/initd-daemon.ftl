@@ -20,8 +20,11 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 NAME="${config.name}"
 SCRIPTNAME="/etc/init.d/${config.name}"
-APP_HOME="/usr/local/${config.name}"
+APP_HOME="/opt/${config.name}"
 APP_USER="${config.getDaemonUser("LINUX")!""}"
+APP_GROUP="${config.getDaemonUser("LINUX")!""}"
+RUN_DIR="/var/run/${config.name}"
+LOG_DIR="/var/log/${config.name}"
 SU="/bin/su"
 SUDO="sudo"
 
@@ -35,23 +38,34 @@ fi
 [ -r /etc/sysconfig/$NAME ] && . /etc/sysconfig/$NAME
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
 
+# run/log directories may have been removed from prior invocation
+if [ ! -d "$RUN_DIR" ]; then
+    mkdir -p "$RUN_DIR"
+    chown -R $APP_USER:$APP_GROUP "$RUN_DIR"
+fi
+if [ ! -d "$LOG_DIR" ]; then
+    mkdir -p "$LOG_DIR"
+    chown -R $APP_USER:$APP_GROUP "$LOG_DIR"
+fi
+
+# everything needs to be run as requested user
 case "$1" in
   start)
     $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" -start"
     ;;
   run)
-    # running with su does not correctly kill subshells - must have sudo to run
+    # running with su does not correctly kill subshells - must use sudo to run
     $SUDO -u $APP_USER "$APP_HOME/bin/$NAME" -run
     ;;
   stop)
-    "$APP_HOME/bin/$NAME" -stop
+    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" -stop"
     ;;
   restart)
-    "$APP_HOME/bin/$NAME" -stop
+    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" -stop"
     $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" -start"
     ;;
   status)
-    "$APP_HOME/bin/$NAME" -status
+    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" -status"
     ;;
   *)
     echo "Usage: $SCRIPTNAME {start|stop|status|restart|run}" >&2

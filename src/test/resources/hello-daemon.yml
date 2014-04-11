@@ -50,7 +50,7 @@ min_java_version: "1.6"
 daemon_methods: { LINUX: NOHUP, WINDOWS: JSLWIN }
 
 # run daemon as a specific user (mac_osx inherits linux if not defined)
-daemon_users: { LINUX: "daemon" }
+daemon_users: { LINUX: "daemon", MAC_OSX: "_daemon" }
 
 symlink_java: true
 

@@ -5,7 +5,7 @@
         <key>Label</key><string>${config.domain}.${config.name}</string>
         <key>KeepAlive</key><true/>
         <key>RunAtLoad</key><true/>
-        <key>WorkingDirectory</key><string>/Library/Application Support/${config.displayName}</string>
+        <key>WorkingDirectory</key><string>/Users/Shared/${config.displayName}</string>
         <key>Disabled</key><false/>
         <key>LaunchOnlyOnce</key><true/>
         <!-- application directory must be owned by the user below -->

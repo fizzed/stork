@@ -90,6 +90,12 @@
         </exec>
     </target>
     
+    <target name="java-detect" depends="compile-hello-console">
+        <exec executable="${target}/sample/share/helper/java-detect${batext}">
+            <arg value="--latest-major-version"/>
+        </exec>
+    </target>
+    
     <target name="sample-dist" depends="clean, compile-hello-console, compile-hello-daemon">
         <tar destfile="${basedir}/target/launcher-sample.tar.gz" compression="gzip" >
             <tarfileset dir="${target}/sample" prefix="launcher-sample">

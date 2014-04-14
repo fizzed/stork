@@ -83,6 +83,11 @@ case "$1" in
 
   *)
     echo "Usage: `basename $0` [command] [optional args per command]" >&2
+    echo "Commands:" >&2
+    echo " --all-java-executables" >&2
+    echo " --first-min-version" >&2
+    echo " --latest-major-version" >&2
+    echo " --latest-major-version-number" >&2
     #echo " --all-java-executables               Prints colon delimited list of" >&2
     #echo "                                      all javas on system" >&2
     #echo " --first-min-version [min-version]    " >&2

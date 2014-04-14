@@ -322,28 +322,6 @@ findLatestJavaExecutableByMajorVersion()
 }
 
 
-# java_maj_version=`findLatestJavaMajorVersion "<java_bins separated by colon>"`
-findLatestJavaMajorVersion()
-{
-    local java_bins="$1"
-    local latest_java_maj_version=0
-
-    local IFS=":"
-    for java_bin in $java_bins; do
-        java_maj_version=`"$java_bin" -version 2>&1 | grep "version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
-        if [ "$java_maj_version" != "" ] && [ $java_maj_version -gt $latest_java_maj_version ]; then
-             latest_java_maj_version=$java_maj_version
-        fi
-    done
-
-    if [ "$latest_java_maj_version" != "" ]; then
-        return $latest_java_maj_version
-    else
-        return 0
-    fi
-}
-
-
 # JAVA_CLASSPATH=`buildJavaClasspath $jarDir`
 buildJavaClasspath()
 {

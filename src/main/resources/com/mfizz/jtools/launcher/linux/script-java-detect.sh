@@ -56,7 +56,9 @@ doLatestMajorVersionNumber()
         echo "No java executables found"
         exit 100
     else
+        logJavaSearchDebug "found latest major java version, getting version from: $java_bin"
         java_ver=`getJavaVersion "$java_bin"`
+        logJavaSearchDebug "extracting major version num from: $java_ver"
         java_maj_ver=`parseJavaMajorVersion "$java_ver"`
         echo $java_maj_ver
         exit $java_maj_ver

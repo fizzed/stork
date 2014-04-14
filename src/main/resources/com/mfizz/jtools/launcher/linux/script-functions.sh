@@ -171,7 +171,12 @@ appendPath()
 getJavaVersion()
 {
     local java_bin="$1"
-    echo `expr "$($java_bin -version 2>&1 | head -1)" : '.*version.*"\(.*\)"'`
+    #logJavaSearchDebug "getJavaVersion from: $java_bin"
+    #local java_ver_line=`"$java_bin" -version 2>&1 | head -1`
+    #logJavaSearchDebug "getJavaVersion ver line: $java_ver_line"
+    #echo `expr "'$java_ver_line'" : '.*version.*"\(.*\)"'`
+    local java_ver=`"$java_bin" -version 2>&1 | grep "version" | awk '{print $3}' | tr -d \"`
+    echo "$java_ver"
 }
 
 

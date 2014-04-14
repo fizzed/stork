@@ -77,7 +77,7 @@ done
 # save current working directory
 INITIAL_WORKING_DIR="`pwd`"
 
-# change working directory to app home (handle spaces)
+# change working directory to app home
 PRGDIR=$(dirname "$PRG")
 cd "$PRGDIR/.."
 

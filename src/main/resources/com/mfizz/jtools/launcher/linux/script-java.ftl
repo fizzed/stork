@@ -2,19 +2,19 @@
 #
 # find java runtime that meets our minimum requirements
 #
-ALL_JAVA_CMDS=`findJavaCommands`
+ALL_JAVA_BINS=`findAllJavaExecutables`
 
-JAVA_BIN=`findMinJavaVersion "$MIN_JAVA_VERSION" "$ALL_JAVA_CMDS"`
+JAVA_BIN=`findFirstJavaExecutableByMinimumMajorVersion "$ALL_JAVA_BINS" "$MIN_JAVA_VERSION"`
 
 if [ -z "$JAVA_BIN" ]; then
     echo "Unable to find Java runtime on system with version >= $MIN_JAVA_VERSION"
 
-    min_java_version=`extractPrimaryJavaVersion "$MIN_JAVA_VERSION"`
+    min_java_maj_ver=`parseJavaMajorVersion "$MIN_JAVA_VERSION"`
 
     if [ -f "/etc/debian_version" ]; then
-        echo "Try running 'sudo apt-get install openjdk-$min_java_version-jre-headless' or"
+        echo "Try running 'sudo apt-get install openjdk-$min_java_maj_ver-jre-headless' or"
     elif [ -f "/etc/redhat-release" ]; then
-        echo "Try running 'su -c \"yum install java-1.$min_java_version.0-openjdk\"' OR"
+        echo "Try running 'su -c \"yum install java-1.$min_java_maj_ver.0-openjdk\"' OR"
     fi
 
     echo "Visit http://java.com to download and install one for your system"

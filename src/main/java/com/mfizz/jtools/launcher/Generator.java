@@ -214,8 +214,13 @@ public class Generator {
                         generateUnixConsoleLauncher(config, launcherFile, model);
                     } else if (config.getType() == Type.DAEMON) {
                         generateUnixDaemonLauncher(config, launcherFile, model);
-                    } 
-
+                    }
+                    
+                    File helperDir = new File(shareDir, "helper");
+                    helperDir.mkdirs();
+                    File javaDetectFile = new File(helperDir, "java-detect");
+                    generateUnixJavaDetectScript(javaDetectFile);
+                    
                     unixLauncherGeneratedVia = platform;
                 }
                 
@@ -366,6 +371,33 @@ public class Generator {
             }
         }
     }
+    
+    
+    static public void generateUnixJavaDetectScript(File file) throws Exception {
+        FileOutputStream fos = new FileOutputStream(file);
+        Writer out = new OutputStreamWriter(fos);
+
+        try {
+            includeResource("linux/script-java-detect-header.sh", fos);
+
+            includeResource("linux/script-functions.sh", fos);
+            
+            includeResource("linux/script-java-detect.sh", fos);
+            
+            // set to executable
+            file.setExecutable(true);
+
+            System.out.println(" - script: " + file);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (fos != null) {
+                fos.close();
+            }
+        }
+    }
+    
     
     static public void generateWindowsConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
         // make sure parent of file to be generated exists

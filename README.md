@@ -9,8 +9,10 @@ Java Native Executable Library
 ### Overview
 
 Utility for generating native launchers for Java-based applications across Windows,
-Linux, and Mac OSX. Unlike other "service wrappers", this utility can create
-simple console application
+Linux, Mac OSX, and many other UNIX-like systems w/ bourne shell support. Unlike
+other "service wrappers" or launcher frameworks, this utility can create launchers
+for either console or daemon apps.  Just create a config file describing your
+launcher and then run the tool to "compile" it into various launchers.
 
 While other Java service wrappers attempt to handle re-spawning via a secondary
 controller process, what about relatively simple console apps / daemons or
@@ -111,13 +113,15 @@ Features
     * Windows XP+ (32-bit and 64-bit)
     * Linux (32-bit and 64-bit)
     * Mac OSX (32-bit and 64-bit)
-    * FreeBSD 
+    * FreeBSD
+    * OpenBSD
  
  * Supports launching apps with retaining the working dir of the shell or setting
    the working directory to the home of app.
  * Sets the working directory of the app without annoyingly changing the working
    directory of the shell that launched the app (even on Windows).
  * Command-line arguments are passed thru to underlying java app
+ * Handles spaces in file paths
 
 
 

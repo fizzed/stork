@@ -107,6 +107,7 @@ getSystemMemoryMB()
         fi
     fi
 
+    # works on mac osx
     if [ -z $mem_mb ] && isOperatingSystemOSX; then
         local mem_bytes=`sysctl -a 2>/dev/null | grep "hw.memsize" | head -n 1 | awk -F'=' '{print $2}'`
         if [ ! -z $mem_bytes ]; then
@@ -115,7 +116,7 @@ getSystemMemoryMB()
         fi
     fi
 
-    # try sysctl for hw.physmem which works on freebsd/openbsd
+    # try sysctl for hw.physmem works on freebsd/openbsd
     if [ -z $mem_mb ]; then
         local mem_bytes=`sysctl -a 2>/dev/null | grep "hw.physmem" | head -n 1 | awk -F'[:=]' '{print $2}'`
         if [ ! -z $mem_bytes ]; then
@@ -154,15 +155,8 @@ readAllLinks()
   echo $J
 }
 
-# JAVA_VERSION=`javaVersion $JAVA_HOME/jre/bin/java`
-getJavaVersion()
-{
-  TMPJAVA=$1
-  echo `expr "$($TMPJAVA -version 2>&1 | head -1)" : '.*version.*"\([0-9._]*\)"'`
-}
 
-
-# `appendPath $1 $2`
+# appended_path=`appendPath $1 $2`
 appendPath()
 {
   if [ -z "$1" ]; then
@@ -173,9 +167,17 @@ appendPath()
 }
 
 
-# `findJavaCommands` -> returns string of paths separated by colon
-# e.g. "/usr/bin/java:/usr/lib/jvm/bin/java"
-findJavaCommands()
+# JAVA_VERSION=`javaVersion "$JAVA_HOME/jre/bin/java"`
+getJavaVersion()
+{
+    local java_bin="$1"
+    echo `expr "$($java_bin -version 2>&1 | head -1)" : '.*version.*"\(.*\)"'`
+}
+
+
+# $java_bins=`findAllJavaExecutables`
+# returns: all java executables separated by colon "/usr/bin/java:/usr/lib/jvm/bin/java"
+findAllJavaExecutables()
 {
     local java_cmds=""
 
@@ -224,13 +226,15 @@ findJavaCommands()
     # centos/redhat sunjdk: /usr/java
     
     local java_home_parents=""
+
+    # common install dir on linux
     java_home_parents=`appendPath "$java_home_parents" "/usr/lib/jvm/*"`
     java_home_parents=`appendPath "$java_home_parents" "/usr/java/*"`
     
-    # on freebsd
+    # common install dir on freebsd
     java_home_parents=`appendPath "$java_home_parents" "/usr/local/openjdk*"`
 
-    # on openbsd
+    # common install dir on openbsd
     java_home_parents=`appendPath "$java_home_parents" "/usr/local/jdk*"`
     java_home_parents=`appendPath "$java_home_parents" "/usr/local/jre*"`
     
@@ -264,41 +268,81 @@ findJavaCommands()
     echo "$java_cmds"
 }
 
-# java_bin=`extractMajorJavaVersion 1.7`
-# returns: "7"
-extractPrimaryJavaVersion()
-{
-    local min_version="$1"
-    
-    # "1.7" -> extract java version
-    local target_java_version=`echo $min_version | awk '{split($0, array, ".")} END{print array[2]}'`
 
-    echo $target_java_version
+# java_maj_ver=`parseJavaMajorVersion 1.7`
+# returns: "7"
+parseJavaMajorVersion()
+{
+    local full_version="$1"
+    local java_maj_ver=`echo "$full_version" | awk '{split($0, array, ".")} END{print array[2]}'`
+    echo $java_maj_ver
 }
 
 
-# java_bin=`findMinJavaVersion 1.7 <java_cmds separated by colon>`
-findMinJavaVersion()
+# java_bin=`findFirstJavaForMinimumMajorVersion "<java_cmds separated by colon>" "1.7"`
+findFirstJavaExecutableByMinimumMajorVersion()
 {
-    local min_version="$1"
-    local java_cmds_line="$2"
-    
-    # "1.7" -> extract java version
-    local target_java_version=`extractPrimaryJavaVersion "$min_version"`
+    local java_bins="$1"
+    local min_java_ver="$2"
+    local target_min_java_maj_ver=`parseJavaMajorVersion "$min_java_ver"`
 
     local IFS=":"
-    for java_cmd in $java_cmds_line; do
-        #echo "getting version from: $java_cmd"
-        java_version=`"$java_cmd" -version 2>&1 | grep "version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
-        #echo "java_version: $java_cmd -> $java_version"
-        if [ "$java_version" != "" ] && [ $java_version -ge $target_java_version ]; then
-             echo $java_cmd
+    for java_bin in $java_bins; do
+        java_ver=`getJavaVersion "$java_bin"`
+        logJavaSearchDebug "evaluting if $java_bin with version $java_ver >= 1.$target_min_java_maj_ver"
+        java_maj_ver=`parseJavaMajorVersion "$java_ver"`
+        if [ "$java_maj_ver" != "" ] && [ $java_maj_ver -ge $target_min_java_maj_ver ]; then
+             echo "$java_bin"
              return 1
         fi
     done
-
     return 0
 }
+
+
+# java_bin=`findLatestJavaExecutableByMajorVersion "<java_cmds separated by colon>"`
+findLatestJavaExecutableByMajorVersion()
+{
+    local java_bins="$1"
+    local latest_java_maj_ver=0
+    local latest_java_bin=""
+
+    local IFS=":"
+    for java_bin in $java_bins; do
+        java_ver=`getJavaVersion "$java_bin"`
+        logJavaSearchDebug "evaluting if $java_bin is a new major java version on system"
+        java_maj_ver=`parseJavaMajorVersion "$java_ver"`
+        if [ "$java_maj_ver" != "" ] && [ $java_maj_ver -gt $latest_java_maj_ver ]; then
+             latest_java_maj_ver=$java_maj_ver
+             latest_java_bin=$java_bin
+        fi
+    done
+
+    echo "$latest_java_bin"
+}
+
+
+# java_maj_version=`findLatestJavaMajorVersion "<java_bins separated by colon>"`
+findLatestJavaMajorVersion()
+{
+    local java_bins="$1"
+    local latest_java_maj_version=0
+
+    local IFS=":"
+    for java_bin in $java_bins; do
+        java_maj_version=`"$java_bin" -version 2>&1 | grep "version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
+        if [ "$java_maj_version" != "" ] && [ $java_maj_version -gt $latest_java_maj_version ]; then
+             latest_java_maj_version=$java_maj_version
+        fi
+    done
+
+    if [ "$latest_java_maj_version" != "" ]; then
+        return $latest_java_maj_version
+    else
+        return 0
+    fi
+}
+
 
 # JAVA_CLASSPATH=`buildJavaClasspath $jarDir`
 buildJavaClasspath()

@@ -2,6 +2,9 @@
 # Name of application (make sure it has no spaces)
 name: "hello-console"
 
+# Domain of application (e.g. com.example)
+domain: "com.example"
+
 # Display name of application (can have spaces)
 display_name: "Hello Console App"
 

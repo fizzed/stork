@@ -1,0 +1,20 @@
+
+name: "jtools-launcher-merge"
+
+domain: "com.mfizz.jtools"
+
+display_name: "Jtools Launcher Merge"
+
+short_description: "Utility for merging configuration files for launcher"
+
+type: CONSOLE
+
+main_class: "com.mfizz.jtools.launcher.Merger"
+
+platforms: [ WINDOWS, LINUX ]
+
+working_dir_mode: RETAIN
+  
+min_java_version: "1.4"
+
+symlink_java: false

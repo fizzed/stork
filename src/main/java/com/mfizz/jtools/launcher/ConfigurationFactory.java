@@ -35,10 +35,13 @@ package com.mfizz.jtools.launcher;
  * #L%
  */
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -51,17 +54,55 @@ import javax.validation.ValidatorFactory;
  */
 public class ConfigurationFactory {
     
-    static public Configuration create(File configFile) throws Exception {
+    private ObjectMapper mapper;
+    
+    public ConfigurationFactory() {
+        this.mapper = createObjectMapper();
+    }
+    
+    static public ObjectMapper createObjectMapper() {
         // create json deserializer
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+        return mapper;
+    }
+
+    public ObjectMapper getMapper() {
+        return mapper;
+    }
+    
+    public JsonNode createDefaultNode() {
+        return mapper.valueToTree(new Configuration());
+    }
+    
+    public JsonNode createConfigNode(File configFile) throws IOException {
+        return mapper.readTree(configFile);
+    }
+    
+    public JsonNode mergeNodes(JsonNode node, JsonNode updateNode) {
+        return JacksonUtil.merge(node, updateNode);
+    }
+    
+    public Configuration create(JsonNode node) throws JsonProcessingException {
+        return mapper.treeToValue(node, Configuration.class);
+    }
+    
+    public Configuration create(File configFile) throws Exception {
+        // tree of defaults
+        JsonNode defaultNode = createDefaultNode();
+        
+        // tree of configuration
+        JsonNode configNode = createConfigNode(configFile);
+        
+        // merge defaults + config
+        JsonNode mergedNode = mergeNodes(defaultNode, configNode);
+        
+        Configuration config = create(mergedNode);
+        config.setFile(configFile);
         
         // create validator
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
-        
-        Configuration config = mapper.readValue(configFile, Configuration.class);
-        config.setFile(configFile);
         
         Set<ConstraintViolation<Configuration>> violations = validator.validate(config);
         if (violations.size() > 0) {

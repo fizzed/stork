@@ -8,8 +8,8 @@
         <key>WorkingDirectory</key><string>/Users/Shared/${config.displayName}</string>
         <key>Disabled</key><false/>
         <key>LaunchOnlyOnce</key><true/>
-        <key>UserName</key><string>${config.getDaemonUser("MAC_OSX")!""}</string>
-	<key>GroupName</key><string>${config.getDaemonUser("MAC_OSX")!""}</string>
+        <key>UserName</key><string>${config.getPlatformUser("MAC_OSX")!""}</string>
+	<key>GroupName</key><string>${config.getPlatformUser("MAC_OSX")!""}</string>
         <key>EnvironmentVariables</key>
         <dict>
             <key>LAUNCHER_DEBUG</key>

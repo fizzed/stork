@@ -20,11 +20,11 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 NAME="${config.name}"
 SCRIPTNAME="/etc/init.d/${config.name}"
-APP_HOME="/opt/${config.name}"
-APP_USER="${config.getDaemonUser("LINUX")!""}"
-APP_GROUP="${config.getDaemonUser("LINUX")!""}"
-RUN_DIR="/var/run/${config.name}"
-LOG_DIR="/var/log/${config.name}"
+APP_HOME="${config.getPlatformPrefixDir("LINUX")}/${config.name}"
+APP_USER="${config.getPlatformUser("LINUX")!""}"
+APP_GROUP="${config.getPlatformGroup("LINUX")!""}"
+RUN_DIR="${config.getPlatformRunDir("LINUX")!""}"
+LOG_DIR="${config.getPlatformLogDir("LINUX")!""}"
 SU="/bin/su"
 SUDO="sudo"
 
@@ -39,13 +39,27 @@ fi
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
 
 # run/log directories may have been removed from prior invocation
-if [ ! -d "$RUN_DIR" ]; then
-    mkdir -p "$RUN_DIR"
-    chown -R $APP_USER:$APP_GROUP "$RUN_DIR"
+if [ ! -z $RUN_DIR ]; then
+    if [ ! -d "$RUN_DIR" ]; then
+        mkdir -p "$RUN_DIR"
+        if [ ! -z $APP_USER ]; then
+            chown -R $APP_USER:$APP_GROUP "$RUN_DIR"
+        fi
+    fi
 fi
-if [ ! -d "$LOG_DIR" ]; then
-    mkdir -p "$LOG_DIR"
-    chown -R $APP_USER:$APP_GROUP "$LOG_DIR"
+
+if [ ! -z $LOG_DIR ]; then
+    if [ ! -d "$LOG_DIR" ]; then
+        mkdir -p "$LOG_DIR"
+        if [ ! -z $APP_USER ]; then
+            chown -R $APP_USER:$APP_GROUP "$LOG_DIR"
+        fi
+    fi
+fi
+
+# in order to use su/sudo below without a app_user set, set one if missing
+if [ -z $APP_USER ]; then
+    APP_USER="$USER"
 fi
 
 # everything needs to be run as requested user

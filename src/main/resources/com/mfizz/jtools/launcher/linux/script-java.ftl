@@ -160,7 +160,7 @@ logLauncherDebug "log_dir: $APP_LOG_DIR_DEBUG"
 logLauncherDebug "lib_dir: $APP_LIB_DIR_DEBUG"
 logLauncherDebug "pid_file: $APP_PID_FILE_DEBUG"
 logLauncherDebug "java_min_version_required: $MIN_JAVA_VERSION"
-if [ ! -z $NON_SYMLINK_JAVA_BIN ]; then
+if [ ! -z "$NON_SYMLINK_JAVA_BIN" ]; then
     logLauncherDebug "java_bin: $NON_SYMLINK_JAVA_BIN"
     logLauncherDebug "java_symlink: $JAVA_BIN"
 else

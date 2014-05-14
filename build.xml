@@ -44,8 +44,11 @@
             <fileset dir="${target}/dependency"/>
             <fileset dir="${target}" includes="*.jar" excludes="*-sources.jar"/>
         </copy>
-        <exec executable="mvn${batext}">
+        <exec executable="mvn${batext}" failonerror="true">
             <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/main/resources/jtools-launcher-generate.yml -o '${target}/stage'&quot;"/>
+        </exec>
+        <exec executable="mvn${batext}" failonerror="true">
+            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/main/resources/jtools-launcher-merge.yml -o '${target}/stage'&quot;"/>
         </exec>
     </target>
     
@@ -69,23 +72,23 @@
     </target>
     
     <target name="compile-hello-console" depends="checkos, stage-sample">
-        <exec executable="mvn${batext}">
+        <exec executable="mvn${batext}" failonerror="true">
             <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/test/resources/hello-console.yml -o '${target}/sample'&quot;"/>
         </exec>
     </target>
     
     <target name="compile-hello-daemon" depends="checkos, stage-sample">
-        <exec executable="mvn${batext}">
+        <exec executable="mvn${batext}" failonerror="true">
             <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/test/resources/hello-daemon.yml -o '${target}/sample'&quot;"/>
         </exec>
     </target>
         
     <target name="hello-console" depends="compile-hello-console">
-        <exec executable="${target}/sample/bin/hello-console${batext}" />
+        <exec executable="${target}/sample/bin/hello-console${batext}" failonerror="true" />
     </target>
     
     <target name="hello-daemon" depends="compile-hello-daemon">
-        <exec executable="${target}/sample/bin/hello-daemon${batext}">
+        <exec executable="${target}/sample/bin/hello-daemon${batext}" failonerror="true">
             <arg value="-run"/>
         </exec>
     </target>
@@ -106,6 +109,12 @@
                 <include name="bin/**"/>
             </tarfileset>
         </tar>
+    </target>
+    
+    <target name="hello-merge" depends="checkos, stage-sample">
+        <exec executable="mvn${batext}" failonerror="true">
+            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Merger -Dexec.args=&quot;-i src/test/resources/hello-base.yml -i src/test/resources/hello-console.yml -o '${target}/hello-console-merged.yml'&quot;"/>
+        </exec>
     </target>
 	
 </project>

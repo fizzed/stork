@@ -117,24 +117,38 @@ public class Configuration {
     // default name is "<app name>-java"
     private boolean symlinkJava = false;
     
-    // http://stackoverflow.com/questions/958249/whats-the-difference-between-nohup-and-a-daemon
-    // really intersting discussion of NOHUP vs. other methods of daemonizing
-    //private DaemonMethod daemonMethod = DaemonMethod.NOHUP;
-    private Map<Platform,DaemonMethod> daemonMethods;
     // daemon pid will be tested after this amount of seconds to confirm it is
     // still running -- a simple way to verify that it likely started
     private Integer daemonMinLifetime = 3;
     // daemon will print this line to stdout/stderr to announce it started successfully
     private String daemonLaunchConfirm = null;
     
+    // http://stackoverflow.com/questions/958249/whats-the-difference-between-nohup-and-a-daemon
+    // really intersting discussion of NOHUP vs. other methods of daemonizing
+    //private DaemonMethod daemonMethod = DaemonMethod.NOHUP;
+    //private Map<Platform,DaemonMethod> daemonMethods;
     // user that a daemon should run as (via startup scripts)
-    private Map<Platform,String> daemonUsers;
+    //private Map<Platform,String> daemonUsers;
+    
+    private Map<Platform,PlatformConfiguration> platformConfigurations;
     
     public Configuration() {
+        /**
         this.daemonMethods = new HashMap<Platform,DaemonMethod>();
         this.daemonMethods.put(Platform.LINUX, DaemonMethod.NOHUP);
         this.daemonMethods.put(Platform.WINDOWS, DaemonMethod.JSLWIN);
         this.daemonUsers = new HashMap<Platform,String>();
+        */
+        
+        this.platformConfigurations = new HashMap<Platform,PlatformConfiguration>();
+        // create default linux and windows configurations
+        PlatformConfiguration linuxConfig = new PlatformConfiguration();
+        linuxConfig.setDaemonMethod(DaemonMethod.NOHUP);
+        linuxConfig.setPrefixDir("/opt");
+        this.platformConfigurations.put(Platform.LINUX, linuxConfig);
+        PlatformConfiguration windowsConfig = new PlatformConfiguration();
+        linuxConfig.setDaemonMethod(DaemonMethod.JSLWIN);
+        this.platformConfigurations.put(Platform.WINDOWS, windowsConfig);
     }
     
     public File getFile() {
@@ -328,14 +342,6 @@ public class Configuration {
         this.symlinkJava = symlinkJava;
     }
 
-    public Map<Platform, DaemonMethod> getDaemonMethods() {
-        return daemonMethods;
-    }
-
-    public void setDaemonMethods(Map<Platform, DaemonMethod> daemonMethods) {
-        this.daemonMethods = daemonMethods;
-    }
-
     public Integer getDaemonMinLifetime() {
         return daemonMinLifetime;
     }
@@ -352,26 +358,142 @@ public class Configuration {
         this.daemonLaunchConfirm = daemonLaunchConfirm;
     }
 
-    public Map<Platform, String> getDaemonUsers() {
-        return daemonUsers;
+    public Map<Platform, PlatformConfiguration> getPlatformConfigurations() {
+        return platformConfigurations;
     }
 
-    public void setDaemonUsers(Map<Platform, String> daemonUsers) {
-        this.daemonUsers = daemonUsers;
+    public void setPlatformConfigurations(Map<Platform, PlatformConfiguration> platformConfigurations) {
+        this.platformConfigurations = platformConfigurations;
     }
-
-    public String getDaemonUser(String platformName) {
-        Platform platform = Platform.valueOf(platformName);
-        
-        if (platform != null) {
-            if (platform == Platform.MAC_OSX) {
-                if (!daemonUsers.containsKey(platform)) {
-                    platform = Platform.LINUX;
-                }
-            }
-            return daemonUsers.get(platform);
+    
+    
+    public PlatformConfiguration getPlatformConfiguration(Platform platform) {
+        if (platform == null) {
+            return null;
         }
-        return null;
+        return this.platformConfigurations.get(platform);
+    }
+   
+    
+    public DaemonMethod getPlatformDaemonMethod(String platformName) {
+        Platform platform = Platform.valueOf(platformName);
+        return getPlatformDaemonMethod(platform);
+    }
+    
+    public DaemonMethod getPlatformDaemonMethod(Platform platform) {
+        PlatformConfiguration pc = getPlatformConfiguration(platform);
+        if (pc == null) {
+            return null;
+        }
+        
+        DaemonMethod v = pc.getDaemonMethod();
+        
+        // fallback to linux for mac
+        if (v == null && platform == Platform.MAC_OSX) {
+            return getPlatformDaemonMethod(Platform.LINUX);
+        }
+        
+        return v;
+    }
+    
+    
+    public String getPlatformUser(String platformName) {
+        Platform platform = Platform.valueOf(platformName);
+        return getPlatformUser(platform);
+    }
+    
+    public String getPlatformUser(Platform platform) {
+        PlatformConfiguration pc = getPlatformConfiguration(platform);
+        if (pc == null) {
+            return null;
+        }
+        
+        String v = pc.getUser();
+        
+        // fallback to linux for mac
+        if (v == null && platform == Platform.MAC_OSX) {
+            return getPlatformUser(Platform.LINUX);
+        }
+        
+        return v;
+    }
+    
+    
+    public String getPlatformGroup(String platformName) {
+        Platform platform = Platform.valueOf(platformName);
+        return getPlatformUser(platform);
+    }
+    
+    public String getPlatformGroup(Platform platform) {
+        PlatformConfiguration pc = getPlatformConfiguration(platform);
+        if (pc == null) {
+            return null;
+        }
+        
+        String v = pc.getGroup();
+        
+        // fallback to linux for mac
+        if (v == null && platform == Platform.MAC_OSX) {
+            return getPlatformGroup(Platform.LINUX);
+        }
+        
+        return v;
+    }
+    
+    
+    public String getPlatformPrefixDir(String platformName) {
+        Platform platform = Platform.valueOf(platformName);
+        return getPlatformPrefixDir(platform);
+    }
+    
+    public String getPlatformPrefixDir(Platform platform) {
+        PlatformConfiguration pc = getPlatformConfiguration(platform);
+        if (pc == null) {
+            return null;
+        }
+        
+        String v = pc.getPrefixDir();
+        
+        // fallback to linux for mac
+        if (v == null && platform == Platform.MAC_OSX) {
+            return getPlatformPrefixDir(Platform.LINUX);
+        }
+        
+        return v;
+    }
+    
+    
+    public String getPlatformLogDir(String platformName) {
+        Platform platform = Platform.valueOf(platformName);
+        return getPlatformLogDir(platform);
+    }
+    
+    public String getPlatformLogDir(Platform platform) {
+        PlatformConfiguration pc = getPlatformConfiguration(platform);
+        if (pc == null) {
+            return null;
+        }
+        
+        String v = pc.getLogDir();
+        
+        return v;
+    }
+    
+    
+    public String getPlatformRunDir(String platformName) {
+        Platform platform = Platform.valueOf(platformName);
+        return getPlatformRunDir(platform);
+    }
+    
+    public String getPlatformRunDir(Platform platform) {
+        PlatformConfiguration pc = getPlatformConfiguration(platform);
+        if (pc == null) {
+            return null;
+        }
+        
+        String v = pc.getRunDir();
+        
+        return v;
     }
     
 }

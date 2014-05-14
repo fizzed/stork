@@ -58,37 +58,22 @@ import java.util.TreeSet;
  *
  * @author joelauer
  */
-public class Generator {
+public class Generator extends BaseApplication {
 
-    static public void printUsage() {
+    @Override
+    public void printUsage() {
         System.err.println("Usage: jtools-launcher-generate -i <input config> -o <output directory>");
         System.err.println("-v                      Print version and exit");
         System.err.println("-i <input config>       Input file");
         System.err.println("-o <output directory>   Output directory");
     }
 
-    static public void printError(String errorMessage) {
-        System.err.println("Error: " + errorMessage);
-    }
-
-    static public void printUsageAndExitWithError() {
-        printUsage();
-        System.exit(1);
-    }
-
-    static public void printErrorThenUsageAndExit(String errorMessage) {
-        printError(errorMessage);
-        printUsageAndExitWithError();
-    }
-
-    static public String popNextArg(String argSwitch, List<String> argList) {
-        if (argList.isEmpty()) {
-            printErrorThenUsageAndExit("argument switch [" + argSwitch + "] is missing value as next argument");
-        }
-        return argList.remove(0);
-    }
-
     static public void main(String[] args) {
+        new Generator().run(args);
+    }
+
+    @Override
+    public void run(String[] args) {
         if (args.length <= 0) {
             printErrorThenUsageAndExit("required parameters missing");
         }
@@ -139,11 +124,13 @@ public class Generator {
             printErrorThenUsageAndExit("no output dir was specified");
         }
 
+        ConfigurationFactory factory = new ConfigurationFactory();
+        
         // parse each configuration file into a configuration object
         List<Configuration> configs = new ArrayList<Configuration>();
         for (File configFile : configFiles) {
             try {
-                configs.add(ConfigurationFactory.create(configFile));
+                configs.add(factory.create(configFile));
             } catch (Exception e) {
                 printError("config file [" + configFile + "] invalid");
                 e.printStackTrace(System.err);
@@ -255,7 +242,8 @@ public class Generator {
                             
                 } else if (config.getType() == Type.DAEMON) {
                     
-                    DaemonMethod dm = config.getDaemonMethods().get(Platform.WINDOWS);
+                    //DaemonMethod dm = config.getDaemonMethods().get(Platform.WINDOWS);
+                    DaemonMethod dm = config.getPlatformDaemonMethod(Platform.WINDOWS);
                     if (dm == DaemonMethod.JSLWIN) {
                         generateWindowsJSLWinLauncher(config, binDir, model);
                     } else if (dm == DaemonMethod.WINSW) {
@@ -311,7 +299,8 @@ public class Generator {
 
             processTemplate("linux/script-java.ftl", out, model);
 
-            DaemonMethod dm = config.getDaemonMethods().get(Platform.LINUX);
+            //DaemonMethod dm = config.getDaemonMethods().get(Platform.LINUX);
+            DaemonMethod dm = config.getPlatformDaemonMethod(Platform.LINUX);
             
             if (dm == DaemonMethod.NOHUP) {
                 processTemplate("linux/script-daemon-nohup.ftl", out, model);

@@ -147,7 +147,7 @@ public class Configuration {
         linuxConfig.setPrefixDir("/opt");
         this.platformConfigurations.put(Platform.LINUX, linuxConfig);
         PlatformConfiguration windowsConfig = new PlatformConfiguration();
-        linuxConfig.setDaemonMethod(DaemonMethod.JSLWIN);
+        windowsConfig.setDaemonMethod(DaemonMethod.JSLWIN);
         this.platformConfigurations.put(Platform.WINDOWS, windowsConfig);
     }
     

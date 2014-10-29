@@ -51,8 +51,20 @@
             <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.jtools.launcher.Generator -Dexec.args=&quot;-i src/main/resources/jtools-launcher-merge.yml -o '${target}/stage'&quot;"/>
         </exec>
     </target>
+
+    <target name="sample-dist" depends="clean, compile-hello-console, compile-hello-daemon">
+        <tar destfile="${basedir}/target/fizzed-launcher-sample-${version}.tar.gz" compression="gzip" >
+            <tarfileset dir="${target}/sample" prefix="fizzed-launcher-sample-${version}">
+                <include name="lib/**"/>
+                <include name="share/**"/>
+            </tarfileset>
+            <tarfileset dir="${target}/sample" prefix="fizzed-launcher-sample-${version}" filemode="755">
+                <include name="bin/**"/>
+            </tarfileset>
+        </tar>
+    </target>
     
-    <target name="dist" depends="stage">
+    <target name="dist" depends="sample-dist, stage">
         <tar destfile="${basedir}/target/fizzed-jtools-launcher-${version}.tar.gz" compression="gzip" >
             <tarfileset dir="${target}/stage" prefix="fizzed-jtools-launcher-${version}" filemode="755">
                 <include name="bin/**"/>
@@ -97,18 +109,6 @@
         <exec executable="${target}/sample/share/helper/java-detect${batext}">
             <arg value="--latest-major-version"/>
         </exec>
-    </target>
-    
-    <target name="sample-dist" depends="clean, compile-hello-console, compile-hello-daemon">
-        <tar destfile="${basedir}/target/fizzed-launcher-sample-${version}.tar.gz" compression="gzip" >
-            <tarfileset dir="${target}/sample" prefix="fizzed-launcher-sample-${version}">
-                <include name="lib/**"/>
-                <include name="share/**"/>
-            </tarfileset>
-            <tarfileset dir="${target}/sample" prefix="fizzed-launcher-sample-${version}" filemode="755">
-                <include name="bin/**"/>
-            </tarfileset>
-        </tar>
     </target>
     
     <target name="hello-merge" depends="checkos, stage-sample">

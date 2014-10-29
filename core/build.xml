@@ -54,15 +54,18 @@
 
     <target name="assembly" depends="clean, stage, generate-launchers">
         <tar destfile="${target}/fizzed-jtools-launcher-${version}.tar.gz" compression="gzip" >
-            <tarfileset dir="${target}/sample" prefix="fizzed-jtools-launcher-${version}">
+            <tarfileset dir="${target}/stage" prefix="fizzed-jtools-launcher-${version}">
                 <include name="lib/**"/>
             </tarfileset>
-            <tarfileset dir="${target}/sample" prefix="fizzed-jtools-launcher-${version}" filemode="755">
+            <tarfileset dir="${target}/stage" prefix="fizzed-jtools-launcher-${version}" filemode="755">
                 <include name="bin/**"/>
             </tarfileset>
-            <tarfileset dir="../sample/src/main/resources" prefix="fizzed-jtools-launcher-${version}/share" filemode="755">
-                <include name="sample-console.yml"/>
-                <include name="sample-daemon.yml"/>
+	    <tarfileset dir="${target}/../.." prefix="fizzed-jtools-launcher-${version}" filemode="555">
+                <include name="*.md"/>
+            </tarfileset>
+            <tarfileset dir="${target}/../../sample/src/main/resources" prefix="fizzed-jtools-launcher-${version}/share" filemode="755">
+                <include name="hello-console.yml"/>
+                <include name="hello-daemon.yml"/>
             </tarfileset>
         </tar>
     </target>

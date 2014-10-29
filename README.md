@@ -1,24 +1,91 @@
-Java Native Executable Library
-==============================
+Java Native Launcher/Executable Library
+=======================================
 
 ### Contributors
 
- - [Mfizz, Inc.](http://mfizz.com)
+ - [Fizzed, Inc.](http://fizzed.co)
  - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
 
 ### Overview
 
 Utility for generating native launchers for Java-based applications across Windows,
-Linux, Mac OSX, and many other UNIX-like systems w/ bourne shell support. Unlike
-other "service wrappers" or launcher frameworks, this utility can create launchers
-for either console or daemon apps.  Just create a config file describing your
-launcher and then run the tool to "compile" it into various launchers.
+Linux, Mac OSX, and many other UNIX-like systems (any NIX with a JVM and bourne shell
+support). Unlike other "service wrappers" or launcher frameworks, this utility can
+create launchers for either console and/or daemon apps.
 
-While other Java service wrappers attempt to handle re-spawning via a secondary
-controller process, what about relatively simple console apps / daemons or
-an interest in using better tools for handling re-spawning like monit.
+You simply create a YAML-based descriptor/config file (that you can check-in to
+source control) and then you compile/generate it into one or more launchers. These
+launchers can then be distributed with your final tarball/assembly/package so 
+that your app looks like a native compiled executable.
+
+### Features
+
+ * Intelligent & automatic JVM detection (including version requirements
+   such as requiring Java 1.8)
+ * Creating launchers for one or more application types:
+    * console
+    * daemon
+ * Support for:
+    * Windows XP+ (32-bit and 64-bit)
+    * Linux (32-bit and 64-bit)
+    * Mac OSX (32-bit and 64-bit)
+    * FreeBSD
+    * OpenBSD
+ * Carefully researched and optimized daemonizing methods for each target OS:
+    * Windows daemons installed as a service (32/64-bit daemons supported)
+    * Linux/UNIX daemons use NOHUP and includes init.d startup scripts
+    * Mac OSX daemons use LaunchD
+ * Supports fixed or %age min/max memory at JVM startup 
+ * Supports launching apps with retaining the working dir of the shell or setting
+   the working directory to the home of app.
+ * Sets the working directory of the app without annoyingly changing the working
+   directory of the shell that launched the app (even on Windows).
+ * Command-line arguments are passed thru to underlying Java app
+ * Handles spaces in file paths
+ * Apps can use "canonical" filesystem layout defined below or customize as needed.
+ * Runtime debugging using simple LAUNCHER_DEBUG=1 env var before executing binary
+   to see what's going on (e.g. how is the JVM found?)
+ * Support for symlinking detected JVM as application name so that Linux/UNIX commands
+   such as TOP/PS make identifying application easier.
+
+### Samples
+
+#### Console App (Hello World)
+
+A basic "Hello World" console app launcher config: src/test/resources/hello-console.yml
+
+#### Daemon App (Hello World)
+
+A basic "Hello World" daemon app launcher config: src/test/resources/hello-daemon.yml
+
+#### Console Apps (this project!)
+
+This project uses itself to compile the launcher scripts for the two native Java-based
+applications it distributes.  These scripts are useful as examples as well.
+
+src/main/resources/jtools-launcher-generate.yml
+src/main/resources/jtools-launcher-merge.yml
+
+### Development
+
+Since this app creates launchers for other Java apps, a somewhat unusual build system
+was required for testing & assembly during development and distribution.  There is
+an Ant-based build.xml script which in turn creates maven commands for compiling, etc.
+So you'll need both ant and maven available if you plan on building from source. The
+assembled distribution, however, uses "console" launcher scripts generated from this
+project -- so this application can easily run on Windows, Linux, Mac OSX, etc.
+
+### License
+
+Copyright (C) 2014 Joe Lauer / Fizzed, Inc.
+
+This work is licensed under the Apache License, Version 2.0. See LICENSE for details.
 
 ### Canonical application layout
+
+The "launchers" need to know where to look for various files in order to bootstrap
+the Java command to start/stop/execute the Java application.  The following standard
+application layout is used as a default.
 
 A standard Java app has the following layout:
 
@@ -26,7 +93,7 @@ A standard Java app has the following layout:
         bin/
         lib/
         conf/
-        share/   (architecture independent read-only data optionally included during install)
+        share/   (architecture dependent/independent read-only data optionally included during install)
         data/    (not present at install time; ignored during upgrade)
         log/     (not present at install time; ignored during upgrade)
         run/     (not present at install time; ignored during upgrade)
@@ -54,7 +121,7 @@ edited the config for their specific system.
 
 For all read-only architecture independent data files.
 
-Examples would include sql scripts to setup databases; linux setup scripts, or
+Examples would include sql scripts to setup databases; linux/unix init.d scripts, or
 documentation.
 
 #### data/ (variable state information)
@@ -65,7 +132,8 @@ reboot, should not be logging output, and should not be spooled data.
 
 Files in this directory should be retained between upgrades.
 
-Examples would include an application's database.
+Examples would include an application's database.  On Linux/UNIX, this could be
+symlinked to /var/data/<app_name>.
 
 #### log/ (logfiles)
 
@@ -74,7 +142,7 @@ truncate or delete files in this directory w/o affecting the application on
 its next invocation.
 
 Files in this directory may be retained between upgrades, but assume they will
-be deleted.
+be deleted.  On Linux/UNIX, this could be symlinked to /var/log/<app_name>.
 
 #### run/ (run-time variable data)
 
@@ -84,50 +152,20 @@ as appropriate) at the beginning of the boot process. On some versions of linux,
 /var/run is mounted as a temporary file system.
 
 Examples would include an application's process id (pid) file or named sockets.
+On Linux/UNIX, this could be symlinked to /var/run/<app_name>.
 
+### Notes for target operating systems
 
+#### Windows
 
+Daemonizers considered:
 
-For Linux/UNIX, good reference of standard filesystem:
-
-    http://www.pathname.com/fhs/pub/fhs-2.3.html
-    
-    /opt/<app_name>/
-        bin/
-        lib/
-        conf/
-        share/
-        data    -> soft link to /var/lib/<app_name>
-        log     -> soft link to /var/log/<app_name>
-        run     -> soft link to /var/run/<app_name>
-
-LAUNCHER_DEBUG=1 bin/app_name
-
-
-Features
-
- * Creating launchers for app types:
-    * console
-    * daemon
- * Support for:
-    * Windows XP+ (32-bit and 64-bit)
-    * Linux (32-bit and 64-bit)
-    * Mac OSX (32-bit and 64-bit)
-    * FreeBSD
-    * OpenBSD
- 
- * Supports launching apps with retaining the working dir of the shell or setting
-   the working directory to the home of app.
- * Sets the working directory of the app without annoyingly changing the working
-   directory of the shell that launched the app (even on Windows).
- * Command-line arguments are passed thru to underlying java app
- * Handles spaces in file paths
-
-
+	http://jslwin.sourceforge.net/
+	https://github.com/kohsuke/winsw
 
 #### Mac OSX
 
-Good references:
+References:
     http://couchdb.readthedocs.org/en/latest/install/mac.html
     http://vincent.bernat.im/en/blog/2013-autoconf-osx-packaging.html
     https://github.com/jenkinsci/jenkins/tree/master/osx
@@ -153,28 +191,10 @@ To see what is going on (should have a PID value):
 To unload (stop) daemon:
     sudo launchctl unload /Library/LaunchDaemons/com.example.hello-daemon.plist
 
-
-
-
-#### Windows
-
-http://jslwin.sourceforge.net/
-
-https://github.com/kohsuke/winsw
-
-
 #### Resources
 
-Jenkins project
+Jenkins project:
+	https://github.com/sbt/sbt-native-packager/tree/master/src/main/resources/com/typesafe/sbt/packager/archetypes
 
-https://github.com/sbt/sbt-native-packager/tree/master/src/main/resources/com/typesafe/sbt/packager/archetypes
+	https://gist.github.com/djangofan/1445440
 
-https://gist.github.com/djangofan/1445440
-
-
-
-### License
-
-Copyright (C) 2014 Joe Lauer / Mfizz, Inc.
-
-This work is licensed under the Apache License, Version 2.0. See LICENSE for details.

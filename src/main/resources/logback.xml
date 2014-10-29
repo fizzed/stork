@@ -29,7 +29,8 @@
   </appender>
 
   <logger name="com.mfizz" level="DEBUG"/>
-
+  <logger name="co.fizzed" level="DEBUG"/>
+  
   <root level="INFO">
     <appender-ref ref="STDOUT" />
   </root>

@@ -1,7 +1,7 @@
 
 name: "jtools-launcher-merge"
 
-domain: "com.mfizz.jtools"
+domain: "co.fizzed.jtools"
 
 display_name: "Jtools Launcher Merge"
 
@@ -9,7 +9,7 @@ short_description: "Utility for merging configuration files for launcher"
 
 type: CONSOLE
 
-main_class: "com.mfizz.jtools.launcher.Merger"
+main_class: "co.fizzed.jtools.launcher.Merger"
 
 platforms: [ WINDOWS, LINUX ]
 

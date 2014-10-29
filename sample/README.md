@@ -1,7 +1,5 @@
-Sample of using Mfizz java-tools to create launcher scripts for java apps.
 
-To create single launcher script:
- ../bin/java-generate-launcher -c src/main/launcher/hello-world.conf -b bin
+Sample "hello world" console and daemon apps.
 
-To create multiple launcher scripts:
- for f in $(ls src/main/launcher/*); do ../bin/java-generate-launcher -c $f; done
+This project just needs to be compiled once and then will be reused by the
+parent project to create sample console and daemon projects.

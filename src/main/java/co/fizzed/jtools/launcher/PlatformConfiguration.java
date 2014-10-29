@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mfizz.jtools.launcher;
+package co.fizzed.jtools.launcher;
 
-import com.mfizz.jtools.launcher.Configuration.DaemonMethod;
+import co.fizzed.jtools.launcher.Configuration.DaemonMethod;
 
 /**
  *

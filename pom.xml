@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.mfizz</groupId>
-    <artifactId>mfz-jtools-launcher</artifactId>
+    <groupId>co.fizzed</groupId>
+    <artifactId>fizzed-jtools-launcher</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0-SNAPSHOT</version>
-    <name>mfz-jtools-launcher</name>
+    <version>1.0.0</version>
+    <name>fizzed-jtools-launcher</name>
     <description>Utility for generating launchers (console/daemon) for Windows, Linux, and Mac.</description>
   
     <parent>
@@ -108,6 +108,6 @@
 
     <properties>
         <license.skip>true</license.skip>
-        <main.java.package>com.mfizz.jtools.launcher</main.java.package>
+        <main.java.package>co.fizzed.jtools.launcher</main.java.package>
     </properties>
 </project>

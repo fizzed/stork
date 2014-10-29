@@ -17,7 +17,7 @@ long_description: "Demo of daemon app for mfizz jtools launcher"
 type: DAEMON
 
 # Java class to run
-main_class: "com.mfizz.sample.HelloDaemon"
+main_class: "com.example.sample.HelloDaemon"
 
 # Platform launchers to generate (WINDOWS, LINUX, MAC_OSX)
 platforms: [ WINDOWS, LINUX, MAC_OSX ]

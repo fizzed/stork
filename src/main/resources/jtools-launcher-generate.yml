@@ -1,7 +1,7 @@
 
 name: "jtools-launcher-generate"
 
-domain: "com.mfizz.jtools"
+domain: "co.fizzed.jtools"
 
 display_name: "Jtools Launcher"
 
@@ -9,7 +9,7 @@ short_description: "Utility for creating script to launch Java apps"
 
 type: CONSOLE
 
-main_class: "com.mfizz.jtools.launcher.Generator"
+main_class: "co.fizzed.jtools.launcher.Generator"
 
 platforms: [ WINDOWS, LINUX ]
 

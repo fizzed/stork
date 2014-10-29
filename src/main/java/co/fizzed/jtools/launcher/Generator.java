@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mfizz.jtools.launcher;
+package co.fizzed.jtools.launcher;
 
 /*
  * #%L
@@ -35,9 +35,9 @@ package com.mfizz.jtools.launcher;
  * #L%
  */
 
-import com.mfizz.jtools.launcher.Configuration.DaemonMethod;
-import com.mfizz.jtools.launcher.Configuration.Platform;
-import com.mfizz.jtools.launcher.Configuration.Type;
+import co.fizzed.jtools.launcher.Configuration.DaemonMethod;
+import co.fizzed.jtools.launcher.Configuration.Platform;
+import co.fizzed.jtools.launcher.Configuration.Type;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;

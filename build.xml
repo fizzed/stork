@@ -1,8 +1,8 @@
-<project name="Jtools Launcher" default="hello-console" basedir=".">
+<project name="Fizzed Jtools Launcher" default="hello-console" basedir=".">
 	
     <property name="target" location="target"/>
     <property name="batext" value=""/>
-    <property name="version" value="1.0.0-SNAPSHOT"/>
+    <property name="version" value="1.0.0"/>
     	
     <scriptdef name="propertyreset" language="javascript">
         <attribute name="name"/>
@@ -45,10 +45,10 @@
             <fileset dir="${target}" includes="*.jar" excludes="*-sources.jar"/>
         </copy>
         <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/main/resources/jtools-launcher-generate.yml -o '${target}/stage'&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.jtools.launcher.Generator -Dexec.args=&quot;-i src/main/resources/jtools-launcher-generate.yml -o '${target}/stage'&quot;"/>
         </exec>
         <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/main/resources/jtools-launcher-merge.yml -o '${target}/stage'&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.jtools.launcher.Generator -Dexec.args=&quot;-i src/main/resources/jtools-launcher-merge.yml -o '${target}/stage'&quot;"/>
         </exec>
     </target>
     
@@ -73,13 +73,13 @@
     
     <target name="compile-hello-console" depends="checkos, stage-sample">
         <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/test/resources/hello-console.yml -o '${target}/sample'&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=co.fizzed.jtools.launcher.Generator -Dexec.args=&quot;-i src/test/resources/hello-console.yml -o '${target}/sample'&quot;"/>
         </exec>
     </target>
     
     <target name="compile-hello-daemon" depends="checkos, stage-sample">
         <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Generator -Dexec.args=&quot;-i src/test/resources/hello-daemon.yml -o '${target}/sample'&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=co.fizzed.jtools.launcher.Generator -Dexec.args=&quot;-i src/test/resources/hello-daemon.yml -o '${target}/sample'&quot;"/>
         </exec>
     </target>
         
@@ -113,7 +113,7 @@
     
     <target name="hello-merge" depends="checkos, stage-sample">
         <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.mfizz.jtools.launcher.Merger -Dexec.args=&quot;-i src/test/resources/hello-base.yml -i src/test/resources/hello-console.yml -o '${target}/hello-console-merged.yml'&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=co.fizzed.jtools.launcher.Merger -Dexec.args=&quot;-i src/test/resources/hello-base.yml -i src/test/resources/hello-console.yml -o '${target}/hello-console-merged.yml'&quot;"/>
         </exec>
     </target>
 	

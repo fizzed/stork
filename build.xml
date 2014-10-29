@@ -53,11 +53,11 @@
     </target>
     
     <target name="dist" depends="stage">
-        <tar destfile="${basedir}/target/jtools-launcher-${version}.tar.gz" compression="gzip" >
-            <tarfileset dir="${target}/stage" prefix="jtools-launcher-${version}" filemode="755">
+        <tar destfile="${basedir}/target/fizzed-jtools-launcher-${version}.tar.gz" compression="gzip" >
+            <tarfileset dir="${target}/stage" prefix="fizzed-jtools-launcher-${version}" filemode="755">
                 <include name="bin/**"/>
             </tarfileset>
-            <tarfileset dir="${target}/stage" prefix="jtools-launcher-${version}">
+            <tarfileset dir="${target}/stage" prefix="fizzed-jtools-launcher-${version}">
                 <exclude name="bin/**"/>
             </tarfileset>
         </tar>
@@ -100,12 +100,12 @@
     </target>
     
     <target name="sample-dist" depends="clean, compile-hello-console, compile-hello-daemon">
-        <tar destfile="${basedir}/target/launcher-sample.tar.gz" compression="gzip" >
-            <tarfileset dir="${target}/sample" prefix="launcher-sample">
+        <tar destfile="${basedir}/target/fizzed-launcher-sample-${version}.tar.gz" compression="gzip" >
+            <tarfileset dir="${target}/sample" prefix="fizzed-launcher-sample-${version}">
                 <include name="lib/**"/>
                 <include name="share/**"/>
             </tarfileset>
-            <tarfileset dir="${target}/sample" prefix="launcher-sample" filemode="755">
+            <tarfileset dir="${target}/sample" prefix="fizzed-launcher-sample-${version}" filemode="755">
                 <include name="bin/**"/>
             </tarfileset>
         </tar>

@@ -87,7 +87,7 @@ public class Generator extends BaseApplication {
             String argSwitch = argList.remove(0);
 
             if (argSwitch.equals("-v")) {
-                System.err.println("jtools-launcher-generate version: " + com.mfizz.jtools.launcher.Version.getLongVersion());
+                System.err.println("jtools-launcher-generate version: " + co.fizzed.jtools.launcher.Version.getLongVersion());
                 System.exit(0);
             } else if (argSwitch.equals("-i")) {
                 File configFile = new File(popNextArg(argSwitch, argList));

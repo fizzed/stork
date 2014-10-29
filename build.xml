@@ -61,6 +61,10 @@
             <tarfileset dir="${target}/sample" prefix="fizzed-launcher-sample-${version}" filemode="755">
                 <include name="bin/**"/>
             </tarfileset>
+            <tarfileset dir="src/test/resources" prefix="fizzed-launcher-sample-${version}/share" filemode="755">
+                <include name="hello-console.yml"/>
+                <include name="hello-daemon.yml"/>
+            </tarfileset>
         </tar>
     </target>
     

@@ -66,6 +66,13 @@ applications it distributes.  These scripts are useful as examples as well.
 src/main/resources/jtools-launcher-generate.yml
 src/main/resources/jtools-launcher-merge.yml
 
+### Install / Generate a launcher
+
+Add <fizzed_stork_install_dir>/bin to your PATH so that you can execute
+"stork-launcher-generate".  Creating a launcher is then as easy as:
+
+stork-launcher-generate -i <input_config_file> -o <output_dir>
+
 ### Development
 
 Since this app creates launchers for other Java apps, a somewhat unusual build system

@@ -24,6 +24,7 @@ import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.Version;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -42,9 +43,9 @@ public class Generator extends BaseApplication {
 
     @Override
     public void printUsage() {
-        System.err.println("Usage: jtools-launcher-generate -i <input config> -o <output directory>");
+        System.err.println("Usage: stork-launcher-generate -i <input config> -o <output directory>");
         System.err.println("-v                      Print version and exit");
-        System.err.println("-i <input config>       Input file");
+        System.err.println("-i <input config>       Input file (dir or wildcard accepted)");
         System.err.println("-o <output directory>   Output directory");
     }
 
@@ -70,11 +71,13 @@ public class Generator extends BaseApplication {
                 System.err.println("jtools-launcher-generate version: " + co.fizzed.stork.launcher.Version.getLongVersion());
                 System.exit(0);
             } else if (argSwitch.equals("-i")) {
-                File configFile = new File(popNextArg(argSwitch, argList));
-                if (!configFile.exists() || !configFile.canRead()) {
-                    printErrorThenUsageAndExit("input config file [" + configFile + "] does not exist or is not readable");
+                String fileString = popNextArg(argSwitch, argList);
+                try {
+                    List<File> files = FileUtil.findFiles(fileString);
+                    configFiles.addAll(files);
+                } catch (IOException e) {
+                    printErrorThenUsageAndExit(e.getMessage());
                 }
-                configFiles.add(configFile);
             } else if (argSwitch.equals("-o")) {
                 outputDir = new File(popNextArg(argSwitch, argList));
                 if (!outputDir.exists()) {

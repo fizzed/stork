@@ -17,6 +17,7 @@ package co.fizzed.stork.launcher;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,11 +58,13 @@ public class Merger extends BaseApplication {
                 System.err.println("jtools-launcher-merge version: " + co.fizzed.stork.launcher.Version.getLongVersion());
                 System.exit(0);
             } else if (argSwitch.equals("-i")) {
-                File configFile = new File(popNextArg(argSwitch, argList));
-                if (!configFile.exists() || !configFile.canRead()) {
-                    printErrorThenUsageAndExit("input config file [" + configFile + "] does not exist or is not readable");
+                String fileString = popNextArg(argSwitch, argList);
+                try {
+                    List<File> files = FileUtil.findFiles(fileString);
+                    configFiles.addAll(files);
+                } catch (IOException e) {
+                    printErrorThenUsageAndExit(e.getMessage());
                 }
-                configFiles.add(configFile);
             } else if (argSwitch.equals("-o")) {
                 outputFile = new File(popNextArg(argSwitch, argList));
                 File outputDir = outputFile.getParentFile();

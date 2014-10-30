@@ -15,8 +15,8 @@
 
     <modules>
         <module>launcher</module>
+	<module>launcher-test</module>
         <module>assembly</module>
-        <module>sample</module>
     </modules>
 
     <build>

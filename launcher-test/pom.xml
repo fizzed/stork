@@ -2,10 +2,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>co.fizzed</groupId>
-    <artifactId>fizzed-stork-sample</artifactId>
+    <artifactId>fizzed-stork-launcher-test</artifactId>
     <packaging>jar</packaging>
-    <name>fizzed-stork-sample</name>
-    <description>Sample app to demo console and daemon for stork-launcher</description>
+    <name>fizzed-stork-launcher-test</name>
+    <description>App to test console and daemon for stork-launcher</description>
 
     <parent>
         <groupId>co.fizzed</groupId>

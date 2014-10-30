@@ -2,10 +2,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>co.fizzed</groupId>
-    <artifactId>fizzed-jtools-launcher</artifactId>
+    <artifactId>fizzed-stork-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1</version>
-    <name>fizzed-jtools-launcher</name>
+    <version>1.1.0</version>
+    <name>fizzed-stork-parent</name>
 
     <parent>
         <groupId>com.mfizz</groupId>
@@ -14,9 +14,24 @@
     </parent>
 
     <modules>
-        <module>core</module>
+        <module>launcher</module>
+        <module>assembly</module>
         <module>sample</module>
     </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencyManagement>
         <dependencies>
@@ -45,6 +60,7 @@
     <properties>
         <main.java.package></main.java.package>
         <slf4j.version>1.7.7</slf4j.version>
+        <logback.version>1.1.2</logback.version>
         <license.skip>true</license.skip>
     </properties>
 </project>

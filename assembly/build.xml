@@ -1,0 +1,73 @@
+<project name="Stork by Fizzed" default="assembly" basedir=".">
+
+    <property name="target" location="target"/>
+    <property name="batext" value=""/>
+    <property name="version" value="1.1.0"/>
+    
+    <scriptdef name="propertyreset" language="javascript">
+        <attribute name="name"/>
+        <attribute name="value"/>
+        project.setProperty(attributes.get("name"), attributes.get("value"));
+    </scriptdef>
+	
+    <condition property="isWindows" value="true">
+        <os family="windows" />
+    </condition>
+	
+    <target name="checkos" if="isWindows">
+        <propertyreset name="batext" value=".bat" />
+        <echo message="on windows, batext is ${batext}" />
+    </target>
+	
+    <target name="init" depends="checkos">
+        <tstamp/>
+        <mkdir dir="${target}"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${target}"/>
+    </target>
+    
+    <target name="stage" depends="init">
+	<!-- need to install parent first -->
+	<exec executable="mvn${batext}" failonerror="true" dir="..">
+            <arg line="install"/>
+        </exec>
+	<!-- all libs to target/dependency -->
+	<exec executable="mvn${batext}" failonerror="true">
+            <arg line="package"/>
+        </exec>
+	<copy todir="${target}/stage/lib">
+            <fileset dir="target/dependency"/>
+	    <fileset dir="${target}" includes="*.jar" excludes="*-sources.jar"/>
+        </copy>
+    </target>
+
+    <target name="generate-launchers" depends="stage">
+        <exec executable="mvn${batext}" failonerror="true">
+            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i ${target}/../../launcher/src/main/resources/stork-launcher-generate.yml -o '${target}/stage'&quot;"/>
+        </exec>
+        <exec executable="mvn${batext}" failonerror="true">
+            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i ${target}/../../launcher/src/main/resources/stork-launcher-merge.yml -o '${target}/stage'&quot;"/>
+        </exec>
+    </target>
+
+    <target name="assembly" depends="clean, stage, generate-launchers">
+        <tar destfile="${target}/fizzed-stork-${version}.tar.gz" compression="gzip" >
+            <tarfileset dir="${target}/stage" prefix="fizzed-stork-${version}">
+                <include name="lib/**"/>
+            </tarfileset>
+            <tarfileset dir="${target}/stage" prefix="fizzed-stork-${version}" filemode="755">
+                <include name="bin/**"/>
+            </tarfileset>
+	    <tarfileset dir="${target}/../.." prefix="fizzed-stork-${version}" filemode="555">
+                <include name="*.md"/>
+            </tarfileset>
+            <tarfileset dir="${target}/../../sample/src/main/resources" prefix="fizzed-stork-${version}/share" filemode="755">
+                <include name="hello-console.yml"/>
+                <include name="hello-daemon.yml"/>
+            </tarfileset>
+        </tar>
+    </target>
+	
+</project>

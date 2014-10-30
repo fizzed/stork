@@ -1,4 +1,4 @@
-Java Native Launcher/Executable Library
+Stork by Fizzed
 =======================================
 
 ### Contributors

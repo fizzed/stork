@@ -1,17 +1,17 @@
-<project name="Fizzed Jtools Launcher Sample" default="hello-console" basedir=".">
-    <import file="../core/build.xml"/>
+<project name="Stork Launcher Sample by Fizzed" default="hello-console" basedir=".">
+    <import file="../assembly/build.xml"/>
 
     <target name="compile-hello-console" depends="stage">
 	<!-- use core module via maven to compile launcher -->
-        <exec executable="mvn${batext}" failonerror="true" dir="../core">
-            <arg line="-e compile exec:java -Dexec.classpathScope=runtime -Dexec.mainClass=co.fizzed.jtools.launcher.Generator -Dexec.args=&quot;-i ${target}/../src/main/resources/hello-console.yml -o '${target}/stage'&quot;"/>
+        <exec executable="mvn${batext}" failonerror="true" dir="../launcher">
+            <arg line="-e compile exec:java -Dexec.classpathScope=runtime -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i ${target}/../src/main/resources/hello-console.yml -o '${target}/stage'&quot;"/>
         </exec>
     </target>
     
     <target name="compile-hello-daemon" depends="stage">
 	<!-- use core module via maven to compile launcher -->
-        <exec executable="mvn${batext}" failonerror="true" dir="../core">
-            <arg line="-e compile exec:java -Dexec.classpathScope=runtime -Dexec.mainClass=co.fizzed.jtools.launcher.Generator -Dexec.args=&quot;-i ${target}/../src/main/resources/hello-daemon.yml -o '${target}/stage'&quot;"/>
+        <exec executable="mvn${batext}" failonerror="true" dir="../launcher">
+            <arg line="-e compile exec:java -Dexec.classpathScope=runtime -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i ${target}/../src/main/resources/hello-daemon.yml -o '${target}/stage'&quot;"/>
         </exec>
     </target>
         
@@ -27,7 +27,7 @@
 
     <target name="hello-merge" depends="stage">
         <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=co.fizzed.jtools.launcher.Merger -Dexec.args=&quot;-i ${target}/../src/main/resources/hello-base.yml -i ${target}/../src/main/resources/hello-console.yml -o '${target}/hello-console-merged.yml'&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=co.fizzed.stork.launcher.Merger -Dexec.args=&quot;-i ${target}/../src/main/resources/hello-base.yml -i ${target}/../src/main/resources/hello-console.yml -o '${target}/hello-console-merged.yml'&quot;"/>
         </exec>
     </target>
     
@@ -38,15 +38,15 @@
     </target>
 
     <target name="assembly" depends="clean, compile-hello-console, compile-hello-daemon">
-        <tar destfile="${target}/fizzed-jtools-launcher-sample-${version}.tar.gz" compression="gzip" >
-            <tarfileset dir="${target}/stage" prefix="fizzed-jtools-launcher-sample-${version}">
+        <tar destfile="${target}/fizzed-stork-sample-${version}.tar.gz" compression="gzip" >
+            <tarfileset dir="${target}/stage" prefix="fizzed-stork-sample-${version}">
                 <include name="lib/**"/>
                 <include name="share/**"/>
             </tarfileset>
-            <tarfileset dir="${target}/stage" prefix="fizzed-jtools-launcher-sample-${version}" filemode="755">
+            <tarfileset dir="${target}/stage" prefix="fizzed-stork-sample-${version}" filemode="755">
                 <include name="bin/**"/>
             </tarfileset>
-            <tarfileset dir="src/main/resources" prefix="fizzed-jtools-launcher-sample-${version}/share" filemode="755">
+            <tarfileset dir="src/main/resources" prefix="fizzed-stork-sample-${version}/share" filemode="755">
                 <include name="hello-console.yml"/>
                 <include name="hello-daemon.yml"/>
             </tarfileset>

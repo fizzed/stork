@@ -3,7 +3,7 @@
 name: "hello-console"
 
 # Domain of application (e.g. com.example)
-domain: "com.example"
+domain: "co.fizzed.stork.sample"
 
 # Display name of application (can have spaces)
 display_name: "Hello Console App"
@@ -16,7 +16,7 @@ long_description: "Demo of console app for mfizz jtools launcher"
 type: CONSOLE
 
 # Java class to run
-main_class: "com.example.sample.HelloConsole"
+main_class: "co.fizzed.stork.sample.HelloConsole"
 
 # Platform launchers to generate (WINDOWS, LINUX, MAC_OSX)
 platforms: [ WINDOWS, LINUX, MAC_OSX ]

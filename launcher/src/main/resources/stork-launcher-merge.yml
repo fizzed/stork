@@ -1,0 +1,20 @@
+
+name: "stork-launcher-merge"
+
+domain: "co.fizzed.stork"
+
+display_name: "Stork Launcher Merger by Fizzed"
+
+short_description: "Utility for merging configuration files for launcher"
+
+type: CONSOLE
+
+main_class: "co.fizzed.stork.launcher.Merger"
+
+platforms: [ WINDOWS, LINUX ]
+
+working_dir_mode: RETAIN
+  
+min_java_version: "1.4"
+
+symlink_java: false

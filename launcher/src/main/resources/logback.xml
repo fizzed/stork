@@ -28,6 +28,7 @@
 
   <logger name="com.mfizz" level="DEBUG"/>
   <logger name="co.fizzed" level="DEBUG"/>
+  <logger name="org.zeroturnaround.exec.ProcessExecutor" level="OFF"/>
   
   <root level="INFO">
     <appender-ref ref="STDOUT" />

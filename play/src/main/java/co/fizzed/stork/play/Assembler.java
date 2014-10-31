@@ -444,6 +444,7 @@ public class Assembler extends BaseApplication {
             ProcessResult result = new ProcessExecutor()
                 .command(playCommand, "--version")
                 .readOutput(true)
+                .exitValue(0)
                 .execute();
             System.out.println("Play [" + playCommand + "] command found: " + result.outputUTF8().trim());
             return true;

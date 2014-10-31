@@ -31,9 +31,11 @@ public class PlayBootstrap extends Bootstrap {
         // set pidfile property?
         if (!props.containsKey("pidfile.path")) {
             // set pid to /dev/null or NUL depending on which platform running on
-            if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            if (props.getProperty("os.name").toLowerCase().contains("win")) {
+                System.out.println("Setting system property [pidfile.path=NUL]");
                 props.setProperty("pidfile.path", "NUL");
             } else {
+                System.out.println("Setting system property [pidfile.path=/dev/null]");
                 props.setProperty("pidfile.path", "/dev/null");
             }
         }

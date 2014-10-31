@@ -24,6 +24,10 @@ import java.util.Properties;
  */
 public class PlayBootstrap extends Bootstrap {
     
+    static public void main(String[] args) throws Exception {
+        new PlayBootstrap().run(args);
+    }
+    
     @Override
     public void overrideSystemProperties(Properties props) {
         super.overrideSystemProperties(props);
@@ -38,6 +42,8 @@ public class PlayBootstrap extends Bootstrap {
                 System.out.println("Setting system property [pidfile.path=/dev/null]");
                 props.setProperty("pidfile.path", "/dev/null");
             }
+        } else {
+            System.out.println("Using system property [pidfile.path=" + props.getProperty("pidfile.path") + "]");
         }
     }
     

@@ -71,16 +71,16 @@ public class Bootstrap {
             }
         }
         
+        Properties props = new Properties(System.getProperties());
+        
         if (configFile != null) {
             // create new properties using system properties as defaults
-            Properties props = new Properties(System.getProperties());
-            
             loadLauncherConfig(props, configFile);
-            
-            overrideSystemProperties(props);
-
-            System.setProperties(props);
         }
+        
+        overrideSystemProperties(props);
+
+        System.setProperties(props);
         
         String[] overriddenArgs = overrideArguments(args);
         

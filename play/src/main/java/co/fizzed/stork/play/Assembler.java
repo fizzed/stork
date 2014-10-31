@@ -413,8 +413,6 @@ public class Assembler extends BaseApplication {
     }
 
     public String findPlayCommand(File playProjectDir) {
-        String playCommand = null;
-        
         // do we need to append ".bat" on the end if running on windows?
         String batEnd = "";
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
@@ -422,7 +420,7 @@ public class Assembler extends BaseApplication {
         }
         
         // try to find "activator" command first (>= play 2.3)
-        playCommand = "activator" + batEnd;
+        String playCommand = "activator" + batEnd;
         if (!isPlayCommandPresent(playCommand)) {
             // try to find "activator" command inside project directory...
             playCommand = new File(playProjectDir, "activator" + batEnd).getAbsolutePath();
@@ -444,7 +442,6 @@ public class Assembler extends BaseApplication {
             ProcessResult result = new ProcessExecutor()
                 .command(playCommand, "--version")
                 .readOutput(true)
-                .exitValue(0)
                 .execute();
             System.out.println("Play [" + playCommand + "] command found: " + result.outputUTF8().trim());
             return true;

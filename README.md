@@ -96,14 +96,14 @@ application layout is used as a default.
 
 A standard Java app has the following layout:
 
-    <app_name>/
-        bin/
-        lib/
-        conf/
-        share/   (architecture dependent/independent read-only data optionally included during install)
-        data/    (not present at install time; ignored during upgrade)
-        log/     (not present at install time; ignored during upgrade)
-        run/     (not present at install time; ignored during upgrade)
+    <app_name>/	(
+        bin/	(launcher scripts, overwrite on upgrade)
+        lib/	(all jars, overwrite on upgrade)
+        share/  (data/files for install/running/info; overwrite on upgrades)
+	    conf/	(config files; retain on upgrade)
+        data/   (not included in assembly/install; retain on upgrade)
+        log/    (not included in assembly/install; retain on upgrade)
+        run/    (not included in assembly/install; retain on upgrade)
 
 #### bin/ (executables)
 

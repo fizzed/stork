@@ -3,7 +3,7 @@
 #
 # /etc/init.d/${config.name}
 # Redhat and/or debian-compatible startup script
-# Generated via Mfizz Jtools Launcher (http://mfizz.com)
+# Generated via Stork Launcher by Fizzed
 #
 
 ### BEGIN INIT INFO

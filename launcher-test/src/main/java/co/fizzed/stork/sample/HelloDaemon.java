@@ -175,6 +175,10 @@ public class HelloDaemon {
         a.add("working.dir: " + System.getProperty("user.dir"));
         a.add("home.dir: " + System.getProperty("user.home"));
         a.add("user.name: " + System.getProperty("user.name"));
+        a.add("launcher.name: " + System.getProperty("launcher.name"));
+        a.add("launcher.type: " + System.getProperty("launcher.type"));
+        a.add("launcher.action: " + System.getProperty("launcher.action"));
+        a.add("launcher.app.dir: " + System.getProperty("launcher.app.dir"));
         a.add("java.class.path: " + System.getProperty("java.class.path"));
         a.add("java.home: " + System.getProperty("java.home"));
         a.add("java.version: " + System.getProperty("java.version"));

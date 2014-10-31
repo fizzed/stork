@@ -25,6 +25,10 @@ public class HelloConsole {
         System.out.println("Hello World!");
         System.out.println("working.dir: " + System.getProperty("user.dir"));
         System.out.println("home.dir: " + System.getProperty("user.home"));
+        System.out.println("launcher.name: " + System.getProperty("launcher.name"));
+        System.out.println("launcher.type: " + System.getProperty("launcher.type"));
+        System.out.println("launcher.action: " + System.getProperty("launcher.action"));
+        System.out.println("launcher.app.dir: " + System.getProperty("launcher.app.dir"));
         System.out.println("java.class.path: " + System.getProperty("java.class.path"));
         System.out.println("java.home: " + System.getProperty("java.home"));
         System.out.println("java.version: " + System.getProperty("java.version"));

@@ -23,6 +23,9 @@ class Deployer:
     
     # daemons in app (determined from share/init.d/*.init)
     app_daemon_names = []
+    
+    app_user = "daemon"
+    app_group = "daemon"
 
     # dir prefix that app will go into /opt/app_name
     remote_prefix_dir = "/opt"
@@ -122,6 +125,15 @@ def run_rsync(local_dir, remote_dir, delete=False, excludes=[]):
         # run rsync with expect to pass it the password
         local("expect -c 'exp_internal 0; set timeout 20; spawn " + rsync_cmd + "; expect \"*?assword:*\"; send \""+env.password+"\\n\"; expect eof'")
 
+def start_daemon(d, daemon_name):
+    initd_file = "/etc/init.d/" + daemon_name
+    if fabric.contrib.files.exists(initd_file, use_sudo=True) or fabric.contrib.files.is_link(initd_file, use_sudo=True):
+        puts("Starting init.d service: " + daemon_name)
+        result = sudo(initd_file + ' start', shell=False)
+        result.succeeded
+    else:
+        fabric.utils.error("Looks like init.d sevice " + initd_file + " does not yet exist")
+
 def stop_daemon(d, daemon_name):
     initd_file = "/etc/init.d/" + daemon_name
     if fabric.contrib.files.exists(initd_file, use_sudo=True) or fabric.contrib.files.is_link(initd_file, use_sudo=True):
@@ -135,7 +147,11 @@ def stop_daemons(d):
     for daemon_name in d.app_daemon_names:
         stop_daemon(d, daemon_name)
 
-
+def write_daemon_defaults(d, daemon_name):
+    for i in ["default","sysconfig"]:
+        if fabric.contrib.files.exists('/etc/'+i):
+            if not fabric.contrib.files.exists('/etc/'+i+'/'+daemon_name):
+                sudo('echo "APP_HOME=\"'+d.remote_current_dir+'\"" > /etc/'+i+'/'+daemon_name)
 
 def deploy(assembly):
     d = Deployer()
@@ -210,18 +226,31 @@ def deploy(assembly):
     # either fresh or upgrade installs -- ok to remove temp assembly
     remove_temp_remote_assembly(d)
     
-    # TODO: fix permissions/ownership???
-    
-    # create symlink from version dir to current dir
+    #create symlink from version dir to current dir
     with cd(d.remote_app_dir):
         sudo('rm -f "{}"'.format(os.path.basename(d.remote_current_dir)), shell=True)
-        sudo('ln -s "{}" "{}"'.format(os.path.basename(d.remote_version_dir), os.path.basename(d.remote_current_dir)), shell=True)
+        sudo('ln -s "{}" "{}"'.format(os.path.basename(d.remote_version_dir), os.path.basename(d.remote_current_dir)), shell=True)    
     
-    # TODO: for each "daemon"
-    #   TODO: install init script symlinks (if needed)
-    #   TODO: install sysconfig script (if needed)
-    #   TODO: configure init script to start at boot???
-    #   TODO: start daemon...
+    # fix ownership
+    sudo('chown -R {}.{} "{}"'.format(d.app_user, d.app_group, d.remote_version_dir), shell=True)
+    # fix permissions
+    sudo('chmod -R 755 "{}"'.format(d.remote_current_dir+'/bin'), shell=True)
+    sudo('chmod -R 755 "{}"'.format(d.remote_current_dir+'/share/init.d'), shell=True)
+    
+    for daemon_name in d.app_daemon_names:
+        # install init.d?
+        initd_file = "/etc/init.d/" + daemon_name
+        if not fabric.contrib.files.exists(initd_file, use_sudo=True) and not fabric.contrib.files.is_link(initd_file, use_sudo=True):
+            # create symlink
+            sudo('ln -s "{}" "{}"'.format(d.remote_current_dir+'/share/init.d/'+daemon_name+'.init', initd_file), shell=True)
+        
+        #install sysconfig script (as needed)
+        write_daemon_defaults(d, daemon_name)
+        
+        # TODO: configure init script to start at boot???
+        
+        # start daemon...
+        start_daemon(d, daemon_name)
     
     # remove N number of previous versions (to keep things tidy)?
     if d.retain_versions < 0:

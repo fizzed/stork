@@ -87,4 +87,5 @@ case "$1" in
     ;;
 esac
 
-exit 0
+# passthru exit code from command above (errors can be detected with exit code...)
+exit $?

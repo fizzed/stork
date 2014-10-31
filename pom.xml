@@ -16,6 +16,7 @@
     <modules>
         <module>launcher</module>
 	<module>launcher-test</module>
+        <module>play</module>
         <module>assembly</module>
     </modules>
 

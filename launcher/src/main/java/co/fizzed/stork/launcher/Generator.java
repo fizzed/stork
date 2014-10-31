@@ -98,13 +98,18 @@ public class Generator extends BaseApplication {
             }
         }
 
+        runConfigFiles(configFiles, outputDir);
+    }
+    
+    public void runConfigFiles(List<File> configFiles, File outputDir) {
+        List<Configuration> configs = createConfigs(configFiles);
+        runConfigs(configs, outputDir);
+    }
+    
+    public List<Configuration> createConfigs(List<File> configFiles) {
         // validate required arguments
-        if (configFiles.isEmpty()) {
+        if (configFiles == null || configFiles.isEmpty()) {
             printErrorThenUsageAndExit("no input config files were specified");
-        }
-
-        if (outputDir == null) {
-            printErrorThenUsageAndExit("no output dir was specified");
         }
 
         ConfigurationFactory factory = new ConfigurationFactory();
@@ -121,6 +126,14 @@ public class Generator extends BaseApplication {
             }
         }
 
+        return configs;
+    }
+    
+    public void runConfigs(List<Configuration> configs, File outputDir) {
+        if (outputDir == null) {
+            printErrorThenUsageAndExit("no output dir was specified");
+        }
+
         // use each configuration object to generate one or more launchers
         for (Configuration config : configs) {
             try {
@@ -132,7 +145,6 @@ public class Generator extends BaseApplication {
                 System.exit(1);
             }
         }
-
     }
 
     static private freemarker.template.Configuration fmconfig;

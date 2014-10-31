@@ -50,6 +50,9 @@
         <exec executable="mvn${batext}" failonerror="true">
             <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i ${target}/../../launcher/src/main/resources/stork-launcher-merge.yml -o '${target}/stage'&quot;"/>
         </exec>
+        <exec executable="mvn${batext}" failonerror="true">
+            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i ${target}/../../play/src/main/resources/stork-play-assembly.yml -o '${target}/stage'&quot;"/>
+        </exec>
     </target>
 
     <target name="assembly" depends="clean, stage, generate-launchers">
@@ -60,10 +63,10 @@
             <tarfileset dir="${target}/stage" prefix="fizzed-stork-${version}" filemode="755">
                 <include name="bin/**"/>
             </tarfileset>
-	    <tarfileset dir="${target}/../.." prefix="fizzed-stork-${version}" filemode="555">
+	    <tarfileset dir="${target}/../.." prefix="fizzed-stork-${version}" filemode="644">
                 <include name="*.md"/>
             </tarfileset>
-            <tarfileset dir="${target}/../../sample/src/main/resources" prefix="fizzed-stork-${version}/share" filemode="755">
+            <tarfileset dir="${target}/../../launcher-test/src/main/resources" prefix="fizzed-stork-${version}/share" filemode="644">
                 <include name="hello-console.yml"/>
                 <include name="hello-daemon.yml"/>
             </tarfileset>

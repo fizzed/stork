@@ -86,8 +86,53 @@ public class Merger extends BaseApplication {
             }
         }
 
+        merge(configFiles, outputFile);
+        /**
         // validate required arguments
         if (configFiles.isEmpty()) {
+            printErrorThenUsageAndExit("no input config files were specified");
+        }
+
+        if (outputFile == null) {
+            printErrorThenUsageAndExit("no output file was specified");
+        }
+
+        ConfigurationFactory factory = new ConfigurationFactory();
+        JsonNode mergedNode = null;
+        
+        // parse each configuration file into a configuration object
+        List<Configuration> configs = new ArrayList<Configuration>();
+        for (File configFile : configFiles) {
+            try {
+                JsonNode updateNode = factory.createConfigNode(configFile);
+                if (mergedNode == null) {
+                    mergedNode = updateNode;
+                } else {
+                    mergedNode = factory.mergeNodes(mergedNode, updateNode);
+                }
+            } catch (Exception e) {
+                printError("config file [" + configFile + "] invalid");
+                e.printStackTrace(System.err);
+                System.exit(1);
+            }
+        }
+        
+        try {
+            // write merged file back out
+            factory.getMapper().writeValue(outputFile, mergedNode);
+            System.out.println("Wrote merged config file: " + outputFile);
+        } catch (Exception e) {
+            printError("Unable to cleanly write merged config");
+            e.printStackTrace(System.err);
+            System.exit(1);
+        }
+        */
+    }
+    
+    
+    public void merge(List<File> configFiles, File outputFile) {
+        // validate required arguments
+        if (configFiles == null || configFiles.isEmpty()) {
             printErrorThenUsageAndExit("no input config files were specified");
         }
 

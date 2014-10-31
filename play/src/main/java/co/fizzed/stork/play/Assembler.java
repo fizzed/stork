@@ -276,12 +276,13 @@ public class Assembler extends BaseApplication {
         pw.println("display_name: \"" + playAppName + "\"");
         pw.println("short_description: \"" + playAppName + "\"");
         pw.println("type: DAEMON");
-        pw.println("main_class: \"play.core.server.NettyServer\"");
+        //pw.println("main_class: \"play.core.server.NettyServer\"");
+        pw.println("main_class: \"co.fizzed.stork.bootstrap.PlayBootstrap\"");
         pw.println("log_dir: \"log\"");
         pw.println("platforms: [ LINUX ]");
         pw.println("working_dir_mode: APP_HOME");
         pw.println("app_args: \"\"");
-        pw.println("java_args: \"-Xrs -Djava.net.preferIPv4Stack=true -Dlogger.file=conf/logger.xml\"");
+        pw.println("java_args: \"-Xrs -Djava.net.preferIPv4Stack=true -Dlauncher.main=play.core.server.NettyServer -Dlauncher.config=conf/play.conf -Dlogger.file=conf/logger.xml\"");
         pw.println("min_java_version: \"1.7\"");
         pw.println("symlink_java: true");
         pw.close();
@@ -412,44 +413,44 @@ public class Assembler extends BaseApplication {
     }
 
     public String findPlayCommand(File playProjectDir) {
+        String playCommand = null;
+        
+        // do we need to append ".bat" on the end if running on windows?
+        String batEnd = "";
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            batEnd = ".bat";
+        }
+        
+        // try to find "activator" command first (>= play 2.3)
+        playCommand = "activator" + batEnd;
+        if (!isPlayCommandPresent(playCommand)) {
+            // try to find "activator" command inside project directory...
+            playCommand = new File(playProjectDir, "activator" + batEnd).getAbsolutePath();
+            if (!isPlayCommandPresent(playCommand)) {
+                // fallback to "play" command (< play 2.3)
+                playCommand = "play" + batEnd;
+                if (!isPlayCommandPresent(playCommand)) {
+                    return null;
+                }
+            }
+        }
+
+        return playCommand;
+    }
+    
+    public boolean isPlayCommandPresent(String playCommand) {
         // try to find "activator" command first (>= play 2.3)
         try {
             ProcessResult result = new ProcessExecutor()
-                .command("activator", "--version")
+                .command(playCommand, "--version")
                 .readOutput(true)
                 .execute();
-            System.out.println("Play [activator] command found: " + result.outputUTF8().trim());
-            return "activator";
+            System.out.println("Play [" + playCommand + "] command found: " + result.outputUTF8().trim());
+            return true;
         } catch (Exception e) {
-            System.out.println("Play [activator] command not found");
+            System.out.println("Play [" + playCommand + "] command not found");
+            return false;
         }
-
-        // try to find "activator" command inside project directory...
-		try {
-			File activatorCmd = new File(playProjectDir, "activator.bat");
-			ProcessResult result = new ProcessExecutor()
-				.command(activatorCmd.getAbsolutePath(), "--version")
-				.readOutput(true)
-				.execute();
-			System.out.println("Play [activator] project-specific command found: " + result.outputUTF8().trim());
-			return activatorCmd.getAbsolutePath();
-		} catch (Exception e) {
-			System.out.println("Play [activator] project-specific command not found");
-        }
-
-        // fallback to "play" command (< play 2.3)
-        try {
-            ProcessResult result = new ProcessExecutor()
-                .command("play", "--version")
-                .readOutput(true)
-                .execute();
-            System.out.println("Play [play] command found: " + result.outputUTF8().trim());
-            return "activator";
-        } catch (Exception e) {
-            System.out.println("Play [play] command not found");
-        }
-
-        return null;
     }
 
 }

@@ -45,13 +45,13 @@
 
     <target name="generate-launchers" depends="stage">
         <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i ${target}/../../launcher/src/main/resources/stork-launcher-generate.yml -o '${target}/stage'&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i '${target}/../../launcher/src/main/resources/stork-launcher-generate.yml' -o '${target}/stage'&quot;"/>
         </exec>
         <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i ${target}/../../launcher/src/main/resources/stork-launcher-merge.yml -o '${target}/stage'&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i '${target}/../../launcher/src/main/resources/stork-launcher-merge.yml' -o '${target}/stage'&quot;"/>
         </exec>
         <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i ${target}/../../play/src/main/resources/stork-play-assembly.yml -o '${target}/stage'&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i '${target}/../../play/src/main/resources/stork-play-assembly.yml' -o '${target}/stage'&quot;"/>
         </exec>
     </target>
 

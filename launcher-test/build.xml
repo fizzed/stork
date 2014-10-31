@@ -4,14 +4,14 @@
     <target name="compile-hello-console" depends="stage">
 	<!-- use core module via maven to compile launcher -->
         <exec executable="mvn${batext}" failonerror="true" dir="../launcher">
-            <arg line="-e compile exec:java -Dexec.classpathScope=runtime -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i ${target}/../src/main/resources/hello-console.yml -o '${target}/stage'&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=runtime -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i '${target}/../src/main/resources/hello-console.yml' -o '${target}/stage'&quot;"/>
         </exec>
     </target>
     
     <target name="compile-hello-daemon" depends="stage">
 	<!-- use core module via maven to compile launcher -->
         <exec executable="mvn${batext}" failonerror="true" dir="../launcher">
-            <arg line="-e compile exec:java -Dexec.classpathScope=runtime -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i ${target}/../src/main/resources/hello-daemon.yml -o '${target}/stage'&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=runtime -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i '${target}/../src/main/resources/hello-daemon.yml' -o '${target}/stage'&quot;"/>
         </exec>
     </target>
         
@@ -26,8 +26,8 @@
     </target>
 
     <target name="hello-merge" depends="stage">
-        <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=co.fizzed.stork.launcher.Merger -Dexec.args=&quot;-i ${target}/../src/main/resources/hello-base.yml -i ${target}/../src/main/resources/hello-console.yml -o '${target}/hello-console-merged.yml'&quot;"/>
+        <exec executable="mvn${batext}" failonerror="true" dir="../launcher">
+            <arg line="-e compile exec:java -Dexec.classpathScope=runtime -Dexec.mainClass=co.fizzed.stork.launcher.Merger -Dexec.args=&quot;-i '${target}/../src/main/resources/hello-base.yml' -i '${target}/../src/main/resources/hello-console.yml' -o '${target}/hello-console-merged.yml'&quot;"/>
         </exec>
     </target>
     

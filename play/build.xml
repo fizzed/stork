@@ -3,7 +3,7 @@
 
     <target name="compile-assemble" depends="init">
         <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=runtime -Dexec.mainClass=co.fizzed.stork.play.Assembler -Dexec.args=&quot;-p ${target}/../../examples/hello-server-play&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=runtime -Dexec.mainClass=co.fizzed.stork.play.Assembler -Dexec.args=&quot;-p '${target}/../../examples/hello-server-play'&quot;"/>
         </exec>
     </target>
 	

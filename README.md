@@ -8,6 +8,31 @@ Stork by Fizzed
 
 ### Overview
 
+What comes after Maven, Ant, SBT, Gradle, etc. (your Java/JVM build tool)?  Stork is a set
+of libraries and utilities for filling in the gap between your Java build system and
+eventual execution.  Stork currently provides tools for 3 basic "after-build" areas -- you
+can pick and choose which of the three you need to use -- although you'll quickly find you
+may love them all.
+
+ 1. "Compiling" launcher scripts for one or more console and/or daemon JVM/Java apps
+    that users will execute -- as well as the companion scripts and/or glue to run those
+    scripts across Windows, Mac, Linux, FreeBSD, etc.
+
+ 2. Assembling and packaging your application into a well-defined canonical application
+    "layout" with a consistent location for your launcher scripts, jars, configuration files,
+    etc.  This layout is even consistent whether you use Maven, SBT, Play Framework, etc.
+
+ 3. Deploying and/or distributing your application in various ways.  It all starts with
+    assembling your application into a standard layout tarball with well-defined bin,
+    lib, conf, share, data, run, and log directories.  You can either use Stork's tools
+    to help you package your application or just make sure it meets our standard. Once
+    in the proper format, there are additional tools to help you:
+
+	3b. A Fabric-based linux deployment utility for rapid deployment to a fleet of
+	    machines -- with a "versioned" install approach.
+
+	3c. "Compiling" your universal tarball into operating-system specific installers
+
 Utility for generating native launchers for Java-based applications across Windows,
 Linux, Mac OSX, and many other UNIX-like systems (any NIX with a JVM and bourne shell
 support). Unlike other "service wrappers" or launcher frameworks, this utility can

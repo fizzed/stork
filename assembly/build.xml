@@ -29,6 +29,7 @@
     </target>
     
     <target name="stage" depends="init">
+        <delete dir="${target}/stage"/>
 	<!-- need to install parent first -->
 	<exec executable="mvn${batext}" failonerror="true" dir="..">
             <arg line="install"/>
@@ -41,21 +42,20 @@
             <fileset dir="target/dependency"/>
 	    <fileset dir="${target}" includes="*.jar" excludes="*-sources.jar"/>
         </copy>
+        <copy todir="${target}/stage/bin">
+            <file file="${target}/../../fabric/stork-fabric-deploy"/>
+            <file file="${target}/../../fabric/fabfile.py"/>
+        </copy>
+        <chmod file="${target}/stage/bin/stork-fabric-deploy" perm="755"/>
     </target>
 
     <target name="generate-launchers" depends="stage">
         <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i '${target}/../../launcher/src/main/resources/stork-launcher-generate.yml' -o '${target}/stage'&quot;"/>
-        </exec>
-        <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i '${target}/../../launcher/src/main/resources/stork-launcher-merge.yml' -o '${target}/stage'&quot;"/>
-        </exec>
-        <exec executable="mvn${batext}" failonerror="true">
-            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-i '${target}/../../play/src/main/resources/stork-play-assembly.yml' -o '${target}/stage'&quot;"/>
+            <arg line="-e compile exec:java -Dexec.classpathScope=compile -Dexec.mainClass=co.fizzed.stork.launcher.Generator -Dexec.args=&quot;-o '${target}/stage' -i '${target}/../../launcher/src/main/resources/stork-launcher-generate.yml' -i '${target}/../../launcher/src/main/resources/stork-launcher-merge.yml' -i '${target}/../../play/src/main/resources/stork-play-assembly.yml'&quot;"/>
         </exec>
     </target>
 
-    <target name="assembly" depends="clean, stage, generate-launchers">
+    <target name="assembly" depends="stage, generate-launchers">
         <tar destfile="${target}/fizzed-stork-${version}.tar.gz" compression="gzip" >
             <tarfileset dir="${target}/stage" prefix="fizzed-stork-${version}">
                 <include name="lib/**"/>

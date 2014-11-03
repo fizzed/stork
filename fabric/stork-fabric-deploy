@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+
+#
+# Shell script to launch Python Fabric tool for rapid deployment
+# of Stork-based apps.
+#
+
+# save current working directory
+INITIAL_WORKING_DIR="`pwd`"
+
+# change working directory to app home
+PRGDIR=$(dirname "$0")
+cd "$PRGDIR"
+
+# application home is now current directory
+APP_HOME="`pwd`"
+
+# revert back to original working dir
+cd "$INITIAL_WORKING_DIR"
+
+# process arguments -- strip out ones that go to deploy task
+# need to be careful args do not clash with fabric's
+ASSEMBLY=""
+FABRIC_ARGS=""
+while [ $# -gt 0 ]; do
+    a=$1
+	if [ "$a" = "--assembly" ]; then
+		shift
+		if [ $# -le 0 ]; then continue; fi
+		ASSEMBLY=$1
+	else
+    	# does the argument need escaped?
+    	if [ "$a" = `echo "$a" | sed 's/ //g'` ]; then
+        	FABRIC_ARGS="$FABRIC_ARGS $a"
+    	else
+        	FABRIC_ARGS="$FABRIC_ARGS \"$a\""
+    	fi
+	fi
+    shift
+done
+
+# fab -H sea-web2.fizzed.lan deploy:assembly=../examples/hello-server-dropwizard/target/hello-server-dropwizard-1.0.0-SNAPSHOT.tar.gz
+PYTHONDONTWRITEBYTECODE=1 fab --fabfile="$APP_HOME/fabfile.py" $FABRIC_ARGS deploy:assembly="$ASSEMBLY"

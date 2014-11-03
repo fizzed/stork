@@ -67,10 +67,10 @@ public class Generator extends BaseApplication {
         while (argList.size() > 0) {
             String argSwitch = argList.remove(0);
 
-            if (argSwitch.equals("-v")) {
+            if (argSwitch.equals("-v") || argSwitch.equals("--version")) {
                 System.err.println("stork-launcher-generate version: " + co.fizzed.stork.launcher.Version.getLongVersion());
                 System.exit(0);
-            } else if (argSwitch.equals("-i")) {
+            } else if (argSwitch.equals("-i") || argSwitch.equals("--input")) {
                 String fileString = popNextArg(argSwitch, argList);
                 try {
                     List<File> files = FileUtil.findFiles(fileString);
@@ -78,7 +78,7 @@ public class Generator extends BaseApplication {
                 } catch (IOException e) {
                     printErrorThenUsageAndExit(e.getMessage());
                 }
-            } else if (argSwitch.equals("-o")) {
+            } else if (argSwitch.equals("-o") || argSwitch.equals("--output")) {
                 outputDir = new File(popNextArg(argSwitch, argList));
                 if (!outputDir.exists()) {
                     if (!outputDir.mkdirs()) {

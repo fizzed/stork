@@ -102,14 +102,14 @@ def unpack_or_pack(d, assembly):
         d.assembly_tgz_name = os.path.basename(d.assembly_tgz_file)
     else:
         # while we could tarball the dir up to support this, for now just error
-        fabric.utils.error("Only assemblies of .tar.gz are supported (unpacked form not supported")
+        fabric.utils.error("Only assemblies of .tar.gz are supported (unpacked form not supported)")
 
     puts("Assembly tgz: " + d.assembly_tgz_file, show_prefix=False)
     puts("Assembly unpacked: " + d.assembly_dir, show_prefix=False)
 
 def remove_temp_remote_assembly(d):
     with cd('/tmp'):
-        run('rm -Rf "' + d.assembly_tgz_name + '" "' + d.assembly_name + '"')
+        sudo('rm -Rf "' + d.assembly_tgz_name + '" "' + d.assembly_name + '"', shell=True)
 
 def run_rsync(local_dir, remote_dir, delete=False, excludes=[]):
     excludes = "".join(map(lambda e: " --exclude="+e, excludes))
@@ -147,12 +147,15 @@ def stop_daemons(d):
     for daemon_name in d.app_daemon_names:
         stop_daemon(d, daemon_name)
 
-def write_daemon_defaults(d, daemon_name):
+def write_daemon_system_defaults(d, daemon_name):
     for i in ["default","sysconfig"]:
         if fabric.contrib.files.exists('/etc/'+i):
             if not fabric.contrib.files.exists('/etc/'+i+'/'+daemon_name):
                 sudo('echo "APP_HOME=\"'+d.remote_current_dir+'\"" > /etc/'+i+'/'+daemon_name)
+                # only write file to first available dir
+                return
 
+@task
 def deploy(assembly):
     d = Deployer()
 
@@ -230,7 +233,7 @@ def deploy(assembly):
     with cd(d.remote_app_dir):
         sudo('rm -f "{}"'.format(os.path.basename(d.remote_current_dir)), shell=True)
         sudo('ln -s "{}" "{}"'.format(os.path.basename(d.remote_version_dir), os.path.basename(d.remote_current_dir)), shell=True)    
-    
+        
     # fix ownership
     sudo('chown -R {}.{} "{}"'.format(d.app_user, d.app_group, d.remote_version_dir), shell=True)
     # fix permissions
@@ -244,8 +247,8 @@ def deploy(assembly):
             # create symlink
             sudo('ln -s "{}" "{}"'.format(d.remote_current_dir+'/share/init.d/'+daemon_name+'.init', initd_file), shell=True)
         
-        #install sysconfig script (as needed)
-        write_daemon_defaults(d, daemon_name)
+        # install /etc/[sysconfig/defaults]/app_name script (tells init.d script where app is installed)
+        write_daemon_system_defaults(d, daemon_name)
         
         # TODO: configure init script to start at boot???
         

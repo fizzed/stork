@@ -1,13 +1,13 @@
 Stork by Fizzed
 =======================================
 
-### By
+## By
 
  - [Fizzed, Inc.](http://fizzed.co)
  - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
 
 
-### Overview
+## Overview
 
 What comes after your Java/JVM build tool (Maven, SBT, Gradle, Ant, etc.) compiles your code?
 Stork is a collection of utilities for optimizing your "after-build" workflow by filling in
@@ -108,20 +108,23 @@ Examples would include an application's process id (pid) file or named sockets.
 On Linux/UNIX, this could be symlinked to /var/run/<app_name>.
 
 
-### Installation
+## Installation
 
-Add <fizzed_stork_install_dir>/bin to your PATH so that you can execute
-"stork-launcher-generate".  Creating a launcher is then as easy as:
+Download the stork tarball.  The "bin" directory in this tarball needs to be
+added to your PATH environment variable.  Once available in your PATH, you can
+execute any of the following utilities:
 
-stork-launcher-generate -i <input_config_file> -o <output_dir>
+	stork-launcher-generate
+	stork-launcher-merge
+	stork-play-assembly
+	stork-fabric-deploy
 
-
-### Example
+## Example
 
 Examples are 
 
 
-### Launcher
+## Launcher
 
 Collection of utilities for generating native launchers for Java-based applications
 across Windows, Linux, Mac OSX, and many other UNIX-like systems (any NIX with a
@@ -132,12 +135,12 @@ source control) and then you compile/generate it into one or more launchers. The
 launchers can then be distributed with your final tarball/assembly/package so 
 that your app looks like a native compiled executable.
 
-#### Development workflow
+### Development workflow
 
 Integrate "stork-launcher-generate" into your build workflow to generate the launcher
 scripts while you also compile your JVM bytecode classes.
 
-#### Features
+### Features
 
  * Create launchers for one or more CONSOLE or DAEMON applications that will be
    included in your assembly. Launchers feel like a natively compiled app.
@@ -179,7 +182,7 @@ scripts while you also compile your JVM bytecode classes.
    such as TOP/PS make identifying application easier.
 
 
-### License
+## License
 
 Copyright (C) 2014 Joe Lauer / Fizzed, Inc.
 

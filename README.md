@@ -114,14 +114,80 @@ Download the stork tarball.  The "bin" directory in this tarball needs to be
 added to your PATH environment variable.  Once available in your PATH, you can
 execute any of the following utilities:
 
-	stork-launcher-generate
-	stork-launcher-merge
+### stork-launcher-generate
+
+Compiles a launcher config file into a launcher script.  Outputs compiled files
+into a parent directory that will contain child directories in the canonical
+application layout.
+
+	stork-launcher-generate -i src/main/assembly/hello-server.yml -o target/stage
+
+### stork-launcher-merge
+
+Helper utility to merge launcher config files together by adding or overriding values
+defined from the ordered list of input files.  Useful for using a base launcher
+config file and only overriding values as needed.
+
+	stork-launcher-merge -i src/main/assembly/hello-base.yml -i src/main/assembly/hello-server.yml -o target/hello-server-merged.yml
+	stork-launcher-generate -i target/hello-server-merged.yml -o target/stage
+
+### stork-play-assembly
+
+Utility for assemblying a [PlayFramework](http://playframework.com) application into
+a Stork-based assembly tarball.
+
 	stork-play-assembly
-	stork-fabric-deploy
 
-## Example
+### stork-fabric-deploy
 
-Examples are 
+Utility for rapidly deploying a "versioned" install on one or more remote Linux-based systems via SSH.
+Uses Python and [Fabric](http://www.fabfile.org/) underneath.  Installs a stork-based assembly tarball
+into a versioned directory structure on a remote system and handles restarting daemons as needed.  The
+versioned directory structure allows rapid deployment with the ability to revert to a previous version
+if needed.
+
+	stork-fabric-deploy -H host1.example.com,host2.example.com --assembly target/hello-server-1.0.0-SNAPSHOT.tar.gz
+
+Since this a "SNAPSHOT" version, a timestamp would be generated (such as 20141101121032 for Nov 1, 2014 12:10:32) and
+this application would be installed to:
+
+	/opt/hello-server/version-1.0.0-20141101121032
+
+A symlink would also be created:
+
+	/opt/hello-server/current -> /opt/hello-server/version-1.0.0-20141101121032
+
+Since this application contains one daemon called "hello-server", the daemon would be stopped (if it existed), the
+upgrade would occur, then the daemon would be installed (if needed) and started back up.  The directories described
+above in the canonical layout as (retained on upgrade) would be moved rather than overwritten.
+
+## Examples
+
+### examples/hello-server-dropwizard
+
+Example project using Maven for building a simple Hello World daemon using the DropWizard framework.
+
+The command-line version of stork-launcher-generate is integrated in the pom.xml via the maven-exec-plugin.
+The packaging of the final tarball assembly is done with the standard maven-assembly-plugin.  To build the
+project and tarball, just execute the following in examples/hello-server-dropwizard:
+
+	mvn clean assembly:assembly
+
+On success, the target/ directory will contain the final assembly tarball.
+
+### examples/hello-server-play
+
+Example project using the [PlayFramework](http://playframework.com) for building a simple Hello World
+daemon. The PlayFramework allows you to use a mix of Scala/Java for creating web applications.  Play uses
+SBT underneath the hood, but they also define many special settings in SBT for building their applications.
+The stork-play-assembly tool automates using the play build system to structure a final assembly tarball
+that meets the stork canonical standards. It's also a great example of how any JVM-based application 
+can ultimately be packaged into the stork layout.  To build the project, just execute the following
+in examples/hello-server-play:
+
+	stork-play-assembly
+
+On success, the target/ directory will contain the final assembly tarball.
 
 
 ## Launcher

@@ -1,7 +1,7 @@
 Stork by Fizzed
 =======================================
 
-### Contributors
+### By
 
  - [Fizzed, Inc.](http://fizzed.co)
  - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))

@@ -8,8 +8,8 @@
     <name>fizzed-stork-parent</name>
 
     <parent>
-        <groupId>com.mfizz</groupId>
-        <artifactId>mfz-maven-parent</artifactId>
+        <groupId>co.fizzed</groupId>
+        <artifactId>fizzed-maven-parent</artifactId>
         <version>1.8-SNAPSHOT</version>
     </parent>
 

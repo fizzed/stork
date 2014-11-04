@@ -1,4 +1,6 @@
-name := """hello-server-play"""
+name := "hello-server-play"
+
+organization := "co.fizzed"
 
 version := "1.1.0-SNAPSHOT"
 

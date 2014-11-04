@@ -19,6 +19,7 @@ import co.fizzed.stork.launcher.BaseApplication;
 import co.fizzed.stork.launcher.Configuration;
 import co.fizzed.stork.launcher.Generator;
 import co.fizzed.stork.launcher.Merger;
+import co.fizzed.stork.maven.TarUtils;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -215,7 +216,17 @@ public class Assembler extends BaseApplication {
         launcherGenerator.runConfigs(launcherConfigs, assemblyDir);
 
 
-        File assemblyTarGz = new File(assemblyDir.getAbsolutePath() + ".tar.gz");
+        File tgzFile = new File(assemblyDir.getAbsolutePath() + ".tar.gz");
+        TarArchiveOutputStream tgzout = TarUtils.createTGZStream(tgzFile);
+        try {
+            TarUtils.addFileToTGZStream(tgzout, assemblyDir.getAbsolutePath(), "", true);
+        } finally {
+            if (tgzout != null) {
+                tgzout.close();
+            }
+        }
+        
+        /**
         System.out.println("Creating assembly tarball...");
         TarArchiveOutputStream out = null;
         try {
@@ -230,11 +241,13 @@ public class Assembler extends BaseApplication {
                  out.close();
              }
         }
+        */
 
-        System.out.println("Generated play assembly: " + assemblyTarGz);
+        System.out.println("Generated play assembly: " + tgzFile);
         System.out.println("Done!");
     }
 
+    /**
     private void addFileToTarGz(TarArchiveOutputStream tOut, String path, String base) throws IOException {
         File f = new File(path);
         String entryName = base + f.getName();
@@ -267,6 +280,7 @@ public class Assembler extends BaseApplication {
             }
         }
     }
+    */
 
     public File createBaseLauncherConfFile(File targetDir, String playAppName) throws Exception {
         File f = new File(targetDir, "play-launcher.yml");

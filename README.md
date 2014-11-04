@@ -131,6 +131,19 @@ config file and only overriding values as needed.
 	stork-launcher-merge -i src/main/assembly/hello-base.yml -i src/main/assembly/hello-server.yml -o target/hello-server-merged.yml
 	stork-launcher-generate -i target/hello-server-merged.yml -o target/stage
 
+### stork-maven-assembly
+
+Alternative to maven-assembly-plugin for locally staging and assemblying a tarball of
+your Maven project.  No longer will you need to maintain an "assembly.xml" config file.
+These utilities will copy your project's runtime dependencies and project .jar artifact
+into target/stage/lib, then copy your project's main bin/, conf/, and share/ directories
+into target/stage as well.  If you also tie "stork-launcher-generate" to compile your
+launcher scripts into target/stage -- then you will have a fully assembled application
+in target/stage.  As a second step, target/stage will be compressed into
+target/artifactId-version.tar.gz.
+
+	storke-maven-assembly
+
 ### stork-play-assembly
 
 Utility for assemblying a [PlayFramework](http://playframework.com) application into
@@ -172,7 +185,7 @@ Example project using Maven for building a simple Hello World daemon using the D
 
 The command-line version of stork-launcher-generate is integrated in the pom.xml via the maven-exec-plugin.
 The packaging of the final tarball assembly is done with the standard maven-assembly-plugin.  To build the
-project and tarball, just execute the following in [src/examples/hello-server-dropwizard](src/examples/hello-server-dropwizard):
+project and tarball, just execute the following in src/examples/hello-server-dropwizard:
 
 	mvn clean assembly:assembly
 
@@ -187,7 +200,7 @@ SBT underneath the hood, but they also define many special settings in SBT for b
 The stork-play-assembly tool automates using the play build system to structure a final assembly tarball
 that meets the stork canonical standards. It's also a great example of how any JVM-based application 
 can ultimately be packaged into the stork layout.  To build the project, just execute the following
-in [src/examples/hello-server-play](src/examples/hello-server-play):
+in src/examples/hello-server-play:
 
 	stork-play-assembly
 

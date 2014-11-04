@@ -1,5 +1,51 @@
 <project name="Stork Launcher Sample by Fizzed" default="hello-console" basedir=".">
-    <import file="../assembly/build.xml"/>
+
+    <property name="target" location="target"/>
+    <property name="batext" value=""/>
+    <property name="version" value="1.2.0"/>
+    
+    <scriptdef name="propertyreset" language="javascript">
+        <attribute name="name"/>
+        <attribute name="value"/>
+        project.setProperty(attributes.get("name"), attributes.get("value"));
+    </scriptdef>
+	
+    <condition property="isWindows" value="true">
+        <os family="windows" />
+    </condition>
+	
+    <target name="checkos" if="isWindows">
+        <propertyreset name="batext" value=".bat" />
+        <echo message="on windows, batext is ${batext}" />
+    </target>
+	
+    <target name="init" depends="checkos">
+        <tstamp/>
+        <mkdir dir="${target}"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${target}"/>
+    </target>
+    
+    <target name="stage" depends="init">
+        <delete dir="${target}/stage"/>
+
+	<!-- need to install parent first -->
+	<exec executable="mvn${batext}" failonerror="true" dir="..">
+            <arg line="install"/>
+        </exec>
+
+	<!-- all libs to target/dependency -->
+	<exec executable="mvn${batext}" failonerror="true">
+            <arg line="package"/>
+        </exec>
+
+	<copy todir="${target}/stage/lib">
+            <fileset dir="target/dependency"/>
+	    <fileset dir="${target}" includes="*.jar" excludes="*-sources.jar"/>
+        </copy>
+    </target>
 
     <target name="compile-hello-console" depends="stage">
 	<!-- use core module via maven to compile launcher -->

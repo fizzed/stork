@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>co.fizzed</groupId>
     <artifactId>fizzed-stork-assembly</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>fizzed-stork-assembly</name>
  
     <parent>
         <groupId>co.fizzed</groupId>
         <artifactId>fizzed-stork-parent</artifactId>
-        <version>1.1.0</version>
+        <version>1.2.0</version>
     </parent>
     
     <build>
@@ -26,11 +26,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.8</version>
+                <version>2.9</version>
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
-                        <phase>package</phase>
+                        <phase>compile</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
@@ -38,6 +38,62 @@
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
+                            <prependGroupId>true</prependGroupId>
+                            <outputDirectory>target/stage/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <executions>
+                    <execution>
+                        <id>generate-launchers</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-cp</argument>
+                                <argument>target/stage/lib/*</argument>
+                                <argument>co.fizzed.stork.launcher.Generator</argument>
+                                <argument>-o</argument>
+                                <argument>target/stage</argument>
+                                <argument>-i</argument>
+                                <argument>../launcher/src/main/launchers</argument>
+                                <argument>-i</argument>
+                                <argument>../maven/src/main/launchers</argument>
+                                <argument>-i</argument>
+                                <argument>../play/src/main/launchers</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <executions>
+                    <execution>
+                        <id>copy-static-launchers</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-cp</argument>
+                                <argument>target/stage/lib/*</argument>
+                                <argument>co.fizzed.stork.maven.CopyFile</argument>
+                                <argument>-i</argument>
+                                <argument>../fabric/bin</argument>
+                                <argument>-o</argument>
+                                <argument>target/stage/bin</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -54,10 +110,15 @@
         </dependency>
         <dependency>
             <groupId>co.fizzed</groupId>
+            <artifactId>fizzed-stork-maven</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>co.fizzed</groupId>
             <artifactId>fizzed-stork-play</artifactId>
             <version>${project.version}</version>
         </dependency>
-	<dependency>
+        <dependency>
             <groupId>co.fizzed</groupId>
             <artifactId>fizzed-stork-bootstrap</artifactId>
             <version>${project.version}</version>
@@ -66,7 +127,8 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>${logback.version}</version>
-        </dependency><dependency>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>

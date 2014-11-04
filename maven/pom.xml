@@ -2,10 +2,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>co.fizzed</groupId>
-    <artifactId>fizzed-stork-play</artifactId>
+    <artifactId>fizzed-stork-maven</artifactId>
     <packaging>jar</packaging>
-    <name>fizzed-stork-play</name>
-    <description>Utility for assembling a play app with a launcher into a canonical assembly.</description>
+    <name>fizzed-stork-maven</name>
+    <description>Utility for assembling a maven app into a canonical assembly.</description>
   
     <parent>
         <groupId>co.fizzed</groupId>
@@ -18,11 +18,6 @@
         <dependency>
             <groupId>co.fizzed</groupId>
             <artifactId>fizzed-stork-launcher</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>co.fizzed</groupId>
-            <artifactId>fizzed-stork-maven</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -55,7 +50,7 @@
     </dependencies>
 
     <properties>
-        <main.java.package>co.fizzed.stork.play</main.java.package>
+        <main.java.package>co.fizzed.stork.maven</main.java.package>
     </properties>
     
 </project>

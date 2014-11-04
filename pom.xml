@@ -4,7 +4,7 @@
     <groupId>co.fizzed</groupId>
     <artifactId>fizzed-stork-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <name>fizzed-stork-parent</name>
 
     <parent>
@@ -17,6 +17,7 @@
 	<module>bootstrap</module>
         <module>launcher</module>
 	<module>launcher-test</module>
+        <module>maven</module>
         <module>play</module>
         <module>assembly</module>
     </modules>

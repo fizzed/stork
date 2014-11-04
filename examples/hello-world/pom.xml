@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>co.fizzed</groupId>
+    <artifactId>fizzed-stork-examples-hello-world</artifactId>
+    <packaging>jar</packaging>
+    <name>fizzed-stork-examples-hello-world</name>
+    <description>App to test console and daemon for stork-launcher</description>
+
+    <parent>
+        <groupId>co.fizzed</groupId>
+        <artifactId>fizzed-stork-parent</artifactId>
+        <version>1.2.0</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <finalName>${project.artifactId}-${project.version}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptors>
+                        <descriptor>src/main/assembly/bin.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <outputDirectory>target/stage/lib</outputDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>stage-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <prependGroupId>true</prependGroupId>
+                            <outputDirectory>target/stage/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- generate launchers using other jars from this project without polluting this projects depends -->
+            <plugin>
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <dependencies>
+                    <dependency>
+                        <groupId>co.fizzed</groupId>
+                        <artifactId>fizzed-stork-launcher</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>generate-launchers</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <includeProjectDependencies>false</includeProjectDependencies>
+                            <includePluginDependencies>true</includePluginDependencies>
+                            <mainClass>co.fizzed.stork.launcher.Generator</mainClass>
+                            <arguments>
+                                <argument>-o</argument>
+                                <argument>${basedir}/target/stage</argument>
+                                <argument>-i</argument>
+                                <argument>${basedir}/src/main/launchers/hello-console.yml</argument>
+                                <argument>-i</argument>
+                                <argument>${basedir}/src/main/launchers/hello-daemon.yml</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- compile scope -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http</artifactId>
+            <version>${netty.version}</version>
+        </dependency>
+        
+        <!-- runtime scope -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <main.java.package>co.fizzed.stork.sample</main.java.package>
+        <netty.version>4.0.23.Final</netty.version>
+    </properties>
+
+</project>

@@ -29,7 +29,7 @@
                 <version>2.9</version>
                 <executions>
                     <execution>
-                        <id>copy-dependencies</id>
+                        <id>stage-dependencies</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>copy-dependencies</goal>

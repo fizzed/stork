@@ -10,13 +10,13 @@
     <parent>
         <groupId>com.mfizz</groupId>
         <artifactId>mfz-maven-parent</artifactId>
-        <version>1.7</version>
+        <version>1.8-SNAPSHOT</version>
     </parent>
 
     <modules>
 	<module>bootstrap</module>
         <module>launcher</module>
-	<module>launcher-test</module>
+	<module>examples/hello-world</module>
         <module>maven</module>
         <module>play</module>
         <module>assembly</module>

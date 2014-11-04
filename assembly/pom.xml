@@ -57,8 +57,8 @@
                         <configuration>
                             <executable>java</executable>
                             <arguments>
-                                <argument>-cp</argument>
-                                <argument>target/stage/lib/*</argument>
+                                <argument>-classpath</argument>
+            			<classpath/>
                                 <argument>co.fizzed.stork.launcher.Generator</argument>
                                 <argument>-o</argument>
                                 <argument>target/stage</argument>
@@ -86,8 +86,8 @@
                         <configuration>
                             <executable>java</executable>
                             <arguments>
-                                <argument>-cp</argument>
-                                <argument>target/stage/lib/*</argument>
+                                <argument>-classpath</argument>
+            			<classpath/>
                                 <argument>co.fizzed.stork.maven.CopyFile</argument>
                                 <argument>-i</argument>
                                 <argument>../fabric/bin</argument>

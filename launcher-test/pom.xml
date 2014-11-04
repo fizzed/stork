@@ -25,49 +25,72 @@
                     </descriptors>
                 </configuration>
             </plugin>
+                        <plugin>
+	    	            <groupId>org.apache.maven.plugins</groupId>
+	    	            <artifactId>maven-jar-plugin</artifactId>
+	    	            <version>2.5</version>
+	    	            <configuration>
+	    		                        <outputDirectory>target/stage/lib</outputDirectory>
+	                    </configuration>
+      	</plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.8</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
-                    </execution>
-                </executions>
+	                    <groupId>org.apache.maven.plugins</groupId>
+	                    <artifactId>maven-dependency-plugin</artifactId>
+	                    <version>2.9</version>
+	                    <executions>
+	                        <execution>
+	                            <id>stage-dependencies</id>
+	                            <phase>package</phase>
+	                            <goals>
+	                                <goal>copy-dependencies</goal>
+	                            </goals>
+	                            <configuration>
+	                                <overWriteReleases>false</overWriteReleases>
+	                                <overWriteSnapshots>false</overWriteSnapshots>
+	                                <overWriteIfNewer>true</overWriteIfNewer>
+	                                <prependGroupId>true</prependGroupId>
+	                                <outputDirectory>target/stage/lib</outputDirectory>
+	                            </configuration>
+	                        </execution>
+	                    </executions>
+	                </plugin>
+	                <plugin>
+	                    <artifactId>exec-maven-plugin</artifactId>
+	                    <groupId>org.codehaus.mojo</groupId>
+	                    <executions>
+	                        <execution>
+	                            <id>generate-launchers</id>
+	                            <phase>compile</phase>
+	                            <goals>
+	                                <goal>exec</goal>
+	                            </goals>
+	                            <configuration>
+	                                <executable>java</executable>
+	                                <arguments>
+	                                    <argument>-classpath</argument>
+	                			<classpath/>
+	                                    <argument>co.fizzed.stork.launcher.Generator</argument>
+	                                    <argument>-o</argument>
+	                                    <argument>target/stage</argument>
+	                                    <argument>-i</argument>
+	                                    <argument>src/main/resources/hello-console.yml</argument>
+	                                    <argument>-i</argument>
+	                                    <argument>src/main/resources/hello-daemon.yml</argument>
+	                                </arguments>
+	                            </configuration>
+	                        </execution>
+	                    </executions>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.3.2</version>
-                <executions>
-                    <execution>
-                        <id>generate-launchers</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <executable>jtools-launcher-generate -i </executable>
-                </configuration>
-            </plugin>
-            -->
         </plugins>
     </build>
 
     <dependencies>
         <!-- compile scope -->
+        <dependency>
+	    <groupId>co.fizzed</groupId>
+	    <artifactId>fizzed-stork-launcher</artifactId>
+	    <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec-http</artifactId>

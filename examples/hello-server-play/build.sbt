@@ -2,7 +2,11 @@ name := "hello-server-play"
 
 organization := "co.fizzed"
 
-version := "1.1.0-SNAPSHOT"
+organizationName := "Fizzed, Inc."
+
+organizationHomepage := Some(url("http://fizzed.co"))
+
+version := "1.2.0"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
@@ -13,9 +17,7 @@ libraryDependencies ++= Seq(
   javaEbean,
   cache,
   javaWs,
-  "co.fizzed" % "fizzed-stork-bootstrap" % "1.1.0"
+  "co.fizzed" % "fizzed-stork-bootstrap" % buildVersion
 )
 
-resolvers += (
-    "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"
-)
+resolvers += Resolver.mavenLocal

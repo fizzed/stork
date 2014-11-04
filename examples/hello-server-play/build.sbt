@@ -17,7 +17,7 @@ libraryDependencies ++= Seq(
   javaEbean,
   cache,
   javaWs,
-  "co.fizzed" % "fizzed-stork-bootstrap" % buildVersion
+  "co.fizzed" % "fizzed-stork-bootstrap" % "1.2.0"
 )
 
 resolvers += Resolver.mavenLocal

@@ -6,22 +6,23 @@ Stork by Fizzed
  - [Fizzed, Inc.](http://fizzed.co)
  - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
 
-### Development
+### Setup
 
-Since this app creates launchers for other Java apps, a somewhat unusual build system
-was required for testing & assembly during development and distribution.  There is
-an Ant-based build.xml script which in turn creates maven commands for compiling, etc.
-So you'll need both ant and maven available if you plan on building from source. The
-assembled distribution, however, uses "console" launcher scripts generated from this
-project -- so this application can easily run on Windows, Linux, Mac OSX, etc.
-
-### On Linux/OSX
+#### On Linux/OSX
 
 	export PATH=`pwd`/assembly/target/stage/bin:$PATH
 
-### On Windows
+#### On Windows
 
 	set PATH=%CD%\assembly\target\stage\bin;%PATH%
+
+### Testing
+
+	ant hello-console
+	ant hello-daemon
+	ant hello-server-dropwizard
+	ant hello-server-play
+
 
 ### Notes for target operating systems
 

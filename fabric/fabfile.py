@@ -125,6 +125,15 @@ def run_rsync(local_dir, remote_dir, delete=False, excludes=[]):
         # run rsync with expect to pass it the password
         local("expect -c 'exp_internal 0; set timeout 20; spawn " + rsync_cmd + "; expect \"*?assword:*\"; send \""+env.password+"\\n\"; expect eof'")
 
+def remote_exe_exists(d, exe):
+    with warn_only():
+        # command -v foo >/dev/null 2>&1
+        result = run('command -v {} >/dev/null 2>&1'.format(exe));
+        if result.return_code == 0:
+            return True
+        else:
+            return False
+
 def start_daemon(d, daemon_name):
     initd_file = "/etc/init.d/" + daemon_name
     if fabric.contrib.files.exists(initd_file, use_sudo=True) or fabric.contrib.files.is_link(initd_file, use_sudo=True):
@@ -155,9 +164,22 @@ def write_daemon_system_defaults(d, daemon_name):
                 # only write file to first available dir
                 return
 
+def install_daemon_at_system_boot(d, daemon_name):
+    if remote_exe_exists(d, "chkconfig"):
+        # redhat/centos/fedora
+        sudo('chkconfig --add {}'.format(daemon_name), shell=True)
+    elif remote_exe_exists(d, "update-rc.d"):
+        # ubuntu/debian
+        sudo('update-rc.d {} defaults'.format(daemon_name), shell=True)
+    else:
+        fabric.utils.error("Neither chkconfig or update-rc.d exists on remote host")
+
 @task
 def deploy(assembly):
     d = Deployer()
+
+    # TODO: check for required programs
+    # local: expect, rsync
 
     unpack_or_pack(d, assembly)
     set_app_info_from_assembly_name(d, d.assembly_name)
@@ -177,7 +199,7 @@ def deploy(assembly):
     # app version already installed?
     if fabric.contrib.files.exists(d.remote_version_dir, use_sudo=True):
         print "Remote version dir exists. App version already installed!"
-        return
+        pass
 
     # create version directory (where we will install to)
     sudo('mkdir -p %s' % d.remote_version_dir, shell=False)
@@ -250,8 +272,9 @@ def deploy(assembly):
         # install /etc/[sysconfig/defaults]/app_name script (tells init.d script where app is installed)
         write_daemon_system_defaults(d, daemon_name)
         
-        # TODO: configure init script to start at boot???
-        
+        # configure to start on boot
+        install_daemon_at_system_boot(d, daemon_name)
+
         # start daemon...
         start_daemon(d, daemon_name)
     

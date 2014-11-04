@@ -159,23 +159,27 @@ A symlink would also be created:
 
 Since this application contains one daemon called "hello-server", the daemon would be stopped (if it existed), the
 upgrade would occur, then the daemon would be installed (if needed) and started back up.  The directories described
-above in the canonical layout as (retained on upgrade) would be moved rather than overwritten.
+above in the canonical layout as (retained on upgrade) would be moved rather than overwritten. That means during
+a fresh install, the bin/, lib/, conf/, and share/ directories are installed.  On an upgrade install, the
+bin/, lib, and share/ directories are installed, while conf/ and runtime dirs data/, log/, and run/ directories
+are moved.
 
 ## Examples
 
-### examples/hello-server-dropwizard
+### hello-server-dropwizard
 
 Example project using Maven for building a simple Hello World daemon using the DropWizard framework.
 
 The command-line version of stork-launcher-generate is integrated in the pom.xml via the maven-exec-plugin.
 The packaging of the final tarball assembly is done with the standard maven-assembly-plugin.  To build the
-project and tarball, just execute the following in examples/hello-server-dropwizard:
+project and tarball, just execute the following in (src/examples/hello-server-dropwizard):
 
 	mvn clean assembly:assembly
 
-On success, the target/ directory will contain the final assembly tarball.
+On success, the target/ directory will contain the final assembly tarball. This tarball is ready for
+distribution or deployment using stork-fabric-deploy.
 
-### examples/hello-server-play
+### hello-server-play
 
 Example project using the [PlayFramework](http://playframework.com) for building a simple Hello World
 daemon. The PlayFramework allows you to use a mix of Scala/Java for creating web applications.  Play uses
@@ -183,11 +187,12 @@ SBT underneath the hood, but they also define many special settings in SBT for b
 The stork-play-assembly tool automates using the play build system to structure a final assembly tarball
 that meets the stork canonical standards. It's also a great example of how any JVM-based application 
 can ultimately be packaged into the stork layout.  To build the project, just execute the following
-in examples/hello-server-play:
+in (src/examples/hello-server-play):
 
 	stork-play-assembly
 
-On success, the target/ directory will contain the final assembly tarball.
+On success, the target/ directory will contain the final assembly tarball.  This tarball is ready for
+distribution or deployment using stork-fabric-deploy.
 
 
 ## Launcher
@@ -225,8 +230,8 @@ scripts while you also compile your JVM bytecode classes.
 
     * Windows daemons installed as a service (32 and/or 64-bit daemons supported)
     * Linux/UNIX daemons use NOHUP, detach TTY properly, and do NOT spawn any
-      sort of strange helper/controller process
-    * Mac OSX daemons integrate with launchctl
+      sort of annoying helper/controller process
+    * Mac OSX daemons integrate seamlessly with launchctl
     * All daemons can easily be run in non-daemon mode
     * All companion helper scripts are included to get the daemon to start
       at boot

@@ -43,7 +43,7 @@
     
     <!-- stork-launcher-generate files (bin, share) -->
     <fileSet>
-      <directory>target/launchers</directory>
+      <directory>target/stage</directory>
       <outputDirectory></outputDirectory>
       <includes>
         <include>*/**</include>

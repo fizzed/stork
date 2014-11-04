@@ -18,6 +18,9 @@ package co.fizzed.stork.examples.helloserver;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Optional;
 import io.dropwizard.jersey.caching.CacheControl;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -28,6 +31,8 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.TEXT_HTML)
 public class HelloWorldResource {
 
+    static Date startedAt = new Date();
+    
     public HelloWorldResource() {
         // do nothing
     }
@@ -36,6 +41,30 @@ public class HelloWorldResource {
     @Timed
     @CacheControl(maxAge = 1, maxAgeUnit = TimeUnit.DAYS)
     public Response index(@QueryParam("name") Optional<String> name) {
-        return Response.ok("Hello World!").build();
+        return Response.ok(createBody()).build();
+ 
     }
+    
+    static String[] sysprops = { "user.dir","user.name","user.home","launcher.name","launcher.type","launcher.action","launcher.app.dir","java.class.path","java.home","java.version","java.vendor","os.arch","os.name","os.version" };
+    
+    static public String createBody() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<html>");
+        sb.append("<head><title>Hello Server using DropWizard!</title></head>");
+        sb.append("<body>");
+        sb.append("<h1>Stork by <a href=\"http://fizzed.co\">Fizzed</a></h1>");
+        sb.append("<h2>Example using DropWizard</h2>");
+        // Version.java auto created by Fizzed parent POM file (I use this in all my projects)
+        sb.append("<b>Version:</b> ").append(co.fizzed.stork.examples.helloserver.Version.getLongVersion()).append("<br/>");
+        sb.append("<b>Now:</b> ").append(new Date()).append("<br/>");
+        sb.append("<b>Started:</b> ").append(startedAt).append("<br/>");
+        sb.append("<b>Some system properties:</b><br/>");
+        for (String sysprop : sysprops) {
+            sb.append(" - ").append(sysprop).append(": ").append(System.getProperty(sysprop)).append("<br/>");
+        }
+        sb.append("</body>");
+        sb.append("</html>");
+        return sb.toString();
+    }
+    
 }

@@ -1,6 +1,6 @@
 
 # Name of application (make sure it has no spaces)
-name: "hello-server"
+name: "hello-server-dropwizard"
 
 # Domain of application (e.g. com.example)
 domain: "co.fizzed"

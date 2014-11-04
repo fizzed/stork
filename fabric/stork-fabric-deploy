@@ -18,6 +18,20 @@ APP_HOME="`pwd`"
 # revert back to original working dir
 cd "$INITIAL_WORKING_DIR"
 
+buildTaskArgs()
+{
+   local args=$1
+   local arg_name=$2
+   local arg_val=$3
+
+   if [ -z "$args" ]; then
+     echo ":$arg_name=$arg_val"
+   else
+     echo "$args,$arg_name=$arg_val"
+   fi
+   echo
+}
+
 # process arguments -- strip out ones that go to deploy task
 # need to be careful args do not clash with fabric's
 ASSEMBLY=""
@@ -39,5 +53,11 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+# build command line for deploy task
+TASK_ARGS=""
+if [ ! -z "$ASSEMBLY" ]; then
+  TASK_ARGS=`buildTaskArgs "$TASK_ARGS" "assembly" "$ASSEMBLY"`
+fi
+
 # fab -H sea-web2.fizzed.lan deploy:assembly=../examples/hello-server-dropwizard/target/hello-server-dropwizard-1.0.0-SNAPSHOT.tar.gz
-PYTHONDONTWRITEBYTECODE=1 fab --fabfile="$APP_HOME/fabfile.py" $FABRIC_ARGS deploy:assembly="$ASSEMBLY"
+PYTHONDONTWRITEBYTECODE=1 fab --fabfile="$APP_HOME/fabfile.py" $FABRIC_ARGS deploy"$TASK_ARGS"

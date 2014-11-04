@@ -156,7 +156,7 @@ public class Assembler extends BaseApplication {
         // usual play output dirs...
         File targetDir = new File(playProjectDir, "target");
         File universalDir = new File(targetDir, "universal");
-        File stageDir = new File(universalDir, "stage");
+        File playStageDir = new File(universalDir, "stage");
 
         // handle launcher config file & merging...
         System.out.println("Creating base play launcher config file...");
@@ -170,7 +170,6 @@ public class Assembler extends BaseApplication {
         } else {
             mergedLauncherConfFile = baseLauncherConfFile;
         }
-
 
         //
         // generate launcher configs (that will be used later on)
@@ -186,26 +185,30 @@ public class Assembler extends BaseApplication {
             playAppName = launcherConfig.getName();
         }
 
+        //
+        // stage assembly
+        //
         // start assembling final package
         String assemblyName = playAppName + "-" + playAppVersion;
-        File assemblyDir = new File(targetDir, assemblyName);
-
-        System.out.println("Creating assembly dir: " + assemblyDir.getAbsolutePath());
-        assemblyDir.mkdirs();
-
-        System.out.println("Copying lib dir to assembly dir...");
-        //cp -R "$stage_dir"/lib $target_dir/$assembly_dir/
+        
+        File stageDir = new File(targetDir, "stage");
+        stageDir.mkdirs();
+        
+        //File assemblyDir = new File(targetDir, assemblyName);
+        //System.out.println("Creating assembly dir: " + assemblyDir.getAbsolutePath());
+        //assemblyDir.mkdirs();
+        
+        File playStageLibDir = new File(playStageDir, "lib");
         File stageLibDir = new File(stageDir, "lib");
-        File assemblyLibDir = new File(assemblyDir, "lib");
-        FileUtils.copyDirectory(stageLibDir, assemblyLibDir);
+        System.out.println("Copying " + playStageLibDir + " -> " + stageLibDir);
+        FileUtils.copyDirectory(playStageLibDir, stageLibDir);
 
-        System.out.println("Copying conf dir to assembly dir...");
-        //cp -R "$stage_dir"/conf $target_dir/$assembly_dir/
+        File playStageConfDir = new File(playStageDir, "conf");
         File stageConfDir = new File(stageDir, "conf");
-        File assemblyConfDir = new File(assemblyDir, "conf");
-        FileUtils.copyDirectory(stageConfDir, assemblyConfDir);
+        System.out.println("Copying " + playStageConfDir + " -> " + stageConfDir);
+        FileUtils.copyDirectory(playStageConfDir, stageConfDir);
 
-        File loggerConfFile = new File(assemblyConfDir, "logger.xml");
+        File loggerConfFile = new File(stageConfDir, "logger.xml");
         if (loggerConfFile.exists()) {
             System.out.println("Using existing logger.xml file copied directly from conf dir...");
         } else {
@@ -213,35 +216,19 @@ public class Assembler extends BaseApplication {
             createLoggerConfFile(loggerConfFile, playAppName);
         }
 
-        launcherGenerator.runConfigs(launcherConfigs, assemblyDir);
+        // generate launcher
+        launcherGenerator.runConfigs(launcherConfigs, stageDir);
 
-
-        File tgzFile = new File(assemblyDir.getAbsolutePath() + ".tar.gz");
+        // create tarball
+        File tgzFile = new File(targetDir, assemblyName + ".tar.gz");
         TarArchiveOutputStream tgzout = TarUtils.createTGZStream(tgzFile);
         try {
-            TarUtils.addFileToTGZStream(tgzout, assemblyDir.getAbsolutePath(), "", true);
+            TarUtils.addFileToTGZStream(tgzout, stageDir.getAbsolutePath(), assemblyName, false);
         } finally {
             if (tgzout != null) {
                 tgzout.close();
             }
         }
-        
-        /**
-        System.out.println("Creating assembly tarball...");
-        TarArchiveOutputStream out = null;
-        try {
-            out = new TarArchiveOutputStream(
-                  new GZIPOutputStream(
-                       new BufferedOutputStream(new FileOutputStream(assemblyTarGz))));
-            out.setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_STAR);
-            out.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
-            addFileToTarGz(out, assemblyDir.getAbsolutePath(), "");
-        } finally {
-             if (out != null) {
-                 out.close();
-             }
-        }
-        */
 
         System.out.println("Generated play assembly: " + tgzFile);
         System.out.println("Done!");

@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <!--<groupId>co.fizzed</groupId>-->
+    <groupId>co.fizzed</groupId>
     <artifactId>hello-server-dropwizard</artifactId>
     <packaging>jar</packaging>
     <version>1.1.0-SNAPSHOT</version>
     <name>fizzed-stork-examples-hello-server-dropwizard</name>
   
     <parent>
-        <groupId>com.mfizz</groupId>
-        <artifactId>mfz-maven-parent</artifactId>
-        <version>1.7</version>
+        <groupId>co.fizzed</groupId>
+        <artifactId>fizzed-maven-parent</artifactId>
+        <version>1.8-SNAPSHOT</version>
     </parent>
     
     <build>

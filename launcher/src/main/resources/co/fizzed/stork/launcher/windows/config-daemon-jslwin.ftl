@@ -223,4 +223,4 @@ wrkdir=.\..
 ;cmdline = -cp %P1%\src com.roeschter.jsl.TelnetEcho
 ;cmdline = -cp ..\src com.roeschter.jsl.TelnetEcho
 
-cmdline = -cp lib\* ${config.javaArgs} ${config.mainClass} ${config.appArgs}
+cmdline = -cp "lib\*;" ${config.javaArgs} ${config.mainClass} ${config.appArgs}

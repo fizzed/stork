@@ -20,17 +20,17 @@ REM
 if %bit64%==n set TargetExe=${config.name}32.exe
 if %bit64%==y set TargetExe=${config.name}64.exe
 
-IF "%1"=="-run" (
-    "%java_bin_accepted%" -cp %APP_CLASSPATH% %JAVA_ARGS% %MAIN_CLASS% %APP_ARGS%
-) ELSE IF "%1"=="-startdebug" (
+IF "%1"=="--run" (
+    "%java_bin_accepted%" -cp "%APP_CLASSPATH%" %JAVA_ARGS% %MAIN_CLASS% %APP_ARGS%
+) ELSE IF "%1"=="--startdebug" (
     "%APP_BIN_DIR%\%TargetExe%" -debug
-) ELSE IF %1==-start (
-    net start ${config.displayName}
-) ELSE IF %1==-stop (
-    net stop ${config.displayName}
-) ELSE IF %1==-install (
+) ELSE IF "%1"=="--start" (
+    net start "${config.displayName}"
+) ELSE IF "%1"=="--stop" (
+    net stop "${config.displayName}"
+) ELSE IF "%1"=="--install" (
     "%APP_BIN_DIR%\%TargetExe%" -install
-) ELSE IF %1==-uninstall (
+) ELSE IF "%1"=="--uninstall" (
     "%APP_BIN_DIR%\%TargetExe%" -remove
 ) ELSE (
     echo Error unsupported argument
@@ -41,7 +41,7 @@ GOTO endLabel
 
 :PrintUsageJSLWin
 REM annoying string escaping
-echo Usage: ^[^-^r^u^n^|-^s^t^a^r^t^|-^s^t^o^p^|^-^ins^tall^|^-^un^inst^a^ll^|-^s^t^a^r^t^d^eb^u^g]
+echo Usage: ^[^-^-^r^u^n^|^-^-^s^t^a^r^t^|^-^-^s^t^o^p^|^-^-^ins^tall^|^-^-^un^inst^a^ll^|^-^-^s^t^a^r^t^d^eb^u^g]
 exit /b
 
 GOTO endLabel

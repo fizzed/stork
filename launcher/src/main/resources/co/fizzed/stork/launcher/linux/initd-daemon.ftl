@@ -4,6 +4,7 @@
 # /etc/init.d/${config.name}
 # Redhat and/or debian-compatible startup script
 # Generated via Stork Launcher by Fizzed
+# http://github.com/fizzed/java-stork
 #
 
 ### BEGIN INIT INFO
@@ -65,21 +66,21 @@ fi
 # everything needs to be run as requested user
 case "$1" in
   start)
-    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" -start"
+    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" --start"
     ;;
   run)
     # running with su does not correctly kill subshells - must use sudo to run
-    $SUDO -u $APP_USER "$APP_HOME/bin/$NAME" -run
+    $SUDO -u $APP_USER "$APP_HOME/bin/$NAME" --run
     ;;
   stop)
-    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" -stop"
+    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" --stop"
     ;;
   restart)
-    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" -stop"
-    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" -start"
+    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" --stop"
+    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" --start"
     ;;
   status)
-    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" -status"
+    $SU $APP_USER -s /bin/sh -m -c "\"$APP_HOME/bin/$NAME\" --status"
     ;;
   *)
     echo "Usage: $SCRIPTNAME {start|stop|status|restart|run}" >&2

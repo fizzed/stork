@@ -5,7 +5,7 @@
 
 usage()
 {
-    echo "Usage: $0 [-start|-stop|-run|-status}"
+    echo "Usage: $0 [--start|--stop|--run|--status}"
     exit 1
 }
 
@@ -44,7 +44,7 @@ fi
 
 case "$APP_ACTION_ARG" in
 
-  -start)
+  --start)
     printf "Starting $NAME: "
     verifyNotRunning $APP_PID_FILE
 
@@ -83,7 +83,7 @@ case "$APP_ACTION_ARG" in
 
     ;;
 
-  -stop)
+  --stop)
     printf "Stopping $NAME: "
     if running "$APP_PID_FILE"; then
       stopJavaApp "$APP_PID_FILE"
@@ -93,7 +93,7 @@ case "$APP_ACTION_ARG" in
     fi
     ;;
 
-  -run)
+  --run)
     echo "Running $NAME: "
     # some launcher frameworks manage the PID (this skips the check entirely)
     # only enable this env var if you know what you're doing
@@ -107,7 +107,7 @@ case "$APP_ACTION_ARG" in
     eval $RUN_CMD
     ;;
 
-  -status)
+  --status)
     echo "Status for $NAME: "
     echo "app_home: $APP_HOME"
     echo "run_dir: $APP_RUN_DIR_DEBUG"

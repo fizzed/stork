@@ -248,6 +248,10 @@ scripts while you also compile your JVM bytecode classes.
     * All daemons can easily be run in non-daemon mode
     * All companion helper scripts are included to get the daemon to start
       at boot
+ 
+ * Configurable methods supported for verifying a daemon started -- including useful
+   debug output (e.g. if daemon fails to start, tail the log so the error is printed
+   if an error is encountered).
 
  * Supports fixed or percentage-based min/max memory at JVM startup
  

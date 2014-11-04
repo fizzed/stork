@@ -99,7 +99,7 @@ public class Configuration {
     
     // daemon pid will be tested after this amount of seconds to confirm it is
     // still running -- a simple way to verify that it likely started
-    private Integer daemonMinLifetime = 3;
+    private Integer daemonMinLifetime = 5;
     // daemon will print this line to stdout/stderr to announce it started successfully
     private String daemonLaunchConfirm = null;
     

@@ -23,7 +23,7 @@
         <key>ProgramArguments</key>
         <array>
             <string>bin/${config.name}</string>
-            <string>-run</string>
+            <string>--run</string>
         </array>
     </dict>
 </plist>

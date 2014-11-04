@@ -21,7 +21,7 @@ project -- so this application can easily run on Windows, Linux, Mac OSX, etc.
 
 ### On Windows
 
-
+	set PATH=%CD%\assembly\target\stage\bin;%PATH%
 
 ### Notes for target operating systems
 

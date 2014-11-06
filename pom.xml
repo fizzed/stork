@@ -26,7 +26,6 @@
         <module>maven-plugin</module>
         <module>examples/hello-world</module>
         <module>examples/hello-server-dropwizard</module>
-        <!--<module>maven</module>-->
         <module>play</module>
         <module>assembly</module>
     </modules>

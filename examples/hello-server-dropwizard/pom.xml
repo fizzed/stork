@@ -17,6 +17,11 @@
         <plugins>
             <plugin>
                 <groupId>co.fizzed</groupId>
+                <artifactId>fizzed-versionizer-maven-plugin</artifactId>
+                <version>1.0.2-SNAPSHOT</version>
+            </plugin>
+            <plugin>
+                <groupId>co.fizzed</groupId>
                 <artifactId>fizzed-stork-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <executions>

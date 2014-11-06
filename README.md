@@ -9,39 +9,72 @@ Stork by Fizzed
 
 ## Overview
 
-What comes after your Java/JVM build tool (Maven, SBT, Gradle, Ant, etc.) compiles your code?
-Stork is a collection of utilities for optimizing your "after-build" workflow by filling in
-the gap between your Java build system and eventual end-user app execution. Stork currently
+What comes after your Java/JVM build tool (Maven, SBT, Gradle, Ant, etc.) compiles
+your code? There are a plethora of fantastic tools for building your project, but
+then what? A tarball? A debian/rpm package? An Uber/Fat Jar? Some sort of installer?
+The problem with all of these approaches is that they are all different -- and
+they all have major drawbacks. For example, what do you do with configuration files?
+What if you want to distribute a command-line console app along with your daemon?
+What if you have little control over the end user system (e.g. not sure where
+they may install Java)?  What happens on an upgrade?  
+
+Stork is a collection of utilities for optimizing your "after-build" workflow by
+filling in the gap between your Java build system and eventual end-user app
+execution. Stork functions seamlessly with whatever build system you prefer and
 provides one or more tools in the following main "after-build" activities:
 
- 1. Launch - generate launcher scripts for one or more console and/or daemon JVM/Java
-    apps that users will execute -- as well as the companion scripts to run those scripts
-    across numerous operating systems (e.g. starting your daemon at boot).
+ 1. Launch - generate well-tested, rock solid, reliable launcher scripts for one
+    or more console and/or daemon JVM/Java apps that users will execute -- as
+    well as the companion scripts to run those scripts across numerous operating
+    systems (e.g. starting your daemon at boot, running as a true service on
+    Windows).
 
- 2. Assembly - package your application into a well-defined canonical application
-    layout with a consistent location for your launcher scripts, jars, configuration files,
-    etc.
+ 2. Assembly - package your application into a well-defined, canonical application
+    layout with a consistent location for your launcher scripts, jars, config
+    files, and miscellaneous distributable dependencies and docs.
 
  3. Deployment - rapidly deploy your assembly to one or more systems via a fabric-based
-    installer.
+    installer.  Or in future versions, convert your assembly tarball into an
+    operating system specific installer (e.g. a .dmg for OSX or .msi/.exe for
+    Windows).
 
-By standardizing the layout of your Java-based application, you'll find both developers,
+By standardizing the layout of your Java-based application, you will find developers,
 system administrators, and end-users are all on the same page with how to interact with
-your apps.
-
-You can choose to use all of the tools in your workflow or cherry-pick the ones that 
-you need.
+your apps
 
 
-### Canonical Java application layout
+### Why are Uber/Fat jars not recommended?
 
-All of Stork's tools need to know where to look for various files in order to function
-in a standard way.  The following standard application layout is defined:
+An Uber/Fat jar is where all dependencies are merged into a single jar. There
+are several reasons why Stork suggests avoiding this approach. First, if you
+want to "rsync" your deployment for rapidly deploying upgrade -- in most cases
+the dependencies do not change much and usually most of the disk space.
+By not using a fat jar, then only the jars that have changed need to be 
+transferred over the network and deployed -- resulting in a fast upgrade.
+
+Second, you will lose the ability to quickly scan the "lib" directory and see
+exactly what dependencies (including the version) are currently in use.
+
+Third, if you need to offer users multiple entry points to your app (e.g. 
+various console applications or daemons) and you are likely using an executable
+fat/uber jar -- you are going to have multiple jars that have duplicates of
+all dependencies.   That can quickly lead to large disk space usage even for
+small apps.
+
+Fourth, many libraries include resources within their .jar that may or may not
+work correctly when re-packaged into another .jar.  Avoiding that entirely
+is a good thing.
+
+
+### Canonical/Conventional Java application layout
+
+All of Stork's tools need to know where to look for various files in order to
+function in a standard way.  Stork uses the following conventional app layout:
 
     <app_name>/	(
         bin/	(launcher scripts, overwrite on upgrade)
-        lib/	(all jars, overwrite on upgrade)
-        share/  (arch indep data for install/running/info; overwrite on upgrades)
+        lib/	(all jars, overwrite on upgrade, fat jars not recommended)
+        share/  (arch indep data for install/running/info; overwrite on upgrade)
         conf/	(config files; retain on upgrade)
         data/   (not included in assembly/install; retain on upgrade)
         log/    (not included in assembly/install; retain on upgrade)
@@ -80,8 +113,8 @@ Assume file permissions of 0644.
 #### data/ (variable state information)
 
 State information is data that programs modify while they run, and that pertains
-to one specific host.  State information should generally remain valid after a
-reboot, should not be logging output, and should not be spooled data.
+to one specific host.  State information remains valid after a reboot, should
+not be logging output, and should not be spooled data.
 
 Files in this directory should be retained between upgrades.
 
@@ -108,7 +141,112 @@ Examples would include an application's process id (pid) file or named sockets.
 On Linux/UNIX, this could be symlinked to /var/run/<app_name>.
 
 
-## Installation
+## Usage
+
+Stork provides a combination of plugins to various build systems like Maven
+and SBT as well as command-line apps for similiar and additional utilities.
+
+## Stork Maven Plugin
+
+Example Maven project: examples/hello-server-dropwizard 
+
+Plugin provides two goals -- compiling launchers and assembling into a tarball.
+Using the Maven plugin does not require installation of the stork command-line
+apps -- since it is deployed to Maven central and will be downloaded during
+a build.
+
+### Goal: launcher-generate
+
+By default compiles all launchers in src/main/launchers to target/stage (which
+will result in target/stage/bin and target/stage/share dirs).
+
+To use add the following to your POM:
+
+    <build>
+        <plugins>
+            ...
+            <plugin>
+                <groupId>co.fizzed</groupId>
+                <artifactId>stork-maven-plugin</artifactId>
+                <version>USE-LATEST-HERE</version>
+                <executions>
+                    <execution>
+                        <execution>
+                        <id>generate-stork-launchers</id>
+                        <goals>
+                            <goal>launcher-generate</goal>
+                        </goals>
+                    </execution>
+                </executions> 
+            </plugin>
+            ...
+        </plugins>
+    </build>
+
+To customize, the following properties are supported:
+
+ - outputDirectory: The directory the launcher will compile/generate launchers
+   to. Defaults to ${project.build.directory}/stage
+
+ - inputFiles: An array of input directories or files to compile in a single
+   invocation.  Defaults to ${basedir}/src/main/launchers
+
+### Goal: assembly
+
+By default stages and assembles your application into a canonical Stork layout.
+The following are copied to target/stage/lib using the full
+groupId-artifactId-version naming format:
+
+ - Your project artifact (if its a jar)
+ - Any additional "attached" runtime jar artifacts
+ - Your runtime dependencies
+
+Your project basedir conf/, bin/ and share/ directories are then copied to
+target/stage (will overlay/overwrite any files currently in target/stage).
+To include launchers as part of your assembly, you will need to include both
+the assembly and one or more launcher-generate goals. Finally, the contents
+of target/stage are tarballed into ${finalName}.tar.gz with an install prefix
+of ${finalName} as the root directory of the tarball (so it unpacks correctly)
+
+    <build>
+        <plugins>
+            ...
+            <plugin>
+                <groupId>co.fizzed</groupId>
+                <artifactId>stork-maven-plugin</artifactId>
+                <version>USE-LATEST-HERE</version>
+                <executions>
+                    <execution>
+                        <id>generate-stork-assembly</id>
+                        <goals>
+                            <goal>assembly</goal>
+                        </goals>
+                    </execution>
+                </executions> 
+            </plugin>
+            ...
+        </plugins>
+    </build>
+
+What's nice is that target/stage still exists and you are free to directly
+run anything in target/stage/bin -- since the launcher scripts correctly
+pick up your relative dependencies.  You can quickly run your application
+as though you had already deployed it to a remote system.
+
+To customize, the following properties are supported:
+
+ - stageDirectory: The directory where assembly contents will be staged to and
+   tarballed from. Defaults to ${project.build.directory}/stage
+
+ - outputDirectory: The directory the final tarball assembly will be output.
+   Defaults to ${project.build.directory}
+
+ - finalName: The final name of the assembly tarball -- as well as the name of
+   the root directory contained within the tarball -- that will contain the 
+   contents of stageDirectory. Defaults to ${project.build.finalName}
+
+
+## Stork Command-line Apps
 
 Download the stork tarball.  The "bin" directory in this tarball needs to be
 added to your PATH environment variable.  Once available in your PATH, you can
@@ -128,28 +266,15 @@ Helper utility to merge launcher config files together by adding or overriding v
 defined from the ordered list of input files.  Useful for using a base launcher
 config file and only overriding values as needed.
 
-	stork-launcher-merge -i src/main/assembly/hello-base.yml -i src/main/assembly/hello-server.yml -o target/hello-server-merged.yml
-	stork-launcher-generate -i target/hello-server-merged.yml -o target/stage
-
-### stork-maven-assembly
-
-Alternative to maven-assembly-plugin for locally staging and assemblying a tarball of
-your Maven project.  No longer will you need to maintain an "assembly.xml" config file.
-These utilities will copy your project's runtime dependencies and project .jar artifact
-into target/stage/lib, then copy your project's main bin/, conf/, and share/ directories
-into target/stage as well.  If you also tie "stork-launcher-generate" to compile your
-launcher scripts into target/stage -- then you will have a fully assembled application
-in target/stage.  As a second step, target/stage will be compressed into
-target/artifactId-version.tar.gz.
-
-	storke-maven-assembly
+    stork-launcher-merge -i src/main/assembly/hello-base.yml -i src/main/assembly/hello-server.yml -o target/hello-server-merged.yml
+    stork-launcher-generate -i target/hello-server-merged.yml -o target/stage
 
 ### stork-play-assembly
 
 Utility for assemblying a [PlayFramework](http://playframework.com) application into
 a Stork-based assembly tarball.
 
-	stork-play-assembly
+    stork-play-assembly
 
 ### stork-fabric-deploy
 
@@ -159,16 +284,16 @@ into a versioned directory structure on a remote system and handles restarting d
 versioned directory structure allows rapid deployment with the ability to revert to a previous version
 if needed.
 
-	stork-fabric-deploy -H host1.example.com,host2.example.com --assembly target/hello-server-1.0.0-SNAPSHOT.tar.gz
+    stork-fabric-deploy -H host1.example.com,host2.example.com --assembly target/hello-server-1.0.0-SNAPSHOT.tar.gz
 
 Since this a "SNAPSHOT" version, a timestamp would be generated (such as 20141101121032 for Nov 1, 2014 12:10:32) and
 this application would be installed to:
 
-	/opt/hello-server/version-1.0.0-20141101121032
+    /opt/hello-server/version-1.0.0-20141101121032
 
 A symlink would also be created:
 
-	/opt/hello-server/current -> /opt/hello-server/version-1.0.0-20141101121032
+    /opt/hello-server/current -> /opt/hello-server/version-1.0.0-20141101121032
 
 Since this application contains one daemon called "hello-server", the daemon would be stopped (if it existed), the
 upgrade would occur, then the daemon would be installed (if needed) and started back up.  The directories described
@@ -181,16 +306,20 @@ are moved.
 
 ### hello-server-dropwizard
 
-Example project using Maven for building a simple Hello World daemon using the DropWizard framework.
+Example project using Stork Maven Plugin for building a simple Hello World daemon
+using the DropWizard framework.
 
-The command-line version of stork-launcher-generate is integrated in the pom.xml via the maven-exec-plugin.
-The packaging of the final tarball assembly is done with the standard maven-assembly-plugin.  To build the
-project and tarball, just execute the following in src/examples/hello-server-dropwizard:
+To build the project and assembly tarball, just execute the following in 
+src/examples/hello-server-dropwizard:
 
-	mvn clean assembly:assembly
+    mvn clean package
+    target/stage/bin/hello-server-dropwizard --run
 
-On success, the target/ directory will contain the final assembly tarball. This tarball is ready for
-distribution or deployment using stork-fabric-deploy.
+By default the server runs on port 8080 and you can then visit the sample in 
+your browser @ http://localhost:8080/
+
+The target/ directory will contain the final assembly tarball. This tarball is
+ready for distribution or deployment using stork-fabric-deploy.
 
 ### hello-server-play
 

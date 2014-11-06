@@ -10,16 +10,11 @@
     <parent>
         <groupId>co.fizzed</groupId>
         <artifactId>fizzed-maven-parent</artifactId>
-        <version>1.10</version>
+        <version>1.11</version>
     </parent>
     
     <build>
         <plugins>
-            <plugin>
-                <groupId>co.fizzed</groupId>
-                <artifactId>fizzed-versionizer-maven-plugin</artifactId>
-                <version>1.0.2-SNAPSHOT</version>
-            </plugin>
             <plugin>
                 <groupId>co.fizzed</groupId>
                 <artifactId>fizzed-stork-maven-plugin</artifactId>

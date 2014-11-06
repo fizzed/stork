@@ -19,22 +19,15 @@ import co.fizzed.stork.launcher.BaseApplication;
 import co.fizzed.stork.launcher.Configuration;
 import co.fizzed.stork.launcher.Generator;
 import co.fizzed.stork.launcher.Merger;
-import co.fizzed.stork.maven.TarUtils;
-import java.io.BufferedOutputStream;
+import co.fizzed.stork.util.TarUtils;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.zip.GZIPOutputStream;
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.ProcessResult;
 
@@ -95,8 +88,6 @@ public class Assembler extends BaseApplication {
             System.exit(1);
         }
     }
-
-
 
     public void assemble() throws Exception {
         // verify project dir is a directory
@@ -233,41 +224,6 @@ public class Assembler extends BaseApplication {
         System.out.println("Generated play assembly: " + tgzFile);
         System.out.println("Done!");
     }
-
-    /**
-    private void addFileToTarGz(TarArchiveOutputStream tOut, String path, String base) throws IOException {
-        File f = new File(path);
-        String entryName = base + f.getName();
-        TarArchiveEntry tarEntry = new TarArchiveEntry(f, entryName);
-
-        if (f.isFile()) {
-            if (f.canExecute()) {
-                // -rwxr-xr-x
-                tarEntry.setMode(493);
-            } else {
-                // keep default mode
-            }
-        }
-
-        tOut.putArchiveEntry(tarEntry);
-
-        if (f.isFile()) {
-            FileInputStream in = new FileInputStream(f);
-            IOUtils.copy(in, tOut);
-            in.close();
-            tOut.closeArchiveEntry();
-        } else {
-            tOut.closeArchiveEntry();
-            File[] children = f.listFiles();
-            if (children != null){
-                for (File child : children) {
-                    System.out.println(" adding: " + child.getName());
-                    addFileToTarGz(tOut, child.getAbsolutePath(), entryName + "/");
-                }
-            }
-        }
-    }
-    */
 
     public File createBaseLauncherConfFile(File targetDir, String playAppName) throws Exception {
         File f = new File(targetDir, "play-launcher.yml");
@@ -421,33 +377,33 @@ public class Assembler extends BaseApplication {
         }
         
         // try to find "activator" command first (>= play 2.3)
-        String playCommand = "activator" + batEnd;
-        if (!isPlayCommandPresent(playCommand)) {
+        String cmd = "activator" + batEnd;
+        if (!isPlayCommandPresent(cmd)) {
             // try to find "activator" command inside project directory...
-            playCommand = new File(playProjectDir, "activator" + batEnd).getAbsolutePath();
-            if (!isPlayCommandPresent(playCommand)) {
+            cmd = new File(playProjectDir, "activator" + batEnd).getAbsolutePath();
+            if (!isPlayCommandPresent(cmd)) {
                 // fallback to "play" command (< play 2.3)
-                playCommand = "play" + batEnd;
-                if (!isPlayCommandPresent(playCommand)) {
+                cmd = "play" + batEnd;
+                if (!isPlayCommandPresent(cmd)) {
                     return null;
                 }
             }
         }
 
-        return playCommand;
+        return cmd;
     }
     
-    public boolean isPlayCommandPresent(String playCommand) {
+    public boolean isPlayCommandPresent(String cmd) {
         // try to find "activator" command first (>= play 2.3)
         try {
             ProcessResult result = new ProcessExecutor()
-                .command(playCommand, "--version")
+                .command(cmd, "--version")
                 .readOutput(true)
                 .execute();
-            System.out.println("Play [" + playCommand + "] command found: " + result.outputUTF8().trim());
+            System.out.println("Play [" + cmd + "] command found: " + result.outputUTF8().trim());
             return true;
         } catch (Exception e) {
-            System.out.println("Play [" + playCommand + "] command not found");
+            System.out.println("Play [" + cmd + "] command not found");
             return false;
         }
     }

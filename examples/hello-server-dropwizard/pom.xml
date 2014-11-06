@@ -10,7 +10,7 @@
     <parent>
         <groupId>co.fizzed</groupId>
         <artifactId>fizzed-maven-parent</artifactId>
-        <version>1.9-SNAPSHOT</version>
+        <version>1.10</version>
     </parent>
     
     <build>
@@ -20,12 +20,19 @@
                 <artifactId>fizzed-stork-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <executions>
+                    <!-- compile any file in src/main/launchers to target/stage -->
                     <execution>
                         <id>generate-stork-launchers</id>
                         <goals>
                             <goal>launcher-generate</goal>
                         </goals>
                     </execution>
+                    <!--
+                        package final jars to run target/stage/lib (dependencies and project as well if jar)
+                        copy ${basedir}bin/, conf/, and share/ to target/stage
+                        copy ${basedir} readme*, license*, changelog*, and release* files to target/stage (case insensitive)
+                        additionally create ${project.finalName}.tar.gz of target/stage
+                    -->
                     <execution>
                         <id>generate-stork-assembly</id>
                         <goals>
@@ -34,19 +41,6 @@
                     </execution>
                 </executions>
             </plugin>
-            
-            <!--
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptors>
-                        <descriptor>src/main/assembly/bin.xml</descriptor>
-                    </descriptors>
-                </configuration>
-            </plugin>
-            -->
         </plugins>
     </build>
     

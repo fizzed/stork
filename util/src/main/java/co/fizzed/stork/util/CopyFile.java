@@ -16,7 +16,6 @@
 
 package co.fizzed.stork.util;
 
-import co.fizzed.stork.launcher.BaseApplication;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,18 +27,20 @@ import org.apache.commons.io.FileUtils;
  *
  * @author joelauer
  */
-public class CopyFile extends BaseApplication {
+public class CopyFile {
     
     static public void main(String[] args) throws Exception {
         new CopyFile().run(args);
     }
-
-    @Override
-    public void printUsage() {
-        System.out.println("copy files...");
+    
+    public String popNextArg(String argSwitch, List<String> argList) {
+        if (argList.isEmpty()) {
+            System.err.println("argument switch [" + argSwitch + "] is missing value as next argument");
+            System.exit(1);
+        }
+        return argList.remove(0);
     }
-
-    @Override
+    
     public void run(String[] args) {
         List<String> argList = new ArrayList<String>(Arrays.asList(args));
 
@@ -57,12 +58,14 @@ public class CopyFile extends BaseApplication {
                 String fileString = popNextArg(argSwitch, argList);
                 outputDir = new File(fileString);
             } else {
-                printErrorThenUsageAndExit("invalid argument switch [" + argSwitch + "] found");
+                System.err.println("invalid argument switch [" + argSwitch + "] found");
+                System.exit(1);
             }
         }
         
         if (inputFiles.isEmpty()) {
-            printErrorThenUsageAndExit("No input files provided");
+            System.err.println("No input files provided");
+            System.exit(1);
         }
         
         for (File inputFile : inputFiles) {
@@ -76,7 +79,7 @@ public class CopyFile extends BaseApplication {
                     copyFile(inputFile, outputDir);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace(System.err);
                 System.exit(1);
             }
         }

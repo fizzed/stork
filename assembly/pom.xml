@@ -65,8 +65,10 @@
                                 <argument>target/stage</argument>
                                 <argument>-i</argument>
                                 <argument>../launcher/src/main/launchers</argument>
+                                <!--
                                 <argument>-i</argument>
                                 <argument>../maven/src/main/launchers</argument>
+                                -->
                                 <argument>-i</argument>
                                 <argument>../play/src/main/launchers</argument>
                             </arguments>
@@ -83,7 +85,7 @@
                             <arguments>
                                 <argument>-classpath</argument>
             			<classpath/>
-                                <argument>co.fizzed.stork.maven.CopyFile</argument>
+                                <argument>co.fizzed.stork.util.CopyFile</argument>
                                 <argument>-i</argument>
                                 <argument>../fabric/bin</argument>
                                 <argument>-o</argument>
@@ -103,11 +105,13 @@
             <artifactId>fizzed-stork-launcher</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>co.fizzed</groupId>
             <artifactId>fizzed-stork-maven</artifactId>
             <version>${project.version}</version>
         </dependency>
+        -->
         <dependency>
             <groupId>co.fizzed</groupId>
             <artifactId>fizzed-stork-play</artifactId>

@@ -4,7 +4,7 @@
     <groupId>co.fizzed</groupId>
     <artifactId>hello-server-dropwizard</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <name>fizzed-stork-examples-hello-server-dropwizard</name>
   
     <parent>
@@ -16,49 +16,37 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>exec-maven-plugin</artifactId>
-                <groupId>org.codehaus.mojo</groupId>
-                <version>1.3.2</version>
+                <groupId>co.fizzed</groupId>
+                <artifactId>fizzed-stork-maven-plugin</artifactId>
+                <version>${project.version}</version>
                 <executions>
                     <execution>
-                        <id>generate-launchers</id>
-                        <phase>package</phase>
+                        <id>generate-stork-launchers</id>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>launcher-generate</goal>
                         </goals>
-                        <configuration>
-                            <executable>stork-launcher-generate</executable>
-                            <arguments>
-                                <argument>-i</argument>
-                                <argument>src/main/launchers</argument>
-                                <argument>-o</argument>
-                                <argument>target/stage</argument>
-                            </arguments>
-                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-stork-assembly</id>
+                        <goals>
+                            <goal>assembly</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
-            <plugin> 
-                <groupId>org.apache.maven.plugins</groupId> 
-                <artifactId>maven-jar-plugin</artifactId> 
-                <version>2.4</version> 
-                <configuration> 
-                    <archive> 
-                        <addMavenDescriptor>false</addMavenDescriptor> 
-                    </archive> 
-                </configuration> 
-            </plugin>
+            
+            <!--
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <!--<finalName>hello-server-dropwizard-${project.version}</finalName>-->
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
                         <descriptor>src/main/assembly/bin.xml</descriptor>
                     </descriptors>
                 </configuration>
             </plugin>
+            -->
         </plugins>
     </build>
     

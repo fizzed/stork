@@ -10,14 +10,23 @@
     <parent>
         <groupId>co.fizzed</groupId>
         <artifactId>fizzed-maven-parent</artifactId>
-        <version>1.9</version>
+        <version>1.10</version>
     </parent>
+
+    <scm>
+        <url>https://github.com/fizzed/java-stork</url>
+        <connection>scm:git:git@github.com:fizzed/java-stork.git</connection>
+        <tag>master</tag>
+    </scm>
 
     <modules>
         <module>bootstrap</module>
-        <module>launcher</module>
+	<module>launcher</module>
+        <module>util</module>
+        <module>maven-plugin</module>
         <module>examples/hello-world</module>
-        <module>maven</module>
+        <module>examples/hello-server-dropwizard</module>
+        <!--<module>maven</module>-->
         <module>play</module>
         <module>assembly</module>
     </modules>

@@ -60,7 +60,8 @@ public class Generator extends BaseApplication {
         }
 
         List<String> argList = new ArrayList<String>(Arrays.asList(args));
-        List<File> configFiles = new ArrayList<File>();
+        //List<File> configFiles = new ArrayList<File>();
+        List<String> configFileStrings = new ArrayList<String>();
         File outputDir = null;
 
         // parse command-line arguments
@@ -72,12 +73,15 @@ public class Generator extends BaseApplication {
                 System.exit(0);
             } else if (argSwitch.equals("-i") || argSwitch.equals("--input")) {
                 String fileString = popNextArg(argSwitch, argList);
+                configFileStrings.add(fileString);
+                /**
                 try {
                     List<File> files = FileUtil.findFiles(fileString);
                     configFiles.addAll(files);
                 } catch (IOException e) {
                     printErrorThenUsageAndExit(e.getMessage());
                 }
+                */
             } else if (argSwitch.equals("-o") || argSwitch.equals("--output")) {
                 outputDir = new File(popNextArg(argSwitch, argList));
                 if (!outputDir.exists()) {
@@ -98,12 +102,27 @@ public class Generator extends BaseApplication {
             }
         }
 
-        runConfigFiles(configFiles, outputDir);
+        try {
+            List<Configuration> configs = createConfigsFromFileStrings(configFileStrings);
+            runConfigs(configs, outputDir);
+        } catch (Exception e) {
+            e.printStackTrace();
+            printErrorThenUsageAndExit(e.getMessage());
+        }
     }
     
     public void runConfigFiles(List<File> configFiles, File outputDir) {
         List<Configuration> configs = createConfigs(configFiles);
         runConfigs(configs, outputDir);
+    }
+    
+    public List<Configuration> createConfigsFromFileStrings(List<String> configFileStrings) throws IOException {
+        List<File> configFiles = new ArrayList<File>();
+        for (String fileString : configFileStrings) {
+            List<File> files = FileUtil.findFiles(fileString);
+            configFiles.addAll(files);
+        }
+        return createConfigs(configFiles);
     }
     
     public List<Configuration> createConfigs(List<File> configFiles) {

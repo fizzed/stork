@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>co.fizzed</groupId>
+    <artifactId>fizzed-stork-util</artifactId>
+    <packaging>jar</packaging>
+    <name>fizzed-stork-util</name>
+    <description>Core java utility libs for stork</description>
+  
+    <parent>
+        <groupId>co.fizzed</groupId>
+        <artifactId>fizzed-stork-parent</artifactId>
+        <version>1.2.0-SNAPSHOT</version>
+    </parent>
+    
+    <dependencies>
+        <!-- compile -->
+        <dependency>
+            <groupId>co.fizzed</groupId>
+            <artifactId>fizzed-stork-launcher</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.9</version>
+        </dependency>
+        
+        <!-- provided -->
+        
+        <!-- testing -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+    </dependencies>
+
+    <properties>
+        <main.java.package>co.fizzed.stork.util</main.java.package>
+    </properties>
+    
+</project>

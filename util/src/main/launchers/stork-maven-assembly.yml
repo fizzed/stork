@@ -1,0 +1,20 @@
+
+name: "stork-maven-assembly"
+
+domain: "co.fizzed.stork"
+
+display_name: "Stork Maven Assembler by Fizzed"
+
+short_description: "Utility for generating a stage dir and tarball assembly for Maven builds"
+
+type: CONSOLE
+
+main_class: "co.fizzed.stork.maven.Assembler"
+
+platforms: [ WINDOWS, LINUX ]
+
+working_dir_mode: RETAIN
+  
+min_java_version: "1.4"
+
+symlink_java: false

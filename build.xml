@@ -35,7 +35,6 @@
   </target>
   
   <target name="hello-server-dropwizard" depends="install">
-    <exec dir="examples/hello-server-dropwizard" executable="stork-maven-assembly${bat}" failonerror="true" />
     <exec executable="examples/hello-server-dropwizard/target/stage/bin/hello-server-dropwizard${bat}" failonerror="true">
       <arg line="--run"/>
     </exec>

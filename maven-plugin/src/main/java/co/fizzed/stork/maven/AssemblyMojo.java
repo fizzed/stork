@@ -5,11 +5,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -82,7 +80,7 @@ public class AssemblyMojo extends AbstractMojo {
             // directly pulled from maven Project.java (how it returns the getRuntimeClasspathElements() value)
             for (Artifact a : artifacts) {
                 File f = a.getFile();
-                // generate final jar name...
+                // generate final jar name (which appends groupId)
                 String artifactName = a.getGroupId() + "." + a.getArtifactId() + "-" + a.getVersion() + ".jar";
                 File stageArtificateFile = new File(stageLibDir, artifactName);
                 FileUtils.copyFile(f, stageArtificateFile);

@@ -56,7 +56,7 @@ public class LauncherGenerateMojo extends AbstractMojo {
     
         try {
             Generator generator = new Generator();
-            List<File> configFiles = FileUtil.findAllFiles(Arrays.asList(inputFiles));
+            List<File> configFiles = FileUtil.findAllFiles(Arrays.asList(inputFiles), true);
             List<Configuration> configs = generator.readConfigurationFiles(configFiles);
             int generated = generator.generateAll(configs, outputDirectory);
             getLog().info("Done (generated " + generated + " launchers)");

@@ -63,7 +63,7 @@ public class Merger extends BaseApplication {
             } else if (argSwitch.equals("-i") || argSwitch.equals("--input")) {
                 String fileString = popNextArg(argSwitch, argList);
                 try {
-                    List<File> files = FileUtil.findFiles(fileString);
+                    List<File> files = FileUtil.findFiles(fileString, false);
                     configFiles.addAll(files);
                 } catch (IOException e) {
                     printErrorThenUsageAndExit(e.getMessage());

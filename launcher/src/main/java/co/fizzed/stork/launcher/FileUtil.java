@@ -20,6 +20,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
@@ -29,16 +30,16 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
  */
 public class FileUtil {
     
-    static public List<File> findAllFiles(List<String> fileStrings) throws IOException {
+    static public List<File> findAllFiles(List<String> fileStrings, boolean ignoreNonExistent) throws IOException {
         List<File> allFiles = new ArrayList<File>();
         for (String fileString : fileStrings) {
-            List<File> files = FileUtil.findFiles(fileString);
+            List<File> files = FileUtil.findFiles(fileString, ignoreNonExistent);
             allFiles.addAll(files);
         }
         return allFiles;
     }
     
-    static public List<File> findFiles(String fileString) throws IOException {
+    static public List<File> findFiles(String fileString, boolean ignoreNonExistent) throws IOException {
         if (fileString.endsWith("*")) {
             // file string contains a glob...
             File f = new File(fileString);
@@ -52,7 +53,11 @@ public class FileUtil {
         } else {
             File f = new File(fileString);
             if (!f.exists()) {
-                throw new IOException("File [" + fileString + "] does not exist");
+                if (ignoreNonExistent) {
+                    return Collections.EMPTY_LIST;
+                } else {
+                    throw new IOException("File [" + fileString + "] does not exist");
+                }
             } else {
                 if (f.isDirectory()) {
                     return Arrays.asList(f.listFiles());

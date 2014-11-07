@@ -1,0 +1,5 @@
+name: "hello-server-play"
+
+domain: "co.fizzed"
+
+platforms: [ WINDOWS, LINUX, MAC_OSX ]

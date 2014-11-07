@@ -17,7 +17,10 @@ object StorkPluginBuild extends Build {
       name := "fizzed-stork-sbt-plugin",
       organization := storkGroupId,
       version := storkVersion,
-      libraryDependencies += "co.fizzed" % "fizzed-stork-launcher" % storkVersion
+      libraryDependencies += "co.fizzed" % "fizzed-stork-launcher" % storkVersion,
+      // for bridging slf4j calls to sbt logging
+      // https://github.com/eirslett/sbt-slf4j
+      libraryDependencies += "com.github.eirslett" %% "sbt-slf4j" % "0.1"
     )
   )
 }

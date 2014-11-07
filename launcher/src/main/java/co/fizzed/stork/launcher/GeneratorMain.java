@@ -71,7 +71,7 @@ public class GeneratorMain extends BaseApplication {
 
         try {
             Generator generator = new Generator();
-            List<File> configFiles = FileUtil.findAllFiles(configFileStrings);
+            List<File> configFiles = FileUtil.findAllFiles(configFileStrings, false);
             List<Configuration> configs = generator.readConfigurationFiles(configFiles);
             int generated = generator.generateAll(configs, outputDir);
             logger.info("Done (generated " + generated + " launchers)");

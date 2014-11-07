@@ -1,0 +1,12 @@
+@(message: String)
+
+@main("Stork by Fizzed") {
+
+<h1>Stork by <a href="http://fizzed.co">Fizzed</a></h1>
+<h2>Example using PlayFramework</h2>
+<b>Now:</b> @(new Date())<br/>
+<b>Some system properties:</b><br/>
+@for(s <- Application.sysprops) {
+	- @s: @(System.getProperty(s))<br/>
+}
+}

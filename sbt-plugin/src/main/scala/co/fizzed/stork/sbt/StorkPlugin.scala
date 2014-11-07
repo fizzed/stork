@@ -6,6 +6,7 @@ import Keys._
 
 import co.fizzed.stork.launcher._
 import scala.collection.JavaConverters._
+import org.slf4j.impl._
 
 object StorkPlugin extends AutoPlugin {
 
@@ -18,22 +19,28 @@ object StorkPlugin extends AutoPlugin {
   import autoImport._
 
   override val projectSettings = Seq(
-    storkLauncherGenerate := {
-      println("Launcher generate task...")
+    storkLauncherGenerate := { 
+      val log = streams.value.log
 
-      val inputFiles = List(new File("src/main/launchers"))
-      val outputDir = new File("target/stage")
-
-      // remove any non-existent directories from inputFiles
-      val filteredInputFiles = inputFiles.filter(_.exists()).map(f => f.getPath())
-
-      if (filteredInputFiles.length <= 0) {
-        println("No inputFile dirs or files exist (skipping)")
-      } else {
-        val generator = new Generator()
-        val configs = generator.createConfigsFromFileStrings(filteredInputFiles.asJava);
-        generator.runConfigs(configs, outputDir);
+      try {
+        // try to bind sbt logger for sbt-slf4j plugin (it may not exist if excluding it in play builds)
+        StaticLoggerBinder.sbtLogger = streams.value.log
+      } catch {
+        case unknown : Throwable => {}
       }
+
+      log.info("Running stork launcher generate...")
+
+      val defaultInputDir = baseDirectory(_ / "src/main/launchers").value
+      val inputFiles = List(defaultInputDir)
+      val outputDir = target(_ / "stage").value
+
+      val generator = new Generator()
+      val allInputFiles = FileUtil.findAllFiles(inputFiles.map(f => f.getPath()).asJava, true)
+      val configs = generator.readConfigurationFiles(allInputFiles)
+      val generated = generator.generateAll(configs, outputDir)
+      
+      log.info("Generated " + generated + " stork launchers")
     }
   )
 }

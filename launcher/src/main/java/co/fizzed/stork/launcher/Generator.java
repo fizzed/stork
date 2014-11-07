@@ -95,7 +95,7 @@ public class Generator {
         }
 
         if (configs.isEmpty()) {
-            logger.warn("No input configuration files (no launchers will be generated)");
+            logger.warn("No input configuration files (no stork launchers will be generated)");
             return 0;
         }
         

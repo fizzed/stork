@@ -10,11 +10,11 @@ Stork by Fizzed
 
 #### On Linux/OSX
 
-	export PATH=`pwd`/assembly/target/stage/bin:$PATH
+	export PATH=`pwd`/cli/target/stage/bin:$PATH
 
 #### On Windows
 
-	set PATH=%CD%\assembly\target\stage\bin;%PATH%
+	set PATH=%CD%\cli\target\stage\bin;%PATH%
 
 ### Testing
 

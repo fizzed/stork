@@ -59,7 +59,7 @@
                 </dependencies>
                 <executions>
                     <execution>
-                        <id>generate-launchers</id>
+                        <id>generate-stork-launchers</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>java</goal>
@@ -67,7 +67,7 @@
                         <configuration>
                             <includeProjectDependencies>false</includeProjectDependencies>
                             <includePluginDependencies>true</includePluginDependencies>
-                            <mainClass>co.fizzed.stork.launcher.Generator</mainClass>
+                            <mainClass>co.fizzed.stork.launcher.GeneratorMain</mainClass>
                             <arguments>
                                 <argument>-o</argument>
                                 <argument>${basedir}/target/stage</argument>
@@ -86,7 +86,7 @@
                 <version>2.4.1</version>
                 <executions>
                     <execution>
-                        <id>stage-assembly</id>
+                        <id>generate-stork-assembly</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>

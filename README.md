@@ -47,8 +47,8 @@ your apps
 
 An Uber/Fat jar is where all dependencies are merged into a single jar. There
 are several reasons why Stork suggests avoiding this approach. First, if you
-want to "rsync" your deployment for rapidly deploying upgrade -- in most cases
-the dependencies do not change much and usually most of the disk space.
+want to "rsync" your deployment for rapidly deploying an upgrade -- in most cases
+the dependencies do not change much and usually eat up most of the disk space.
 By not using a fat jar, then only the jars that have changed need to be 
 transferred over the network and deployed -- resulting in a fast upgrade.
 
@@ -157,8 +157,8 @@ a build.
 
 ### Goal: launcher-generate
 
-By default compiles all launchers in src/main/launchers to target/stage (which
-will result in target/stage/bin and target/stage/share dirs).
+Compiles all launchers in src/main/launchers to target/stage (which will result
+in target/stage/bin and target/stage/share dirs).
 
 To use add the following to your POM:
 
@@ -171,7 +171,6 @@ To use add the following to your POM:
                 <version>USE-LATEST-HERE</version>
                 <executions>
                     <execution>
-                        <execution>
                         <id>generate-stork-launchers</id>
                         <goals>
                             <goal>launcher-generate</goal>
@@ -193,9 +192,9 @@ To customize, the following properties are supported:
 
 ### Goal: assembly
 
-By default stages and assembles your application into a canonical Stork layout.
-The following are copied to target/stage/lib using the full
-groupId-artifactId-version naming format:
+Stages and assembles your application into a canonical Stork layout. The following
+are copied to target/stage/lib using the full groupId-artifactId-version naming
+format:
 
  - Your project artifact (if its a jar)
  - Any additional "attached" runtime jar artifacts

@@ -1,5 +1,3 @@
-name := "hello"
+//resolvers += Resolver.mavenLocal
 
-version := "1.0.0-SNAPSHOT"
-
-scalaVersion := "2.11.4"
+resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"

@@ -22,12 +22,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
 public class CopyFile {
+    private static final Logger logger = LoggerFactory.getLogger(CopyFile.class);
     
     static public void main(String[] args) throws Exception {
         new CopyFile().run(args);
@@ -35,7 +38,7 @@ public class CopyFile {
     
     public String popNextArg(String argSwitch, List<String> argList) {
         if (argList.isEmpty()) {
-            System.err.println("argument switch [" + argSwitch + "] is missing value as next argument");
+            logger.error("argument switch [" + argSwitch + "] is missing value as next argument");
             System.exit(1);
         }
         return argList.remove(0);
@@ -58,13 +61,13 @@ public class CopyFile {
                 String fileString = popNextArg(argSwitch, argList);
                 outputDir = new File(fileString);
             } else {
-                System.err.println("invalid argument switch [" + argSwitch + "] found");
+                logger.error("invalid argument switch [" + argSwitch + "] found");
                 System.exit(1);
             }
         }
         
         if (inputFiles.isEmpty()) {
-            System.err.println("No input files provided");
+            logger.error("No input files provided");
             System.exit(1);
         }
         
@@ -79,7 +82,7 @@ public class CopyFile {
                     copyFile(inputFile, outputDir);
                 }
             } catch (Exception e) {
-                e.printStackTrace(System.err);
+                logger.error("", e);
                 System.exit(1);
             }
         }
@@ -95,7 +98,7 @@ public class CopyFile {
         } else {
             File outputFile = new File(outputDir, inputFile.getName());
             outputDir.mkdirs();
-            System.out.println("Copying " + inputFile + " to " + outputFile);
+            logger.info(" copying " + inputFile + " to " + outputFile);
             FileUtils.copyFile(inputFile, outputFile);
             if (inputFile.canExecute()) {
                 outputFile.setExecutable(true);

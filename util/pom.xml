@@ -16,6 +16,10 @@
     <dependencies>
         <!-- compile -->
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>co.fizzed</groupId>
             <artifactId>fizzed-stork-launcher</artifactId>
             <version>${project.version}</version>

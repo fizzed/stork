@@ -21,12 +21,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
 public class Merger extends BaseApplication {
+    private static final Logger logger = LoggerFactory.getLogger(Merger.class);
 
     @Override
     public void printUsage() {
@@ -86,18 +89,23 @@ public class Merger extends BaseApplication {
             }
         }
 
-        merge(configFiles, outputFile);
+        try {
+            merge(configFiles, outputFile);
+        } catch (IOException e) {
+            logger.error("Unable to cleanly merge launcher configs", e);
+            printErrorThenUsageAndExit(e.getMessage());
+        }
     }
     
     
-    public void merge(List<File> configFiles, File outputFile) {
+    public void merge(List<File> configFiles, File outputFile) throws IOException {
         // validate required arguments
         if (configFiles == null || configFiles.isEmpty()) {
-            printErrorThenUsageAndExit("no input config files were specified");
+            throw new IllegalArgumentException("No input config files were found");
         }
 
         if (outputFile == null) {
-            printErrorThenUsageAndExit("no output file was specified");
+            throw new IOException("no output file was specified");
         }
 
         ConfigurationFactory factory = new ConfigurationFactory();

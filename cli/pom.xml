@@ -2,9 +2,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>co.fizzed</groupId>
-    <artifactId>fizzed-stork-assembly</artifactId>
+    <artifactId>fizzed-stork-cli</artifactId>
     <packaging>pom</packaging>
-    <name>fizzed-stork-assembly</name>
+    <name>fizzed-stork-cli</name>
  
     <parent>
         <groupId>co.fizzed</groupId>
@@ -14,15 +14,6 @@
     
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -60,15 +51,11 @@
                             <arguments>
                                 <argument>-classpath</argument>
             			<classpath/>
-                                <argument>co.fizzed.stork.launcher.Generator</argument>
+                                <argument>co.fizzed.stork.launcher.GeneratorMain</argument>
                                 <argument>-o</argument>
                                 <argument>target/stage</argument>
                                 <argument>-i</argument>
                                 <argument>../launcher/src/main/launchers</argument>
-                                <!--
-                                <argument>-i</argument>
-                                <argument>../maven/src/main/launchers</argument>
-                                -->
                                 <argument>-i</argument>
                                 <argument>../play/src/main/launchers</argument>
                             </arguments>
@@ -105,13 +92,6 @@
             <artifactId>fizzed-stork-launcher</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>co.fizzed</groupId>
-            <artifactId>fizzed-stork-maven</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>co.fizzed</groupId>
             <artifactId>fizzed-stork-play</artifactId>

@@ -17,6 +17,7 @@ package co.fizzed.stork.play;
 
 import co.fizzed.stork.launcher.BaseApplication;
 import co.fizzed.stork.launcher.Configuration;
+import co.fizzed.stork.launcher.FileUtil;
 import co.fizzed.stork.launcher.Generator;
 import co.fizzed.stork.launcher.Merger;
 import co.fizzed.stork.util.TarUtils;
@@ -166,9 +167,11 @@ public class Assembler extends BaseApplication {
         // generate launcher configs (that will be used later on)
         //
         System.out.println("Creating play launcher...");
-        Generator launcherGenerator = new Generator();
-        List<Configuration> launcherConfigs = launcherGenerator.createConfigs(Arrays.asList(mergedLauncherConfFile));
-        Configuration launcherConfig = launcherConfigs.get(0);
+        Generator generator = new Generator();
+        List<Configuration> configs = generator.readConfigurationFiles(Arrays.asList(mergedLauncherConfFile));
+        
+        //List<Configuration> launcherConfigs = launcherGenerator.createConfigs(Arrays.asList(mergedLauncherConfFile));
+        Configuration launcherConfig = configs.get(0);
 
         // playAppName may have been overridden...
         if (!playAppName.equals(launcherConfig.getName())) {
@@ -208,8 +211,10 @@ public class Assembler extends BaseApplication {
         }
 
         // generate launcher
-        launcherGenerator.runConfigs(launcherConfigs, stageDir);
-
+        //launcherGenerator.runConfigs(launcherConfigs, stageDir);
+        int generated = generator.generateAll(configs, stageDir);
+        System.out.println("Done (generated " + generated + " launchers)");
+        
         // create tarball
         File tgzFile = new File(targetDir, assemblyName + ".tar.gz");
         TarArchiveOutputStream tgzout = TarUtils.createTGZStream(tgzFile);

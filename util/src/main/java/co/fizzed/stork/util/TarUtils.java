@@ -25,12 +25,15 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
 public class TarUtils {
+    private static final Logger logger = LoggerFactory.getLogger(TarUtils.class);
     
     static public TarArchiveOutputStream createTGZStream(File tgzFile) throws IOException {
         TarArchiveOutputStream tgzout = new TarArchiveOutputStream(
@@ -79,7 +82,7 @@ public class TarUtils {
             File[] children = f.listFiles();
             if (children != null){
                 for (File child : children) {
-                    System.out.println(" adding: " + entryName + "/" + child.getName());
+                    logger.info(" adding: " + entryName + "/" + child.getName());
                     addFileToTGZStream(tgzout, child.getAbsolutePath(), entryName + "/", true);
                 }
             }

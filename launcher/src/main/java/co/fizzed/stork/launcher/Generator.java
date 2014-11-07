@@ -34,138 +34,86 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
-public class Generator extends BaseApplication {
-
-    @Override
-    public void printUsage() {
-        System.err.println("Usage: stork-launcher-generate -i <input config> -o <output directory> [-i ...]");
-        System.err.println("-v                      Print version and exit");
-        System.err.println("-i <input config>       Input file (dir or wildcard accepted)");
-        System.err.println("-o <output directory>   Output directory");
-    }
-
-    static public void main(String[] args) {
-        new Generator().run(args);
-    }
-
-    @Override
-    public void run(String[] args) {
-        if (args.length <= 0) {
-            printErrorThenUsageAndExit("required parameters missing");
-        }
-
-        List<String> argList = new ArrayList<String>(Arrays.asList(args));
-        //List<File> configFiles = new ArrayList<File>();
-        List<String> configFileStrings = new ArrayList<String>();
-        File outputDir = null;
-
-        // parse command-line arguments
-        while (argList.size() > 0) {
-            String argSwitch = argList.remove(0);
-
-            if (argSwitch.equals("-v") || argSwitch.equals("--version")) {
-                System.err.println("stork-launcher-generate version: " + co.fizzed.stork.launcher.Version.getLongVersion());
-                System.exit(0);
-            } else if (argSwitch.equals("-i") || argSwitch.equals("--input")) {
-                String fileString = popNextArg(argSwitch, argList);
-                configFileStrings.add(fileString);
-                /**
-                try {
-                    List<File> files = FileUtil.findFiles(fileString);
-                    configFiles.addAll(files);
-                } catch (IOException e) {
-                    printErrorThenUsageAndExit(e.getMessage());
-                }
-                */
-            } else if (argSwitch.equals("-o") || argSwitch.equals("--output")) {
-                outputDir = new File(popNextArg(argSwitch, argList));
-                if (!outputDir.exists()) {
-                    if (!outputDir.mkdirs()) {
-                        printErrorThenUsageAndExit("unable to make output dir [" + outputDir + "]");
-                    } else {
-                        System.out.println("Created output directory: " + outputDir);
-                    }
-                }
-                if (!outputDir.isDirectory()) {
-                    printErrorThenUsageAndExit("output dir [" + outputDir + "] exists but is not a directory");
-                }
-                if (!outputDir.canWrite()) {
-                    printErrorThenUsageAndExit("output dir [" + outputDir + "] is not writable");
-                }
-            } else {
-                printErrorThenUsageAndExit("invalid argument switch [" + argSwitch + "] found");
-            }
-        }
-
-        try {
-            List<Configuration> configs = createConfigsFromFileStrings(configFileStrings);
-            runConfigs(configs, outputDir);
-        } catch (Exception e) {
-            e.printStackTrace();
-            printErrorThenUsageAndExit(e.getMessage());
-        }
+public class Generator {
+    static private final Logger logger = LoggerFactory.getLogger(Generator.class);
+    
+    private final ConfigurationFactory factory;
+    
+    public Generator() {
+        this.factory = new ConfigurationFactory();
     }
     
-    public void runConfigFiles(List<File> configFiles, File outputDir) {
-        List<Configuration> configs = createConfigs(configFiles);
-        runConfigs(configs, outputDir);
-    }
-    
-    public List<Configuration> createConfigsFromFileStrings(List<String> configFileStrings) throws IOException {
-        List<File> configFiles = new ArrayList<File>();
-        for (String fileString : configFileStrings) {
-            List<File> files = FileUtil.findFiles(fileString);
-            configFiles.addAll(files);
-        }
-        return createConfigs(configFiles);
-    }
-    
-    public List<Configuration> createConfigs(List<File> configFiles) {
-        // validate required arguments
-        if (configFiles == null || configFiles.isEmpty()) {
-            printErrorThenUsageAndExit("no input config files were specified");
-        }
-
-        ConfigurationFactory factory = new ConfigurationFactory();
-        
-        // parse each configuration file into a configuration object
+    public List<Configuration> readConfigurationFiles(List<File> configFiles) throws ArgumentException, IOException {
         List<Configuration> configs = new ArrayList<Configuration>();
+
+        // no input files return an empty array of configs
+        if (configFiles == null || configFiles.isEmpty()) {
+            return configs;
+        }
+
+        // parse each configuration file into a configuration object
         for (File configFile : configFiles) {
             try {
                 configs.add(factory.create(configFile));
             } catch (Exception e) {
-                printError("config file [" + configFile + "] invalid");
-                e.printStackTrace(System.err);
-                System.exit(1);
+                throw new IOException("Launcher config file [" + configFile + "] failed parsing", e);
             }
         }
 
         return configs;
     }
     
-    public void runConfigs(List<Configuration> configs, File outputDir) {
+    
+    public int generate(Configuration config, File outputDir) throws ArgumentException, IOException {
+        return generateAll(Arrays.asList(config), outputDir);
+    }
+    
+    public int generateAll(List<Configuration> configs, File outputDir) throws ArgumentException, IOException {
+        // validate output directory
         if (outputDir == null) {
-            printErrorThenUsageAndExit("no output dir was specified");
+            throw new ArgumentException("No output dir was specified");
         }
-
-        // use each configuration object to generate one or more launchers
-        for (Configuration config : configs) {
-            try {
-                System.out.println("Generating launcher for config: " + config.getFile());
-                generate(config, outputDir);
-            } catch (Exception e) {
-                printError("Unable to generate launcher for config [" + config.getFile() + "]");
-                e.printStackTrace(System.err);
-                System.exit(1);
+        if (!outputDir.exists()) {
+            if (!outputDir.mkdirs()) {
+                throw new ArgumentException("Unable to crate output directory [" + outputDir + "]");
+            } else {
+                logger.info("Created output directory: " + outputDir);
             }
         }
-    }
+        if (!outputDir.isDirectory()) {
+            throw new ArgumentException("Output directory [" + outputDir + "] exists but is not a directory");
+        }
+        if (!outputDir.canWrite()) {
+            throw new ArgumentException("Output directory [" + outputDir + "] is not writable");
+        }
 
+        if (configs.isEmpty()) {
+            logger.warn("No input configuration files (no launchers will be generated)");
+            return 0;
+        }
+        
+        // use each configuration object to generate one or more launchers
+        int generated = 0;
+        for (Configuration config : configs) {
+            try {
+                logger.info("Generating launcher for: " + config.getFile());
+                doGenerate(config, outputDir);
+                generated++;
+            } catch (Exception e) {
+                throw new IOException("Unable to cleanly generate launcher for [" + config.getFile() + "]", e);
+            }
+        }
+        return generated;
+    }
+    
+    
     static private freemarker.template.Configuration fmconfig;
     static public freemarker.template.Configuration getOrCreateFreemarker() throws Exception {
         if (fmconfig != null) {
@@ -185,8 +133,7 @@ public class Generator extends BaseApplication {
         return fmconfig;
     }
 
-    static public void generate(Configuration config, File outputDir) throws Exception {
-
+    private void doGenerate(Configuration config, File outputDir) throws ArgumentException, Exception {
         Platform unixLauncherGeneratedVia = null;
         File binDir = Paths.get(outputDir.getPath(), config.getBinDir()).toFile();
         File shareDir = Paths.get(outputDir.getPath(), config.getShareDir()).toFile();
@@ -196,7 +143,7 @@ public class Generator extends BaseApplication {
 
         // generate for each platform
         for (Configuration.Platform platform : sortedPlatforms) {
-            System.out.println("Generating launcher for platform: " + platform);
+            logger.info("Generating launcher for platform: " + platform);
 
             // create launcher model to render
             LauncherModel model = new LauncherModel(config);
@@ -205,7 +152,7 @@ public class Generator extends BaseApplication {
 
                 if (unixLauncherGeneratedVia != null) {
                     // no need to generate again
-                    System.out.println(" - launcher: same as for " + unixLauncherGeneratedVia);
+                    logger.info(" - launcher: same as for " + unixLauncherGeneratedVia);
                 } else {
                     // generate unix launcher script
                     binDir.mkdirs();
@@ -263,22 +210,21 @@ public class Generator extends BaseApplication {
                     } else if (dm == DaemonMethod.WINSW) {
                         generateWindowsWINSWLauncher(config, binDir, model);
                     } else {
-                        throw new Exception("Unsupported daemon method [" + dm + "] for platform WINDOWS");
+                        throw new ArgumentException("Unsupported daemon method [" + dm + "] for platform WINDOWS");
                     }
                     
                 }
 
             } else {
-                throw new Exception("Unsupported platform " + platform);
+                throw new ArgumentException("Unsupported platform " + platform);
             }
         }
     }
 
-    static public void generateUnixConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
+    public void generateUnixConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
         // make sure parent of file to be generated exists
         FileOutputStream fos = new FileOutputStream(launcherFile);
         Writer out = new OutputStreamWriter(fos);
-
         try {
             processTemplate("linux/script-header.ftl", out, model);
 
@@ -291,7 +237,7 @@ public class Generator extends BaseApplication {
             // set to executable
             launcherFile.setExecutable(true);
 
-            System.out.println(" - launcher: " + launcherFile);
+            logger.info(" - launcher: " + launcherFile);
         } finally {
             if (out != null) {
                 out.close();
@@ -302,7 +248,7 @@ public class Generator extends BaseApplication {
         }
     }
     
-    static public void generateUnixDaemonLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
+    public void generateUnixDaemonLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
         FileOutputStream fos = new FileOutputStream(launcherFile);
         Writer out = new OutputStreamWriter(fos);
 
@@ -325,7 +271,7 @@ public class Generator extends BaseApplication {
             // set to executable
             launcherFile.setExecutable(true);
 
-            System.out.println(" - launcher: " + launcherFile);
+            logger.info(" - launcher: " + launcherFile);
         } finally {
             if (out != null) {
                 out.close();
@@ -336,7 +282,7 @@ public class Generator extends BaseApplication {
         }
     }
     
-    static public void generateInitdScript(Configuration config, File initdFile, LauncherModel model) throws Exception {
+    public void generateInitdScript(Configuration config, File initdFile, LauncherModel model) throws Exception {
         FileOutputStream fos = new FileOutputStream(initdFile);
         Writer out = new OutputStreamWriter(fos);
 
@@ -346,7 +292,7 @@ public class Generator extends BaseApplication {
             // set to executable
             initdFile.setExecutable(true);
 
-            System.out.println(" - init.d: " + initdFile);
+            logger.info(" - init.d: " + initdFile);
         } finally {
             if (out != null) {
                 out.close();
@@ -357,14 +303,14 @@ public class Generator extends BaseApplication {
         }
     }
     
-    static public void generateOSXLaunchdScript(Configuration config, File launchdFile, LauncherModel model) throws Exception {
+    public void generateOSXLaunchdScript(Configuration config, File launchdFile, LauncherModel model) throws Exception {
         FileOutputStream fos = new FileOutputStream(launchdFile);
         Writer out = new OutputStreamWriter(fos);
 
         try {
             processTemplate("osx/launchd.ftl", out, model);
 
-            System.out.println(" - launchd: " + launchdFile);
+            logger.info(" - launchd: " + launchdFile);
         } finally {
             if (out != null) {
                 out.close();
@@ -376,7 +322,7 @@ public class Generator extends BaseApplication {
     }
     
     
-    static public void generateUnixJavaDetectScript(File file) throws Exception {
+    public void generateUnixJavaDetectScript(File file) throws Exception {
         FileOutputStream fos = new FileOutputStream(file);
         Writer out = new OutputStreamWriter(fos);
 
@@ -390,7 +336,7 @@ public class Generator extends BaseApplication {
             // set to executable
             file.setExecutable(true);
 
-            System.out.println(" - script: " + file);
+            logger.info(" - script: " + file);
         } finally {
             if (out != null) {
                 out.close();
@@ -402,7 +348,7 @@ public class Generator extends BaseApplication {
     }
     
     
-    static public void generateWindowsConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
+    public void generateWindowsConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
         // make sure parent of file to be generated exists
         FileOutputStream fos = new FileOutputStream(launcherFile);
         Writer out = new OutputStreamWriter(fos);
@@ -421,7 +367,7 @@ public class Generator extends BaseApplication {
             // set to executable
             launcherFile.setExecutable(true);
 
-            System.out.println(" - launcher: " + launcherFile);
+            logger.info(" - launcher: " + launcherFile);
         } finally {
             if (out != null) {
                 out.close();
@@ -432,7 +378,7 @@ public class Generator extends BaseApplication {
         }
     }
     
-    static public void generateWindowsWINSWLauncher(Configuration config, File binDir, LauncherModel model) throws Exception {
+    public void generateWindowsWINSWLauncher(Configuration config, File binDir, LauncherModel model) throws Exception {
         binDir.mkdirs();
         
         File serviceFile = new File(binDir, config.getName() + ".exe");
@@ -440,15 +386,15 @@ public class Generator extends BaseApplication {
         File netFile = new File(binDir, config.getName() + ".exe.config");
         
         copyResource("windows/winsw/winsw-1.16-bin.exe", serviceFile);
-        System.out.println(" - launcher helper: " + serviceFile);
+        logger.info(" - launcher helper: " + serviceFile);
         
         copyResource("windows/winsw/winsw.exe.config", netFile);
-        System.out.println(" - launcher helper: " + serviceFile);
+        logger.info(" - launcher helper: " + serviceFile);
         
         generateWindowsWINSWConfig(config, configFile, model);
     }
     
-    static public void generateWindowsWINSWConfig(Configuration config, File configFile, LauncherModel model) throws Exception {
+    public void generateWindowsWINSWConfig(Configuration config, File configFile, LauncherModel model) throws Exception {
         FileOutputStream fos = new FileOutputStream(configFile);
         Writer out = new OutputStreamWriter(fos);
 
@@ -464,7 +410,7 @@ public class Generator extends BaseApplication {
         }
     }
     
-    static public void generateWindowsJSLWinLauncher(Configuration config, File binDir, LauncherModel model) throws Exception {
+    public void generateWindowsJSLWinLauncher(Configuration config, File binDir, LauncherModel model) throws Exception {
         binDir.mkdirs();
         
         File launcherFile = new File(binDir, config.getName() + ".bat");
@@ -487,7 +433,7 @@ public class Generator extends BaseApplication {
             // set to executable
             launcherFile.setExecutable(true);
 
-            System.out.println(" - launcher: " + launcherFile);
+            logger.info(" - launcher: " + launcherFile);
         } finally {
             if (out != null) {
                 out.close();
@@ -504,20 +450,19 @@ public class Generator extends BaseApplication {
         File ini64File = new File(binDir, config.getName() + "64.ini");
         
         copyResource("windows/jslwin/jsl_static.exe", serviceFile);
-        System.out.println(" - launcher helper: " + serviceFile);
+        logger.info(" - launcher helper: " + serviceFile);
         
         generateWindowsJSLWinINI(config, iniFile, model);
-        System.out.println(" - launcher helper: " + iniFile);
+        logger.info(" - launcher helper: " + iniFile);
         
         copyResource("windows/jslwin/jsl_static64.exe", service64File);
-        System.out.println(" - launcher helper: " + service64File);
+        logger.info(" - launcher helper: " + service64File);
         
         generateWindowsJSLWinINI(config, ini64File, model);
-        System.out.println(" - launcher helper: " + ini64File);
-        
+        logger.info(" - launcher helper: " + ini64File);
     }
     
-    static public void generateWindowsJSLWinINI(Configuration config, File iniFile, LauncherModel model) throws Exception {
+    public void generateWindowsJSLWinINI(Configuration config, File iniFile, LauncherModel model) throws Exception {
         FileOutputStream fos = new FileOutputStream(iniFile);
         Writer out = new OutputStreamWriter(fos);
 
@@ -533,13 +478,13 @@ public class Generator extends BaseApplication {
         }
     }
     
-    static public void processTemplate(String templateName, Writer out, Object model) throws Exception {
+    public void processTemplate(String templateName, Writer out, Object model) throws Exception {
         freemarker.template.Configuration freemarker = getOrCreateFreemarker();
         Template template = freemarker.getTemplate(templateName);
         template.process(model, out);
     }
     
-    static public void copyResource(String resourceName, File targetFile) throws Exception {
+    public void copyResource(String resourceName, File targetFile) throws Exception {
         FileOutputStream fos = new FileOutputStream(targetFile);
         try {
             includeResource(resourceName, fos);
@@ -550,7 +495,7 @@ public class Generator extends BaseApplication {
         }
     }
 
-    static public void includeResource(String resourceName, OutputStream os) throws Exception {
+    public void includeResource(String resourceName, OutputStream os) throws Exception {
         InputStream is = Generator.class.getResourceAsStream(resourceName);
         if (is == null) {
             throw new Exception("Unable to find resource " + resourceName);

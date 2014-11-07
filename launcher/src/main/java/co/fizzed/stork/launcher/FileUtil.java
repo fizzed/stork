@@ -18,6 +18,7 @@ package co.fizzed.stork.launcher;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -28,8 +29,17 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
  */
 public class FileUtil {
     
+    static public List<File> findAllFiles(List<String> fileStrings) throws IOException {
+        List<File> allFiles = new ArrayList<File>();
+        for (String fileString : fileStrings) {
+            List<File> files = FileUtil.findFiles(fileString);
+            allFiles.addAll(files);
+        }
+        return allFiles;
+    }
+    
     static public List<File> findFiles(String fileString) throws IOException {
-        if (fileString.contains("*")) {
+        if (fileString.endsWith("*")) {
             // file string contains a glob...
             File f = new File(fileString);
             File parent = f.getParentFile();

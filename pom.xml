@@ -24,10 +24,10 @@
 	<module>launcher</module>
         <module>util</module>
         <module>maven-plugin</module>
+        <module>cli</module>
+        <module>play</module>
         <module>examples/hello-world</module>
         <module>examples/hello-server-dropwizard</module>
-        <module>play</module>
-        <module>assembly</module>
     </modules>
 
     <build>

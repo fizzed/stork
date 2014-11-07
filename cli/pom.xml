@@ -56,8 +56,6 @@
                                 <argument>target/stage</argument>
                                 <argument>-i</argument>
                                 <argument>../launcher/src/main/launchers</argument>
-                                <argument>-i</argument>
-                                <argument>../play/src/main/launchers</argument>
                             </arguments>
                         </configuration>
                     </execution>

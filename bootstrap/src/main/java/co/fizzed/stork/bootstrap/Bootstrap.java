@@ -27,7 +27,7 @@ import java.util.Properties;
 public class Bootstrap {
 
     private String mainClass;
-    private File configFile;
+    private File bootstrapFile;
     
     static public void main(String[] args) throws Exception {
         new Bootstrap().run(args);
@@ -41,12 +41,12 @@ public class Bootstrap {
         this.mainClass = mainClass;
     }
 
-    public File getConfigFile() {
-        return configFile;
+    public File getBootstrapFile() {
+        return bootstrapFile;
     }
 
-    public void setConfigFile(File configFile) {
-        this.configFile = configFile;
+    public void setBootstrapFile(File bootstrapFile) {
+        this.bootstrapFile = bootstrapFile;
     }
     
     public void run(String[] args) throws Exception {
@@ -58,24 +58,24 @@ public class Bootstrap {
             throw new Exception("Java system property [launcher.main] must be defined. Please set -Dlauncher.main=com.example.Main");
         }
         
-        if (System.getProperties().containsKey("launcher.config")) {
-            String configPath = System.getProperty("launcher.config");
-            if (configPath != null && !configPath.equals("")) {
-                this.configFile = new File(configPath);
-                if (!configFile.exists()) {
-                    throw new Exception("Java launcher.config [" + configFile + "] does not exist");
+        if (System.getProperties().containsKey("launcher.bootstrap")) {
+            String bootstrapPath = System.getProperty("launcher.bootstrap");
+            if (bootstrapPath != null && !bootstrapPath.equals("")) {
+                this.bootstrapFile = new File(bootstrapPath);
+                if (!bootstrapFile.exists()) {
+                    throw new Exception("Java launcher.bootstrap [" + bootstrapFile + "] does not exist");
                 }
-                if (!configFile.isFile() || !configFile.canRead()) {
-                    throw new Exception("Java launcher.config [" + configFile + "] is either not a file or not readable");
+                if (!bootstrapFile.isFile() || !bootstrapFile.canRead()) {
+                    throw new Exception("Java launcher.bootstrap [" + bootstrapFile + "] is either not a file or not readable");
                 }
             }
         }
         
         Properties props = new Properties(System.getProperties());
         
-        if (configFile != null) {
+        if (bootstrapFile != null) {
             // create new properties using system properties as defaults
-            loadLauncherConfig(props, configFile);
+            loadLauncherConfig(props, bootstrapFile);
         }
         
         overrideSystemProperties(props);
@@ -88,6 +88,7 @@ public class Bootstrap {
     }
     
     public void loadLauncherConfig(Properties props, File configFile) throws Exception {
+        System.out.println("Loading bootstrap properties: " + configFile);
         props.load(new FileInputStream(configFile));
     }
     

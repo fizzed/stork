@@ -23,11 +23,12 @@
         <module>bootstrap</module>
 	<module>launcher</module>
         <module>util</module>
-        <module>maven-plugin</module>
         <module>cli</module>
-        <module>play</module>
+        <module>maven-plugin</module>
+        <!--<module>play-sbt-plugin</module>-->
         <module>examples/hello-world</module>
         <module>examples/hello-server-dropwizard</module>
+        <!--<module>examples/hello-server-play</module>-->
     </modules>
 
     <build>

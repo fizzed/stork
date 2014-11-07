@@ -37,59 +37,72 @@ public class PlayBootstrap extends Bootstrap {
         
         // set pidfile property?
         if (!props.containsKey("pidfile.path")) {
+            System.out.println("Disabling pid file (stork launcher handles it better)");
             // set pid to /dev/null or NUL depending on which platform running on
             if (props.getProperty("os.name").toLowerCase().contains("win")) {
-                System.out.println("Setting system property [pidfile.path=NUL]");
+                System.out.println(" by setting system property [pidfile.path=NUL]");
                 props.setProperty("pidfile.path", "NUL");
             } else {
-                System.out.println("Setting system property [pidfile.path=/dev/null]");
+                System.out.println(" by setting system property [pidfile.path=/dev/null]");
                 props.setProperty("pidfile.path", "/dev/null");
             }
         } else {
-            System.out.println("Using system property [pidfile.path=" + props.getProperty("pidfile.path") + "]");
+            System.out.println("Retaining play pid file handling [pidfile.path=" + props.getProperty("pidfile.path") + "]");
         }
     }
     
-    static public File createBaseLauncherConfFile(File targetDir, String playAppName) throws Exception {
-        File f = new File(targetDir, "play-launcher.yml");
-        PrintWriter pw = new PrintWriter(new FileWriter(f));
-        pw.println("name: \"" + playAppName + "\"");
-        pw.println("domain: \"com.playframework\"");
-        pw.println("display_name: \"" + playAppName + "\"");
-        pw.println("short_description: \"" + playAppName + "\"");
+    static public void generateDefaultLauncherConfFile(File confFile, String appName, String domain, String bootstrapConfigPath, String loggerConfigPath) throws Exception {
+        PrintWriter pw = new PrintWriter(new FileWriter(confFile));
+        pw.println("name: \"" + appName + "\"");
+        pw.println("domain: \"" + domain + "\"");
+        pw.println("display_name: \"" + appName + "\"");
+        pw.println("short_description: \"" + appName + "\"");
         pw.println("type: DAEMON");
         //pw.println("main_class: \"play.core.server.NettyServer\"");
         pw.println("main_class: \"co.fizzed.stork.bootstrap.PlayBootstrap\"");
         pw.println("log_dir: \"log\"");
-        pw.println("platforms: [ LINUX ]");
+        pw.println("platforms: [ LINUX, WINDOWS, MAC_OSX ]");
         pw.println("working_dir_mode: APP_HOME");
         pw.println("app_args: \"\"");
-        pw.println("java_args: \"-Xrs -Djava.net.preferIPv4Stack=true -Dlauncher.main=play.core.server.NettyServer -Dlauncher.config=conf/play.conf -Dlogger.file=conf/logger.xml\"");
+        
+        // build args...
+        String extraJvmArgs = new StringBuilder()
+                .append((bootstrapConfigPath == null || bootstrapConfigPath.equals("") ? "" : " -Dlauncher.bootstrap="+bootstrapConfigPath))
+                .append((loggerConfigPath == null || loggerConfigPath.equals("") ? "" : " -Dlogger.file="+loggerConfigPath))
+                .toString();
+        
+        pw.println("java_args: \"-Xrs -Djava.net.preferIPv4Stack=true -Dlauncher.main=play.core.server.NettyServer" + extraJvmArgs + "\"");
         pw.println("min_java_version: \"1.7\"");
         pw.println("symlink_java: true");
         pw.close();
-        return f;
+    }
+    
+    static public void generateDefaultBootstrapConfFile(File confFile) throws Exception {
+        PrintWriter pw = new PrintWriter(new FileWriter(confFile));
+        pw.println(
+            "# Set play system properties (to be loaded at runtime)\n" +
+            "# For example: override default port play will bind to (9000 by default)\n" +
+            "#http.port\n"
+        );
+        pw.close();
     }
 
-    static public void createLoggerConfFile(File loggerConfFile, String playAppName) throws Exception {
-        PrintWriter pw = new PrintWriter(new FileWriter(loggerConfFile));
+    static public void generateDefaultLoggerConfFile(File confFile, String appName) throws Exception {
+        PrintWriter pw = new PrintWriter(new FileWriter(confFile));
         pw.println( "<configuration>\n" +
                     "  <appender name=\"FILE\" class=\"ch.qos.logback.core.FileAppender\">\n" +
-                    "     <file>log/" + playAppName + ".log</file>\n" +
+                    "     <file>log/" + appName + ".log</file>\n" +
                     "     <encoder>\n" +
                     "       <pattern>%date [%level] %logger - %message%n%xException</pattern>\n" +
                     "     </encoder>\n" +
                     "   </appender>\n" +
-                    "\n" +
                     "  <appender name=\"STDOUT\" class=\"ch.qos.logback.core.ConsoleAppender\">\n" +
                     "    <encoder>\n" +
                     "      <pattern>%date [%level] %logger - %message%n%xException</pattern>\n" +
                     "    </encoder>\n" +
                     "  </appender>\n" +
-                    "  \n" +
                     "  <logger name=\"play\" level=\"INFO\" />\n" +
                     "  <logger name=\"application\" level=\"INFO\" />\n" +
-                    "\n" +
                     "  <root level=\"DEBUG\">\n" +
                     "    <appender-ref ref=\"STDOUT\" />\n" +
                     "    <appender-ref ref=\"FILE\" />\n" +

@@ -1,0 +1,3 @@
+### To publish
+
+sbt publishLocal

@@ -5,6 +5,7 @@ import Defaults._
 import scala.xml.{XML, Source}
 
 object StorkPluginBuild extends Build {
+  // load version and group from project pom file
   val pom = XML.load(Source.fromFile(new File("../pom.xml")))
   val storkVersion = (pom \ "version").text
   val storkGroupId = (pom \ "groupId").text
@@ -14,23 +15,15 @@ object StorkPluginBuild extends Build {
     file ("."),
     settings = Defaults.defaultSettings ++ Seq(
       sbtPlugin := true,
-      name := "fizzed-stork-sbt-plugin",
+      name := "fizzed-stork-play-sbt-plugin",
       organization := storkGroupId,
       version := storkVersion,
-
-	  libraryDependencies += "co.fizzed" % "fizzed-stork-util" % storkVersion,
-	  libraryDependencies += "co.fizzed" % "fizzed-stork-bootstrap" % storkVersion,
+      libraryDependencies += "co.fizzed" % "fizzed-stork-util" % storkVersion,
+      libraryDependencies += "co.fizzed" % "fizzed-stork-bootstrap" % storkVersion,
       libraryDependencies += "co.fizzed" % "fizzed-stork-launcher" % storkVersion,
-
       // for bridging slf4j calls to sbt logging
       // https://github.com/eirslett/sbt-slf4j
       libraryDependencies += "com.github.eirslett" %% "sbt-slf4j" % "0.1"
-		
-	  //resolvers += Resolver.url( "sbt-plugin-releases", url( "http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases" ))( Resolver.ivyStylePatterns ),
-
-	  //
-	  //resolvers += Resolver.typesafeRepo("maven-releases"),
-	  //libraryDependencies += "com.typesafe.play" %% "sbt-plugin" % "2.3.6"
-    )
+    ) ++ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.6" % "provided")
   )
 }

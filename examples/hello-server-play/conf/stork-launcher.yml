@@ -1,0 +1,5 @@
+# example of how to override name of assembly
+# from default of play app name
+name: "hello-server-play"
+
+platforms: [ WINDOWS, LINUX, MAC_OSX ]

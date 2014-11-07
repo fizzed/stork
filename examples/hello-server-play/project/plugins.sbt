@@ -16,3 +16,9 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-rjs" % "1.0.1")
 addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.0.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.0.0")
+
+// just for testing need local maven repo
+resolvers += Resolver.mavenLocal
+
+// Stork Play plugin (auto enabled as its an AutoPlugin)
+addSbtPlugin("co.fizzed" % "fizzed-stork-play-sbt-plugin" % "1.2.0-SNAPSHOT" exclude("com.github.eirslett", "sbt-slf4j_2.10"))

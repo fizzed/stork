@@ -17,19 +17,19 @@ import play.PlayImport.PlayKeys._
 
 object StorkPlayPlugin extends AutoPlugin {
 
-	// loading after JvmPlugin ensures certain settings are not overwritten
-	//override def requires = JvmPlugin
-	override def requires = Play
-	override def trigger = allRequirements
+    // loading after JvmPlugin ensures certain settings are not overwritten
+    //override def requires = JvmPlugin
+    override def requires = Play
+    override def trigger = allRequirements
 
-	object autoImport {
-		lazy val storkPlayLauncherConf = settingKey[File]("Application specific overrides against default stork play config file.")
-		lazy val storkPlayBootstrapConf = settingKey[File]("System property overrides dynamically loaded at runtime from config file.")
-		lazy val storkAssemblyStageDir = settingKey[File]("Directory to stage stork assembly.")
+    object autoImport {
+        lazy val storkPlayLauncherConf = settingKey[File]("Application specific overrides against default stork play config file.")
+        lazy val storkPlayBootstrapConf = settingKey[File]("System property overrides dynamically loaded at runtime from config file.")
+        lazy val storkAssemblyStageDir = settingKey[File]("Directory to stage stork assembly.")
 
-		lazy val storkPlayAssembly = TaskKey[Unit]("stork-assembly", "Stages project and creates a stork assembly tarball")
-		lazy val storkPlayBootstrap = TaskKey[Unit]("stork-bootstrap", "Applies conf/stork-bootstrap.conf system properties")
-	}
+        lazy val storkPlayAssembly = TaskKey[Unit]("stork-assembly", "Stages project and creates a stork assembly tarball")
+        lazy val storkPlayBootstrap = TaskKey[Unit]("stork-bootstrap", "Applies conf/stork-bootstrap.conf system properties")
+    }
 
 	import autoImport._
 

@@ -10,7 +10,7 @@
     <parent>
         <groupId>co.fizzed</groupId>
         <artifactId>fizzed-maven-parent</artifactId>
-        <version>1.10</version>
+        <version>1.11</version>
     </parent>
 
     <scm>

@@ -133,46 +133,10 @@
     <dependencies>
         <!-- compile -->
         <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-compiler</artifactId>
-            <version>${scalaVersion}</version>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-exec</artifactId>
+            <version>1.7</version>
         </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scalaVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-reflect</artifactId>
-            <version>${scalaVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-actors</artifactId>
-            <version>${scalaVersion}</version>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.scala-lang.modules</groupId>
-            <artifactId>scala-xml_2.11</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        -->
-        <!--
-        <dependency>
-            <groupId>org.scala-lang.modules</groupId>
-            <artifactId>scala-par</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        -->
-        <!--
-        <dependency>
-            <groupId>org.scala-lang.modules</groupId>
-            <artifactId>scala-swing_${scalaBinaryVersion}</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>

@@ -15,6 +15,13 @@
  */
 package co.fizzed.stork.tasks;
 
+import java.io.File;
+import java.io.FileReader;
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import tasks.Functions;
+
 /**
  *
  * @author joelauer
@@ -22,10 +29,34 @@ package co.fizzed.stork.tasks;
 public class TasksMain {
     
     static public void main(String[] args) throws Exception {
-        System.out.println("Running tasks...");
-        System.out.println(System.getProperty("java.class.path"));
+        File tasksFile = new File("tasks.js");
+        if (!tasksFile.exists()) {
+            System.err.println("Unable to find tasks.js in current dir");
+            System.exit(1);
+        }
         
-        scala.tools.nsc.MainGenericRunner.main(new String[] { "HelloWorld.scala" });
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+        engine.eval(new FileReader(tasksFile));
+        Invocable invocable = (Invocable) engine;
+
+        // does script define a default task?
+        String taskToRun = null;
+        if (args.length > 0) {
+            taskToRun = args[0];
+        }
+        
+        if (taskToRun == null) {
+            System.err.println("No task specified (either as default in tasks.js or via command line)");
+            System.exit(1);
+        }
+        
+        // export some objects as global to script
+        // create File object
+        Functions functions = new Functions();
+
+        // expose Functions object as a global variable to the engine
+        engine.put("F", functions);
+        
+        Object result = invocable.invokeFunction(taskToRun);
     }
-    
 }

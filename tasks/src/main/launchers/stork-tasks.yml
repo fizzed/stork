@@ -17,6 +17,6 @@ platforms: [ WINDOWS, LINUX ]
 
 working_dir_mode: RETAIN
   
-min_java_version: "1.4"
+min_java_version: "1.8"
 
 symlink_java: false

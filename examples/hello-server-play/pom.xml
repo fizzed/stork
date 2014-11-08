@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>co.fizzed</groupId>
+    <artifactId>fizzed-stork-examples-hello-server-play</artifactId>
+    <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
+    <description>Example play framework using sbt-play-plugin</description>
+  
+    <parent>
+        <groupId>co.fizzed</groupId>
+        <artifactId>fizzed-stork-parent</artifactId>
+        <version>1.2.0-SNAPSHOT</version>
+	<relativePath>../../pom.xml</relativePath>
+    </parent>
+    
+    <properties>
+        <main.java.package></main.java.package>
+        <maven.version>3.1.0</maven.version>
+        <sbtVersion>0.13</sbtVersion>
+        <scalaVersion>2.10</scalaVersion>
+    </properties>
+    
+    <dependencies>
+        <!-- add dependency to force correct module build order -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>fizzed-stork-sbt-play-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <executions>
+                    <execution>
+                        <id>play-compile-and-stage</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <commandlineArgs>-Xmx512M -XX:MaxPermSize=256M -jar activator-launch-1.2.8.jar +stage +stork-assembly</commandlineArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

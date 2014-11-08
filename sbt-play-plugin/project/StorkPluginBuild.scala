@@ -15,7 +15,7 @@ object StorkPluginBuild extends Build {
     file ("."),
     settings = Defaults.defaultSettings ++ Seq(
       sbtPlugin := true,
-      name := "fizzed-stork-play-sbt-plugin",
+      name := "fizzed-stork-sbt-play-plugin",
       organization := storkGroupId,
       version := storkVersion,
       libraryDependencies += "co.fizzed" % "fizzed-stork-util" % storkVersion,
@@ -23,7 +23,7 @@ object StorkPluginBuild extends Build {
       libraryDependencies += "co.fizzed" % "fizzed-stork-launcher" % storkVersion,
       // for bridging slf4j calls to sbt logging
       // https://github.com/eirslett/sbt-slf4j
-      libraryDependencies += "com.github.eirslett" %% "sbt-slf4j" % "0.1"
+      libraryDependencies += "com.github.eirslett" %% "sbt-slf4j" % "0.1" % "provided"
     ) ++ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.6" % "provided")
   )
 }

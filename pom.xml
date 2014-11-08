@@ -25,10 +25,10 @@
         <module>util</module>
         <module>cli</module>
         <module>maven-plugin</module>
-        <module>play-sbt-plugin</module>
+        <module>sbt-play-plugin</module>
         <module>examples/hello-world</module>
         <module>examples/hello-server-dropwizard</module>
-        <!--<module>examples/hello-server-play</module>-->
+        <module>examples/hello-server-play</module>
     </modules>
 
     <build>

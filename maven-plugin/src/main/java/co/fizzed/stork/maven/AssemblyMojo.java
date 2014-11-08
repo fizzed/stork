@@ -1,23 +1,19 @@
 package co.fizzed.stork.maven;
 
-import co.fizzed.stork.util.TarUtils;
+import co.fizzed.stork.util.AssemblyUtils;
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
 
 /**
  * Stages and assemble a maven project into a stork assembly tarball.
@@ -37,7 +33,7 @@ public class AssemblyMojo extends AbstractMojo {
      *
      * @since 1.2.0
      */
-    @Parameter(property = "stageDirectory", defaultValue = "${project.build.directory}/stage", required = true)
+    @Parameter(property = "stageDirectory", defaultValue = "${project.build.directory}/stork", required = true)
     protected File stageDirectory;
     
     /**
@@ -59,9 +55,6 @@ public class AssemblyMojo extends AbstractMojo {
     @Parameter( defaultValue = "${project}", readonly = true )
     protected MavenProject project;
     
-    @Component
-    private MavenProjectHelper projectHelper;
-    
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!stageDirectory.exists()) {
@@ -80,10 +73,14 @@ public class AssemblyMojo extends AbstractMojo {
             // directly pulled from maven Project.java (how it returns the getRuntimeClasspathElements() value)
             for (Artifact a : artifacts) {
                 File f = a.getFile();
-                // generate final jar name (which appends groupId)
-                String artifactName = a.getGroupId() + "." + a.getArtifactId() + "-" + a.getVersion() + ".jar";
-                File stageArtificateFile = new File(stageLibDir, artifactName);
-                FileUtils.copyFile(f, stageArtificateFile);
+                if (f == null) {
+                    getLog().error("Project artifact was null (maybe not compiled into jar yet?)");
+                } else {
+                    // generate final jar name (which appends groupId)
+                    String artifactName = a.getGroupId() + "." + a.getArtifactId() + "-" + a.getVersion() + ".jar";
+                    File stageArtificateFile = new File(stageLibDir, artifactName);
+                    FileUtils.copyFile(f, stageArtificateFile);
+                }
             }
  
             // copy conf, bin, and share dirs
@@ -105,31 +102,12 @@ public class AssemblyMojo extends AbstractMojo {
                 FileUtils.copyDirectory(shareDir, stageShareDir);
             }
 
-            // copy readme*, license*, changelog*, release* files from root
-            FileUtils.copyDirectory(project.getBasedir(), stageDirectory, new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    String name = pathname.getName().toLowerCase();
-                    if (name.startsWith("readme") || name.startsWith("changelog") || name.startsWith("release") || name.startsWith("license")) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            });
+            // copy standard project resources (e.g. readme*, license*, changelog*, release* files)
+            AssemblyUtils.copyStandardProjectResources(project.getBasedir(), stageDirectory);
             
             // tarball it up
-            File tgzFile = new File(outputDirectory, finalName + ".tar.gz");
-            TarArchiveOutputStream tgzout = TarUtils.createTGZStream(tgzFile);
-            try {
-                TarUtils.addFileToTGZStream(tgzout, stageDirectory.getAbsolutePath(), finalName, false);
-            } finally {
-                if (tgzout != null) {
-                    tgzout.close();
-                }
-            }
-            
-            getLog().info("Generated maven assembly: " + tgzFile);
+            File tgzFile = AssemblyUtils.createTGZ(outputDirectory, stageDirectory, finalName);
+            getLog().info("Generated maven stork assembly: " + tgzFile);
             
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);

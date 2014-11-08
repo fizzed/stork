@@ -21,4 +21,4 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.0.0")
 resolvers += Resolver.mavenLocal
 
 // Stork Play plugin (auto enabled as its an AutoPlugin)
-addSbtPlugin("co.fizzed" % "fizzed-stork-play-sbt-plugin" % "1.2.0-SNAPSHOT" exclude("com.github.eirslett", "sbt-slf4j_2.10"))
+addSbtPlugin("co.fizzed" % "fizzed-stork-sbt-play-plugin" % "1.2.0-SNAPSHOT")

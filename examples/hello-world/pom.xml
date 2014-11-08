@@ -21,7 +21,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.5</version>
                 <configuration>
-                    <outputDirectory>target/stage/lib</outputDirectory>
+                    <outputDirectory>target/stork/lib</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -40,7 +40,7 @@
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
                             <prependGroupId>true</prependGroupId>
-                            <outputDirectory>target/stage/lib</outputDirectory>
+                            <outputDirectory>target/stork/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -70,7 +70,7 @@
                             <mainClass>co.fizzed.stork.launcher.GeneratorMain</mainClass>
                             <arguments>
                                 <argument>-o</argument>
-                                <argument>${basedir}/target/stage</argument>
+                                <argument>${basedir}/target/stork</argument>
                                 <argument>-i</argument>
                                 <argument>${basedir}/src/main/launchers/hello-console.yml</argument>
                                 <argument>-i</argument>

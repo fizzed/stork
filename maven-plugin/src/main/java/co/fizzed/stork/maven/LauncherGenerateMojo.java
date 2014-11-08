@@ -33,7 +33,7 @@ public class LauncherGenerateMojo extends AbstractMojo {
      *
      * @since 1.2.0
      */
-    @Parameter(property = "outputDirectory", defaultValue = "${project.build.directory}/stage", required = true)
+    @Parameter(property = "outputDirectory", defaultValue = "${project.build.directory}/stork", required = true)
     protected File outputDirectory;
     
     /**

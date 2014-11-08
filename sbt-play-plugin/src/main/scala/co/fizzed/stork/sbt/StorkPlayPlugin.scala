@@ -7,9 +7,8 @@ import plugins.JvmPlugin
 
 import co.fizzed.stork.launcher._
 import co.fizzed.stork.bootstrap._
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.io.FileUtils
-import co.fizzed.stork.util.TarUtils
+import co.fizzed.stork.util.AssemblyUtils
 import scala.collection.JavaConverters._
 import org.slf4j.impl._
 import play.Play
@@ -162,18 +161,12 @@ object StorkPlayPlugin extends AutoPlugin {
 				PlayBootstrap.generateDefaultLoggerConfFile(loggerConfFile, playAppName);
 			}
 
-			// create tarball
-			val tgzFile = new File(target.value, assemblyName + ".tar.gz");
-			val tgzout = TarUtils.createTGZStream(tgzFile);
-			try {
-				TarUtils.addFileToTGZStream(tgzout, stageDir.getAbsolutePath(), assemblyName, false);
-			} finally {
-				if (tgzout != null) {
-					tgzout.close();
-				}
-			}
+                        // copy standard project resources (e.g. readme*, license*, changelog*, release* files)
+                        AssemblyUtils.copyStandardProjectResources(baseDirectory.value, stageDir);
 
-			log.info("Generated stork play assembly: " + tgzFile);
+                        // tarball it up
+                        val tgzFile = AssemblyUtils.createTGZ(target.value, stageDir, assemblyName);
+                        log.info("Generated play stork assembly: " + tgzFile);
 		}
 
 		/**

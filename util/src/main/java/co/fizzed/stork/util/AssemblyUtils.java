@@ -18,12 +18,14 @@ package co.fizzed.stork.util;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.GZIPOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +34,46 @@ import org.slf4j.LoggerFactory;
  *
  * @author joelauer
  */
-public class TarUtils {
-    private static final Logger logger = LoggerFactory.getLogger(TarUtils.class);
+public class AssemblyUtils {
+    private static final Logger logger = LoggerFactory.getLogger(AssemblyUtils.class);
+    
+    static public void copyStandardProjectResources(File projectDir, File outputDir) throws IOException {
+        FileUtils.copyDirectory(projectDir, outputDir, new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                String name = pathname.getName().toLowerCase();
+                if (name.startsWith("readme") || name.startsWith("changelog") || name.startsWith("release") || name.startsWith("license")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+    }
+    
+    /**
+     * Create .tar.gz archive file "name.tar.gz" with the contents of inputDir
+     * using the prefix of "/name"
+     * @param outputDir
+     * @param inputDir
+     * @param name
+     * @return
+     * @throws IOException 
+     */
+    static public File createTGZ(File outputDir, File inputDir, String name) throws IOException {
+        // create tarball
+        File tgzFile = new File(outputDir, name + ".tar.gz");
+        TarArchiveOutputStream tgzout = null;
+        try {
+            tgzout = AssemblyUtils.createTGZStream(tgzFile);
+            addFileToTGZStream(tgzout, inputDir, name, false);
+        } finally {
+            if (tgzout != null) {
+                    tgzout.close();
+            }
+        }
+        return tgzFile;
+    }
     
     static public TarArchiveOutputStream createTGZStream(File tgzFile) throws IOException {
         TarArchiveOutputStream tgzout = new TarArchiveOutputStream(
@@ -44,8 +84,8 @@ public class TarUtils {
         return tgzout;
     }
     
-    static public void addFileToTGZStream(TarArchiveOutputStream tgzout, String path, String base, boolean appendName) throws IOException {
-        File f = new File(path);
+    static public void addFileToTGZStream(TarArchiveOutputStream tgzout, File f, String base, boolean appendName) throws IOException {
+        //File f = new File(path);
         String entryName = base;
         if (appendName) {
             if (!entryName.equals("")) {
@@ -83,7 +123,7 @@ public class TarUtils {
             if (children != null){
                 for (File child : children) {
                     logger.info(" adding: " + entryName + "/" + child.getName());
-                    addFileToTGZStream(tgzout, child.getAbsolutePath(), entryName + "/", true);
+                    addFileToTGZStream(tgzout, child, entryName + "/", true);
                 }
             }
         }

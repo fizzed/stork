@@ -25,24 +25,23 @@
   </target>
   
   <target name="hello-console" depends="package">
-    <exec executable="examples/hello-world/target/stage/bin/hello-console${bat}" failonerror="true"/>
+    <exec executable="examples/hello-world/target/stork/bin/hello-console${bat}" failonerror="true"/>
   </target>
   
   <target name="hello-daemon" depends="package">
-    <exec executable="examples/hello-world/target/stage/bin/hello-daemon${bat}" failonerror="true">
+    <exec executable="examples/hello-world/target/stork/bin/hello-daemon${bat}" failonerror="true">
       <arg line="--run"/>
     </exec>
   </target>
   
   <target name="hello-server-dropwizard" depends="install">
-    <exec executable="examples/hello-server-dropwizard/target/stage/bin/hello-server-dropwizard${bat}" failonerror="true">
+    <exec executable="examples/hello-server-dropwizard/target/stork/bin/hello-server-dropwizard${bat}" failonerror="true">
       <arg line="--run"/>
     </exec>
   </target>
   
   <target name="hello-server-play" depends="install">
-    <exec dir="examples/hello-server-play" executable="stork-play-assembly${bat}" failonerror="true" />
-    <exec executable="examples/hello-server-play/target/stage/bin/hello-server-play${bat}" failonerror="true">
+    <exec executable="examples/hello-server-play/target/stork/bin/hello-server-play${bat}" failonerror="true">
       <arg line="--run"/>
     </exec>
   </target>

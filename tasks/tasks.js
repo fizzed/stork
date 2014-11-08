@@ -10,8 +10,16 @@ var which = function() {
     print("Which result: " + exeFile);
 }
 
-var compile = function() {
-    F.executor("mvn", "compile").execute();
+var ls = function() {
+    F.execute("ls", "-la");
+};
+
+var mvn = function() {
+    F.execute("mvn", "compile");
+};
+
+var play = function() {
+    F.execute("play", "--version");
 };
 
 var fun2 = function (object) {

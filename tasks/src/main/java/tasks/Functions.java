@@ -16,6 +16,7 @@
 package tasks;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,26 @@ public class Functions {
     
     private Map<String,File> cachedWhich = new HashMap<String,File>();
     
+    private File findExecutable(String command) throws Exception {
+        // search PATH environment variable
+        String path = System.getenv("PATH");
+        if (path != null) {
+            String[] paths = path.split(File.pathSeparator);
+            for (String p : paths) {
+                //System.out.println("searching: " + p);
+                for (String ext : context.getSettings().getExecutableExtensions()) {
+                    String commandWithExt = command + ext;
+                    File f = new File(p, commandWithExt);
+                    if (f.exists() && f.isFile() && f.canExecute()) {
+                        return f;
+                    }
+                }
+            }
+        }
+        
+        return null;
+    }
+    
     public File which(String command) throws Exception {
         // is it cached?
         if (cachedWhich.containsKey(command)) {
@@ -43,24 +64,7 @@ public class Functions {
         }
         
         // search path for executable...
-        File exeFile = null;
-        
-        // search PATH environment variable
-        String path = System.getenv("PATH");
-        if (path != null) {
-            String[] paths = path.split(File.pathSeparator);
-            for (String p : paths) {
-                System.out.println("searching: " + p);
-                for (String ext : context.getSettings().getExecutableExtensions()) {
-                    String commandWithExt = command + ext;
-                    File f = new File(p, commandWithExt);
-                    if (f.exists() && f.isFile() && f.canExecute()) {
-                        exeFile = f;
-                        break;
-                    }
-                }
-            }
-        }
+        File exeFile = findExecutable(command);
         
         if (exeFile != null) {
             // cache result
@@ -71,6 +75,14 @@ public class Functions {
     }
     
     public ProcessExecutor executor(String ... command) throws Exception {
+        // first argument is a command we need to search for
+        File exeFile = which(command[0]);
+        if (exeFile == null) {
+            throw new FileNotFoundException("Unable to find executable for command [" + command[0] + "]");
+        } else {
+            command[0] = exeFile.getAbsolutePath();
+        }
+        
         return new ProcessExecutor()
             .command(command)
             .redirectOutput(System.out)

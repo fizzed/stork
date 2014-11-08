@@ -25,7 +25,7 @@ import java.util.Set;
  */
 public class Settings {
     
-    static public final Set<String> EXE_EXT_WINDOWS = new LinkedHashSet<String>(Arrays.asList("",".exe",".bat",".cmd"));
+    static public final Set<String> EXE_EXT_WINDOWS = new LinkedHashSet<String>(Arrays.asList(".exe",".bat",".cmd"));
     static public final Set<String> EXE_EXT_UNIX = new LinkedHashSet<String>(Arrays.asList("", ".sh"));
     
     private final Context context;

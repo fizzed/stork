@@ -17,7 +17,9 @@ package tasks;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.zeroturnaround.exec.ProcessExecutor;
 
 /**
@@ -25,6 +27,48 @@ import org.zeroturnaround.exec.ProcessExecutor;
  * @author joelauer
  */
 public class Functions {
+    
+    private final Context context;
+    
+    public Functions(Context context) {
+        this.context = context;
+    }
+    
+    private Map<String,File> cachedWhich = new HashMap<String,File>();
+    
+    public File which(String command) throws Exception {
+        // is it cached?
+        if (cachedWhich.containsKey(command)) {
+            return cachedWhich.get(command);
+        }
+        
+        // search path for executable...
+        File exeFile = null;
+        
+        // search PATH environment variable
+        String path = System.getenv("PATH");
+        if (path != null) {
+            String[] paths = path.split(File.pathSeparator);
+            for (String p : paths) {
+                System.out.println("searching: " + p);
+                for (String ext : context.getSettings().getExecutableExtensions()) {
+                    String commandWithExt = command + ext;
+                    File f = new File(p, commandWithExt);
+                    if (f.exists() && f.isFile() && f.canExecute()) {
+                        exeFile = f;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if (exeFile != null) {
+            // cache result
+            this.cachedWhich.put(command, exeFile);
+        }
+            
+        return exeFile;
+    }
     
     public ProcessExecutor executor(String ... command) throws Exception {
         return new ProcessExecutor()
@@ -43,5 +87,4 @@ public class Functions {
     public List<File> listFiles() {
         return Arrays.asList(new File(".").listFiles());
     }
-    
 }

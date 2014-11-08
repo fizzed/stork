@@ -17,10 +17,13 @@ package co.fizzed.stork.tasks;
 
 import java.io.File;
 import java.io.FileReader;
+import java.util.Arrays;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import tasks.Context;
 import tasks.Functions;
+import tasks.Settings;
 
 /**
  *
@@ -51,11 +54,16 @@ public class TasksMain {
         }
         
         // export some objects as global to script
-        // create File object
-        Functions functions = new Functions();
+        Context context = new Context();
+        Settings.populateDefaults(context, context.getSettings());
 
         // expose Functions object as a global variable to the engine
-        engine.put("F", functions);
+        engine.put("S", context.getSettings());
+        engine.put("OS", context.getOperatingSystems());
+        engine.put("F", context.getFunctions());
+        engine.put("U", context.getUtils());
+        
+        //Arrays.copyOfRange(args, 1, args.length);
         
         Object result = invocable.invokeFunction(taskToRun);
     }

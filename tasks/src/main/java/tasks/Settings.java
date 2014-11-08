@@ -15,11 +15,37 @@
  */
 package tasks;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  *
  * @author joelauer
  */
 public class Settings {
     
+    static public final Set<String> EXE_EXT_WINDOWS = new LinkedHashSet<String>(Arrays.asList("",".exe",".bat",".cmd"));
+    static public final Set<String> EXE_EXT_UNIX = new LinkedHashSet<String>(Arrays.asList("", ".sh"));
+    
+    private final Context context;
+    private final Set<String> executableExtensions;
+    
+    public Settings(Context context) {
+        this.context = context;
+        this.executableExtensions = new LinkedHashSet<String>();
+    }
+    
+    static public void populateDefaults(Context context, Settings s) {
+        if (context.getOperatingSystems().isWindows()) {
+            s.executableExtensions.addAll(EXE_EXT_WINDOWS);
+        } else {
+            s.executableExtensions.addAll(EXE_EXT_UNIX);
+        }
+    }
+
+    public Set<String> getExecutableExtensions() {
+        return executableExtensions;
+    }
     
 }

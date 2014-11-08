@@ -17,12 +17,10 @@ package co.fizzed.stork.tasks;
 
 import java.io.File;
 import java.io.FileReader;
-import java.util.Arrays;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import tasks.Context;
-import tasks.Functions;
 import tasks.Settings;
 
 /**
@@ -65,6 +63,12 @@ public class TasksMain {
         
         //Arrays.copyOfRange(args, 1, args.length);
         
-        Object result = invocable.invokeFunction(taskToRun);
+        try {
+            Object result = invocable.invokeFunction(taskToRun);
+        } catch (RuntimeException e) {
+            e.getCause().printStackTrace(System.err);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
     }
 }

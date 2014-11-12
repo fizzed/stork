@@ -7,6 +7,13 @@ Stork by Fizzed
  - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
 
 
+## Downloads
+
+ - (Stork Command-Line v1.2.0)[http://cdn.fizzed.co/releases/fizzed-stork-1.2.0.tar.gz]
+ - Stork Maven Plugin: see section below (via Maven Central)
+ - Stork SBT Plugin for Play: see section below (via Maven Central)
+
+
 ## Overview
 
 What comes after your Java/JVM build tool (Maven, SBT, Gradle, Ant, etc.) compiles
@@ -54,13 +61,6 @@ provides one or more tools in the following main "after-build" activities:
 By standardizing the layout of your Java-based application, you will find developers,
 system administrators, and end-users are all on the same page with how to interact with
 your JVM-based apps.
-
-
-## Downloads
-
-(Stork Command-Line v1.2.0)[http://cdn.fizzed.co/releases/fizzed-stork-1.2.0.tar.gz]
-Stork Maven Plugin: see section below (via Maven Central)
-Stork SBT Plugin for Play: see section below (via Maven Central)
 
 
 ### Why are Uber/Fat jars not recommended for *most* applications?

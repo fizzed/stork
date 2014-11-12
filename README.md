@@ -58,7 +58,7 @@ your JVM-based apps.
 
 ### Why are Uber/Fat jars not recommended for *most* applications?
 
-An Uber/Fat jar is where all dependencies are merged into a single jar. There
+An Uber/Fat jar is a jar that has all dependencies merged into it. There
 are several reasons why Stork suggests avoiding this approach. First, if you
 want to "rsync" your deployment for rapidly deploying an upgrade -- in most cases
 the dependencies do not change much and usually eat up most of the disk space.

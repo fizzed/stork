@@ -42,6 +42,4 @@ GOTO endLabel
 :PrintUsageJSLWin
 REM annoying string escaping
 echo Usage: ^[^-^-^r^u^n^|^-^-^s^t^a^r^t^|^-^-^s^t^o^p^|^-^-^ins^tall^|^-^-^un^inst^a^ll^|^-^-^s^t^a^r^t^d^eb^u^g]
-exit /b
-
-GOTO endLabel
+goto :errorlabel

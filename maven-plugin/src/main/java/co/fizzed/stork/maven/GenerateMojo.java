@@ -22,11 +22,11 @@ import org.apache.maven.project.MavenProject;
  * 
  * @author joelauer
  */
-@Mojo(name = "launcher-generate",
-      defaultPhase = LifecyclePhase.COMPILE,
+@Mojo(name = "generate",
+      defaultPhase = LifecyclePhase.PACKAGE,
       threadSafe = true
     )
-public class LauncherGenerateMojo extends AbstractMojo {
+public class GenerateMojo extends AbstractMojo {
     
     /**
      * Directory to output generated launchers.

@@ -5,14 +5,8 @@ Stork by Fizzed
 
 Stork example project demonstrating the following:
 
- - Maven build system using command-line version of stork-launcher-generate
- - Maven exec plugin compiles launchers during "package" phase
+ - Maven build system using Stork Maven plugin to create launchers and assembly
+   during package phase.
  - DropWizard-based HTTP server
- - Maven assembly plugin packages everything into canonical java app layout
 
-To run this example:
-
- - Install stork so its available on your PATH
- - "make server" to run server via maven
- - "make assembly" to package into tarball in target/
- - Unpackage final tarball then do "bin/hello-server" to try out launcher
+Please see main stork README.md for info on this example app.

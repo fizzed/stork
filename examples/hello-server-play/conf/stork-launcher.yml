@@ -1,5 +1,8 @@
-# example of how to override name of assembly
-# from default of play app name
+# example of how to override any of the settings in the default launcher config
+# used in the stork sbt plugin for play -- these settings really shouldn't need
+# customized -- but if you need to see the base config and merged version they
+# are produced to target/ during the stork-assembly task
+
 name: "hello-server-play"
 
 platforms: [ WINDOWS, LINUX, MAC_OSX ]

@@ -50,6 +50,14 @@ public class Generator {
         this.factory = new ConfigurationFactory();
     }
     
+    public Configuration readConfigurationFile(File configFile) throws ArgumentException, IOException {
+        List<Configuration> configs = readConfigurationFiles(Arrays.asList(configFile));
+        if (configs.size() != 1) {
+            throw new IOException("Unexpected number of configs returned (expected 1 but got " + configs.size() + ")");
+        }
+        return configs.get(0);
+    }
+    
     public List<Configuration> readConfigurationFiles(List<File> configFiles) throws ArgumentException, IOException {
         List<Configuration> configs = new ArrayList<Configuration>();
 
@@ -70,6 +78,15 @@ public class Generator {
         return configs;
     }
     
+    public int generate(File configFile, File outputDir) throws ArgumentException, IOException {
+        List<Configuration> configs = readConfigurationFiles(Arrays.asList(configFile));
+        return generateAll(configs, outputDir);
+    }
+    
+    public int generate(List<File> configFiles, File outputDir) throws ArgumentException, IOException {
+        List<Configuration> configs = readConfigurationFiles(configFiles);
+        return generateAll(configs, outputDir);
+    }
     
     public int generate(Configuration config, File outputDir) throws ArgumentException, IOException {
         return generateAll(Arrays.asList(config), outputDir);
@@ -115,7 +132,7 @@ public class Generator {
     
     
     static private freemarker.template.Configuration fmconfig;
-    static public freemarker.template.Configuration getOrCreateFreemarker() throws Exception {
+    static private freemarker.template.Configuration getOrCreateFreemarker() throws Exception {
         if (fmconfig != null) {
             return fmconfig;
         }
@@ -221,7 +238,7 @@ public class Generator {
         }
     }
 
-    public void generateUnixConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
+    private void generateUnixConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
         // make sure parent of file to be generated exists
         FileOutputStream fos = new FileOutputStream(launcherFile);
         Writer out = new OutputStreamWriter(fos);
@@ -248,7 +265,7 @@ public class Generator {
         }
     }
     
-    public void generateUnixDaemonLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
+    private void generateUnixDaemonLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
         FileOutputStream fos = new FileOutputStream(launcherFile);
         Writer out = new OutputStreamWriter(fos);
 
@@ -282,7 +299,7 @@ public class Generator {
         }
     }
     
-    public void generateInitdScript(Configuration config, File initdFile, LauncherModel model) throws Exception {
+    private void generateInitdScript(Configuration config, File initdFile, LauncherModel model) throws Exception {
         FileOutputStream fos = new FileOutputStream(initdFile);
         Writer out = new OutputStreamWriter(fos);
 
@@ -303,7 +320,7 @@ public class Generator {
         }
     }
     
-    public void generateOSXLaunchdScript(Configuration config, File launchdFile, LauncherModel model) throws Exception {
+    private void generateOSXLaunchdScript(Configuration config, File launchdFile, LauncherModel model) throws Exception {
         FileOutputStream fos = new FileOutputStream(launchdFile);
         Writer out = new OutputStreamWriter(fos);
 
@@ -322,7 +339,7 @@ public class Generator {
     }
     
     
-    public void generateUnixJavaDetectScript(File file) throws Exception {
+    private void generateUnixJavaDetectScript(File file) throws Exception {
         FileOutputStream fos = new FileOutputStream(file);
         Writer out = new OutputStreamWriter(fos);
 
@@ -348,7 +365,7 @@ public class Generator {
     }
     
     
-    public void generateWindowsConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
+    private void generateWindowsConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
         // make sure parent of file to be generated exists
         FileOutputStream fos = new FileOutputStream(launcherFile);
         Writer out = new OutputStreamWriter(fos);
@@ -378,7 +395,7 @@ public class Generator {
         }
     }
     
-    public void generateWindowsWINSWLauncher(Configuration config, File binDir, LauncherModel model) throws Exception {
+    private void generateWindowsWINSWLauncher(Configuration config, File binDir, LauncherModel model) throws Exception {
         binDir.mkdirs();
         
         File serviceFile = new File(binDir, config.getName() + ".exe");
@@ -394,7 +411,7 @@ public class Generator {
         generateWindowsWINSWConfig(config, configFile, model);
     }
     
-    public void generateWindowsWINSWConfig(Configuration config, File configFile, LauncherModel model) throws Exception {
+    private void generateWindowsWINSWConfig(Configuration config, File configFile, LauncherModel model) throws Exception {
         FileOutputStream fos = new FileOutputStream(configFile);
         Writer out = new OutputStreamWriter(fos);
 
@@ -410,7 +427,7 @@ public class Generator {
         }
     }
     
-    public void generateWindowsJSLWinLauncher(Configuration config, File binDir, LauncherModel model) throws Exception {
+    private void generateWindowsJSLWinLauncher(Configuration config, File binDir, LauncherModel model) throws Exception {
         binDir.mkdirs();
         
         File launcherFile = new File(binDir, config.getName() + ".bat");
@@ -462,7 +479,7 @@ public class Generator {
         logger.info(" - launcher helper: " + ini64File);
     }
     
-    public void generateWindowsJSLWinINI(Configuration config, File iniFile, LauncherModel model) throws Exception {
+    private void generateWindowsJSLWinINI(Configuration config, File iniFile, LauncherModel model) throws Exception {
         FileOutputStream fos = new FileOutputStream(iniFile);
         Writer out = new OutputStreamWriter(fos);
 
@@ -478,13 +495,13 @@ public class Generator {
         }
     }
     
-    public void processTemplate(String templateName, Writer out, Object model) throws Exception {
+    private void processTemplate(String templateName, Writer out, Object model) throws Exception {
         freemarker.template.Configuration freemarker = getOrCreateFreemarker();
         Template template = freemarker.getTemplate(templateName);
         template.process(model, out);
     }
     
-    public void copyResource(String resourceName, File targetFile) throws Exception {
+    private void copyResource(String resourceName, File targetFile) throws Exception {
         FileOutputStream fos = new FileOutputStream(targetFile);
         try {
             includeResource(resourceName, fos);
@@ -495,7 +512,7 @@ public class Generator {
         }
     }
 
-    public void includeResource(String resourceName, OutputStream os) throws Exception {
+    private void includeResource(String resourceName, OutputStream os) throws Exception {
         InputStream is = Generator.class.getResourceAsStream(resourceName);
         if (is == null) {
             throw new Exception("Unable to find resource " + resourceName);

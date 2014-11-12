@@ -18,11 +18,11 @@ import org.apache.maven.project.MavenProject;
  * 
  * @author joelauer
  */
-@Mojo(name = "launcher-merge",
-      defaultPhase = LifecyclePhase.COMPILE,
+@Mojo(name = "merge",
+      defaultPhase = LifecyclePhase.PACKAGE,
       threadSafe = true
     )
-public class LauncherMergeMojo extends AbstractMojo {
+public class MergeMojo extends AbstractMojo {
     
     /**
      * One or more input directories/files to merge (order is important).

@@ -6,8 +6,7 @@ Stork by Fizzed
 Stork example project demonstrating the following:
 
  - PlayFramework-based app that uses sbt-based custom build/run system
- - Demos use of stork-play-assembly to package tarball into canonical java app layout
+ - Demos use of stork sbt plugin for play to package tarball into canonical
+   java app layout
 
-To run this example:
-
- - Install stork so its available on your PATH
+Please see main stork README.md for info on this example app.

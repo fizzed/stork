@@ -1,39 +1,43 @@
 Stork by Fizzed
 =======================================
 
-### Contributors
+## Contributors
 
  - [Fizzed, Inc.](http://fizzed.co)
  - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
 
-### Setup
+## Compiling
 
-#### On Linux/OSX
+    mvn install
 
-	export PATH=`pwd`/cli/target/stage/bin:$PATH
+## Testing command-line version during development.
 
-#### On Windows
+### On Linux/OSX
 
-	set PATH=%CD%\cli\target\stage\bin;%PATH%
+    export PATH=`pwd`/cli/target/stage/bin:$PATH
 
-### Testing
+### On Windows
 
-	ant hello-console
-	ant hello-daemon
-	ant hello-server-dropwizard
-	ant hello-server-play
+    set PATH=%CD%\cli\target\stage\bin;%PATH%
+
+## Testing
+
+    ant hello-console
+    ant hello-daemon
+    ant hello-server-dropwizard
+    ant hello-server-play
 
 
-### Notes for target operating systems
+## Notes for target operating systems
 
-#### Windows
+### Windows
 
 Daemonizers considered:
 
 	http://jslwin.sourceforge.net/
 	https://github.com/kohsuke/winsw
 
-#### Mac OSX
+### Mac OSX
 
 References:
     http://couchdb.readthedocs.org/en/latest/install/mac.html
@@ -61,7 +65,7 @@ To see what is going on (should have a PID value):
 To unload (stop) daemon:
     sudo launchctl unload /Library/LaunchDaemons/com.example.hello-daemon.plist
 
-#### Resources
+### Resources
 
 Jenkins project:
 	https://github.com/sbt/sbt-native-packager/tree/master/src/main/resources/com/typesafe/sbt/packager/archetypes

@@ -33,7 +33,7 @@ public class Merger extends BaseApplication {
 
     @Override
     public void printUsage() {
-        System.err.println("Usage: stork-launcher-merge -i <input config> -o <output config> [-i ...]");
+        System.err.println("Usage: stork-merge -i <input config> -o <output config> [-i ...]");
         System.err.println("-v                   Print version and exit");
         System.err.println("-i <input config>    Input file (dir or wildcard accepted)");
         System.err.println("-o <output config>   Output file");
@@ -58,7 +58,10 @@ public class Merger extends BaseApplication {
             String argSwitch = argList.remove(0);
 
             if (argSwitch.equals("-v") || argSwitch.equals("--version")) {
-                System.err.println("stork-launcher-merge version: " + co.fizzed.stork.launcher.Version.getLongVersion());
+                System.err.println("stork-merge: v" + co.fizzed.stork.launcher.Version.getLongVersion());
+                System.exit(0);
+            } else if (argSwitch.equals("-h") || argSwitch.equals("--help")) {
+                printUsage();
                 System.exit(0);
             } else if (argSwitch.equals("-i") || argSwitch.equals("--input")) {
                 String fileString = popNextArg(argSwitch, argList);

@@ -59,6 +59,7 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <!-- using helper class to copy files and retain executable permissions -->
                     <execution>
                         <id>copy-static-launchers</id>
                         <phase>package</phase>
@@ -94,11 +95,6 @@
             <groupId>co.fizzed</groupId>
             <artifactId>fizzed-stork-util</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

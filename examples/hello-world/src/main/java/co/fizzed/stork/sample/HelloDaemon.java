@@ -61,7 +61,7 @@ public class HelloDaemon {
         HelloConsole.main(args);
         
         // was a port specified?
-        port = 8080;
+        port = 8888;
         if (args.length > 0) {
             String portString = args[0];
             port = Integer.parseInt(portString);

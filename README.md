@@ -12,11 +12,15 @@ Stork by Fizzed
 What comes after your Java/JVM build tool (Maven, SBT, Gradle, Ant, etc.) compiles
 your code? There are a plethora of fantastic tools for building your project, but
 then what? A tarball? A debian/rpm package? An Uber/Fat Jar? Some sort of installer?
-The problem with all of these approaches is that they are all different -- and
-they all have major drawbacks. For example, what do you do with configuration files?
-What if you want to distribute a command-line console app along with your daemon?
-What if you have little control over the end user system (e.g. not sure where
-they may install Java)?  What happens on an upgrade?  
+The problem with all of these approaches is three-fold. First, they usually are tightly
+coupled with your build tool -- which makes it tougher to switch between projects
+that may use various build tools. Second, they lack flexibility in case you need
+to use your final assembly in different way (rapid deploy to staging, or deliver
+an installable package to a customer, etc).  Third, what do you do with the 
+non-Java aspects of your app such as configuration files? What if you want to
+distribute a command-line console app along with your daemon? What if you have
+little control over the end user system (e.g. not sure where they may install
+Java)?  What happens on an upgrade?  
 
 Stork is a collection of utilities for optimizing your "after-build" workflow by
 filling in the gap between your Java build system and eventual end-user app
@@ -27,23 +31,31 @@ provides one or more tools in the following main "after-build" activities:
     or more console and/or daemon JVM/Java apps that users will execute -- as
     well as the companion scripts to run those scripts across numerous operating
     systems (e.g. starting your daemon at boot, running as a true service on
-    Windows).
+    Windows).  This process is repeatable and consistent across whatever build
+    system you're using -- by being built as a library with build tool integration
+    via plugin.
 
  2. Assembly - package your application into a well-defined, canonical application
     layout with a consistent location for your launcher scripts, jars, config
-    files, and miscellaneous distributable dependencies and docs.
+    files, and miscellaneous distributable dependencies and docs.  You can 
+    either use some of the provided build tool plugins or use a standard
+    "assembly" approach in your build tool to meet the defined layout guidelines.
+    This assembly is a universal package that is ready for install and deployment
+    on any operating system.
 
  3. Deployment - rapidly deploy your assembly to one or more systems via a fabric-based
     installer.  Or in future versions, convert your assembly tarball into an
     operating system specific installer (e.g. a .dmg for OSX or .msi/.exe for
-    Windows).
+    Windows).  Think of your assembly as a well defined tarball -- where 
+    tools can easily be created to distribute your app in various ways.  Hopefully,
+    this is where the open source community can help!
 
 By standardizing the layout of your Java-based application, you will find developers,
 system administrators, and end-users are all on the same page with how to interact with
-your apps
+your JVM-based apps.
 
 
-### Why are Uber/Fat jars not recommended?
+### Why are Uber/Fat jars not recommended for *most* applications?
 
 An Uber/Fat jar is where all dependencies are merged into a single jar. There
 are several reasons why Stork suggests avoiding this approach. First, if you
@@ -145,6 +157,9 @@ On Linux/UNIX, this could be symlinked to /var/run/<app_name>.
 
 Stork provides a combination of plugins to various build systems like Maven
 and SBT as well as command-line apps for similiar and additional utilities.
+However, even if a plugin isn't provided, you can always just call the 
+command-line version, code a plugin (and submit a pull request to add it),
+or tap into the main core library.
 
 ## Stork Maven Plugin
 
@@ -155,10 +170,10 @@ Using the Maven plugin does not require installation of the stork command-line
 apps -- since it is deployed to Maven central and will be downloaded during
 a build.
 
-### Goal: launcher-generate
+### Goal: generate
 
-Compiles all launchers in src/main/launchers to target/stage (which will result
-in target/stage/bin and target/stage/share dirs).
+Compiles all launchers in src/main/launchers to target/stork (which will result
+in target/stork/bin and target/stork/share dirs).
 
 To use add the following to your POM:
 
@@ -173,7 +188,7 @@ To use add the following to your POM:
                     <execution>
                         <id>generate-stork-launchers</id>
                         <goals>
-                            <goal>launcher-generate</goal>
+                            <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions> 
@@ -185,7 +200,7 @@ To use add the following to your POM:
 To customize, the following properties are supported:
 
  - outputDirectory: The directory the launcher will compile/generate launchers
-   to. Defaults to ${project.build.directory}/stage
+   to. Defaults to ${project.build.directory}/stork
 
  - inputFiles: An array of input directories or files to compile in a single
    invocation.  Defaults to ${basedir}/src/main/launchers
@@ -193,7 +208,7 @@ To customize, the following properties are supported:
 ### Goal: assembly
 
 Stages and assembles your application into a canonical Stork layout. The following
-are copied to target/stage/lib using the full groupId-artifactId-version naming
+are copied to target/stork/lib using the full groupId-artifactId-version naming
 format:
 
  - Your project artifact (if its a jar)
@@ -201,10 +216,10 @@ format:
  - Your runtime dependencies
 
 Your project basedir conf/, bin/ and share/ directories are then copied to
-target/stage (will overlay/overwrite any files currently in target/stage).
+target/stork (will overlay/overwrite any files currently in target/stork).
 To include launchers as part of your assembly, you will need to include both
-the assembly and one or more launcher-generate goals. Finally, the contents
-of target/stage are tarballed into ${finalName}.tar.gz with an install prefix
+the assembly and one or more generate goals. Finally, the contents
+of target/stork are tarballed into ${finalName}.tar.gz with an install prefix
 of ${finalName} as the root directory of the tarball (so it unpacks correctly)
 
     <build>
@@ -227,15 +242,15 @@ of ${finalName} as the root directory of the tarball (so it unpacks correctly)
         </plugins>
     </build>
 
-What's nice is that target/stage still exists and you are free to directly
-run anything in target/stage/bin -- since the launcher scripts correctly
+What's nice is that target/stork still exists and you are free to directly
+run anything in target/stork/bin -- since the launcher scripts correctly
 pick up your relative dependencies.  You can quickly run your application
 as though you had already deployed it to a remote system.
 
 To customize, the following properties are supported:
 
  - stageDirectory: The directory where assembly contents will be staged to and
-   tarballed from. Defaults to ${project.build.directory}/stage
+   tarballed from. Defaults to ${project.build.directory}/stork
 
  - outputDirectory: The directory the final tarball assembly will be output.
    Defaults to ${project.build.directory}
@@ -245,48 +260,43 @@ To customize, the following properties are supported:
    contents of stageDirectory. Defaults to ${project.build.finalName}
 
 
-## Stork Command-line Apps
+## Stork Command Line
 
 Download the stork tarball.  The "bin" directory in this tarball needs to be
 added to your PATH environment variable.  Once available in your PATH, you can
 execute any of the following utilities:
 
-### stork-launcher-generate
+### stork-generate
 
 Compiles a launcher config file into a launcher script.  Outputs compiled files
 into a parent directory that will contain child directories in the canonical
 application layout.
 
-	stork-launcher-generate -i src/main/assembly/hello-server.yml -o target/stage
+    stork-generate -i src/main/launchers/hello-server.yml -o target/stork
 
-### stork-launcher-merge
+### stork-merge
 
 Helper utility to merge launcher config files together by adding or overriding values
 defined from the ordered list of input files.  Useful for using a base launcher
 config file and only overriding values as needed.
 
-    stork-launcher-merge -i src/main/assembly/hello-base.yml -i src/main/assembly/hello-server.yml -o target/hello-server-merged.yml
-    stork-launcher-generate -i target/hello-server-merged.yml -o target/stage
-
-### stork-play-assembly
-
-Utility for assemblying a [PlayFramework](http://playframework.com) application into
-a Stork-based assembly tarball.
-
-    stork-play-assembly
+    stork-merge -i src/main/launchers/hello-base.yml -i src/main/launchers/hello-server.yml -o target/hello-server-merged.yml
+    stork-generate -i target/hello-server-merged.yml -o target/stork
 
 ### stork-fabric-deploy
 
-Utility for rapidly deploying a "versioned" install on one or more remote Linux-based systems via SSH.
-Uses Python and [Fabric](http://www.fabfile.org/) underneath.  Installs a stork-based assembly tarball
-into a versioned directory structure on a remote system and handles restarting daemons as needed.  The
-versioned directory structure allows rapid deployment with the ability to revert to a previous version
-if needed.
+Utility for rapidly deploying a "versioned" install on one or more remote
+Linux-based systems via SSH. Uses Python and [Fabric](http://www.fabfile.org/)
+underneath.  Installs a stork-based assembly tarball into a versioned directory
+structure on a remote system and handles restarting daemons as needed.  The
+versioned directory structure allows rapid deployment with the ability to revert
+to a previous version if needed.
 
     stork-fabric-deploy -H host1.example.com,host2.example.com --assembly target/hello-server-1.0.0-SNAPSHOT.tar.gz
 
-Since this a "SNAPSHOT" version, a timestamp would be generated (such as 20141101121032 for Nov 1, 2014 12:10:32) and
-this application would be installed to:
+Since this a "SNAPSHOT" version, a timestamp would be generated (such as
+20141101121032 for Nov 1, 2014 12:10:32) and this application would be installed
+to:
 
     /opt/hello-server/version-1.0.0-20141101121032
 
@@ -294,12 +304,45 @@ A symlink would also be created:
 
     /opt/hello-server/current -> /opt/hello-server/version-1.0.0-20141101121032
 
-Since this application contains one daemon called "hello-server", the daemon would be stopped (if it existed), the
-upgrade would occur, then the daemon would be installed (if needed) and started back up.  The directories described
-above in the canonical layout as (retained on upgrade) would be moved rather than overwritten. That means during
-a fresh install, the bin/, lib/, conf/, and share/ directories are installed.  On an upgrade install, the
-bin/, lib, and share/ directories are installed, while conf/ and runtime dirs data/, log/, and run/ directories
-are moved.
+Since this application contains one daemon called "hello-server", the daemon
+would be stopped (if it existed), the upgrade would occur, then the daemon would
+be installed (if needed) and started back up.  The directories described above
+in the canonical layout as (retained on upgrade) would be moved rather than
+overwritten. That means during a fresh install, the bin/, lib/, conf/, and
+share/ directories are installed.  On an upgrade install, the bin/, lib, and
+share/ directories are installed, while conf/ and runtime dirs data/, log/, and
+run/ directories are moved.
+
+## Stork SBT Plugin for PlayFramework
+
+The PlayFramework is a popular Scala/Java framework that uses SBT underneath
+for its build system.  Stork has tight integration with PlayFramework via its
+plugin.
+
+Example Play project: examples/hello-server-play
+
+The plugin affects your application in two main ways.  First, since Play only
+has a well-defined entry point to your application, the plugin includes a 
+well-defined launcher config file that is suitable for your app.  So you don't
+need to even create one (unless you want to customize something). The plugin
+allows an override to be placed in conf/stork-launcher.yml.
+
+Second, the plugin supplies an interesting Bootstrap class that becomes the
+new entry point to your app.  The Bootstrap is pretty simple.  It reads in
+an optional config file that defines system property values then calls the 
+normal entry point to a Play app.  This permits you to set the http.port the
+server runs on in either development or production and maintain it in a config
+file.  The config file is optional, but if you'd like to use it just supply
+a conf/stork-bootstrap.conf file with a system property on each line:
+
+    http.port=9001
+
+Finally, the plugin implementation relies on the default Play "stage" task
+to figure out what jars to copy.  As avid users of Play over the years, the
+platform has changed how it stages jars between versions and tapping into 
+the existing task is more stable.  The example project will be the easiest
+way to see how it works.
+
 
 ## Examples
 
@@ -311,8 +354,8 @@ using the DropWizard framework.
 To build the project and assembly tarball, just execute the following in 
 src/examples/hello-server-dropwizard:
 
-    mvn clean package
-    target/stage/bin/hello-server-dropwizard --run
+    mvn package
+    target/stork/bin/hello-server-dropwizard --run
 
 By default the server runs on port 8080 and you can then visit the sample in 
 your browser @ http://localhost:8080/
@@ -322,23 +365,25 @@ ready for distribution or deployment using stork-fabric-deploy.
 
 ### hello-server-play
 
-Example project using the [PlayFramework](http://playframework.com) for building a simple Hello World
-daemon. The PlayFramework allows you to use a mix of Scala/Java for creating web applications.  Play uses
-SBT underneath the hood, but they also define many special settings in SBT for building their applications.
-The stork-play-assembly tool automates using the play build system to structure a final assembly tarball
-that meets the stork canonical standards. It's also a great example of how any JVM-based application 
-can ultimately be packaged into the stork layout.  To build the project, just execute the following
-in src/examples/hello-server-play:
+Example project using the Stork SBT Plugin for the [PlayFramework](http://playframework.com).
+The PlayFramework allows you to use a mix of Scala/Java for creating web
+applications.  Play uses SBT underneath the hood, but they also define many
+special settings in SBT for building their applications.
 
-	stork-play-assembly
+To build the project and use this plugin, you'll need to run the following.  If
+you use Play <= 2.2, then run with the "play" executable or for Play >= 2.3
+(shown below), you use the "activator" command.
 
-On success, the target/ directory will contain the final assembly tarball.  This tarball is ready for
-distribution or deployment using stork-fabric-deploy.
+    activator stage stork-assembly
+    target/stork/bin/hello-server-play --run
+
+On success, the target/ directory will also contain the final assembly tarball.
+This tarball is ready for distribution or deployment using stork-fabric-deploy.
 
 
-## Launcher
+## The Stork Launcher
 
-Collection of utilities for generating native launchers for Java-based applications
+Utility for generating native launchers for Java-based applications
 across Windows, Linux, Mac OSX, and many other UNIX-like systems (any NIX with a
 JVM and bourne shell support). 
 
@@ -349,8 +394,9 @@ that your app looks like a native compiled executable.
 
 ### Development workflow
 
-Integrate "stork-launcher-generate" into your build workflow to generate the launcher
-scripts while you also compile your JVM bytecode classes.
+Use it via one of the build tool plugins or simply call "stork-generate" from the
+command-line version.  Simply include Stork as part of your build workflow to
+generate the launcher scripts while you also compile your JVM bytecode classes.
 
 ### Features
 

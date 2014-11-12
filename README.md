@@ -453,12 +453,24 @@ modify a config in production is to create your own new conf/ directory,
 extract the configs from the compiled JARS, and then add a Java system property
 before you run Play that tells it the new config to run at start.  It's logging
 levels for production also are less than desired (IMHO).  Therefore, this plugin
-will add 2 system properties by default to your startup -- to force play to
+will add two system properties by default to your startup -- to force play to
 read the files from conf/ in production:
 
     -Dconfig.file=conf/application.conf -Dlogger.file=conf/logger.xml
 
-These defaults can customized in your app to something else.  Simply set the
+Since Stork's canonical app layout always includes a conf directory -- this plugin
+will copy whatever is in your conf/ directory to your assembly tarball.  The
+ones Play hard-coded in your compiled jars still exists, but Play will at least
+be forced to load the conf/application.conf from the conf/ directory vs. the
+one compiled into your .jar.  Remember that this plugin also opts to start your
+Java app with it's bootstrap main class vs. Play's default NettyServer.  It's 
+a little easier to understand what happens by seeing the final java command used
+to start your app:
+
+    <java, classpath, etc. and then> -Xrs -Djava.net.preferIPv4Stack=true -Dlauncher.main=play.core.server.NettyServer -Dconfig.file=conf/application.conf -Dlauncher.bootstrap=conf/stork-bootstrap.conf -Dlogger.file=conf/logger.xml co.fizzed.stork.bootstrap.PlayBootstrap
+
+These defaults can customized in your app to something else.  Simply tweak the
+SettingKeys to something else or set the 
 "java_args" property in your conf/stork-launcher.yml file to whatever you'd like
 the line to be. There are four SettingKeys to customize what the plugin does:
 

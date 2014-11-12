@@ -457,6 +457,59 @@ generate the launcher scripts while you also compile your JVM bytecode classes.
  * Support for symlinking detected JVM as application name so that Linux/UNIX commands
    such as TOP/PS make identifying application easier.
 
+### Sample Launcher Config
+
+    # Name of application (make sure it has no spaces)
+    name: "hello-console"
+
+    # Domain of application (e.g. your organization such as com.example)
+    domain: "co.fizzed.stork.sample"
+
+    # Display name of application (can have spaces)
+    display_name: "Hello Console App"
+
+    short_description: "Demo console app"
+
+    long_description: "Demo of console app for mfizz jtools launcher"
+
+    # Type of launcher (CONSOLE or DAEMON)
+    type: CONSOLE
+
+    # Java class to run
+    main_class: "co.fizzed.stork.sample.HelloConsole"
+
+    # Platform launchers to generate (WINDOWS, LINUX, MAC_OSX)
+    # Linux launcher is suitable for Bourne shells (e.g. Linux/BSD)
+    platforms: [ WINDOWS, LINUX, MAC_OSX ]
+
+    # Working directory for app
+    #  RETAIN will not change the working directory
+    #  APP_HOME will change the working directory to the home of the app
+    #    (where it was intalled) before running the main class
+    working_dir_mode: RETAIN
+
+    # Arguments for application (as though user typed them on command-line)
+    # These will be added immediately after the main class part of java command
+    #app_args: "-c config.yml"
+
+    # Arguments to use with the java command (e.g. way to pass -D arguments)
+    #java_args: "-Dtest=foo"
+
+    # Minimum version of java required (system will be searched for acceptable jvm)
+    min_java_version: "1.6"
+
+    # Min/max fixed memory (measured in MB)
+    min_java_memory: 30
+    max_java_memory: 256
+
+    # Min/max memory by percentage of system
+    #min_java_memory_pct: 10
+    #max_java_memory_pct: 20
+
+    # Try to create a symbolic link to java executable in <app_home>/run with
+    # the name of "<app_name>-java" so that commands like "ps" will make it
+    # easier to find your app
+    symlink_java: true
 
 ## License
 

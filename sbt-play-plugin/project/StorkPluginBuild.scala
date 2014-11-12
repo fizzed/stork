@@ -23,7 +23,10 @@ object StorkPluginBuild extends Build {
             libraryDependencies += "co.fizzed" % "fizzed-stork-launcher" % storkVersion,
             // for bridging slf4j calls to sbt logging
             // https://github.com/eirslett/sbt-slf4j
-            libraryDependencies += "com.github.eirslett" %% "sbt-slf4j" % "0.1" % "provided"
-        ) ++ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.6" % "provided")
+            libraryDependencies += "com.github.eirslett" %% "sbt-slf4j" % "0.1" % "provided",
+	    resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+	    //resolvers += "Typesafe repository mwn" at "http://repo.typesafe.com/typesafe/maven-releases/"
+        )
+	++ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.6" % "provided")
     )
 }

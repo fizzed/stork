@@ -337,11 +337,24 @@ a conf/stork-bootstrap.conf file with a system property on each line:
 
     http.port=9001
 
-Finally, the plugin implementation relies on the default Play "stage" task
+To enable in your Play project add the following to project/plugins.sbt:
+
+    // stork play plugin
+    addSbtPlugin("co.fizzed" % "fizzed-stork-sbt-play-plugin" % "USE LATEST VERSION HERE")
+
+The plugin extends SBT AutoPlugin which auto enables settings in your project
+so you will not need to add anything else to your project to pick up the plugin.
+
+The plugin implementation relies on the default Play "stage" task
 to figure out what jars to copy.  As avid users of Play over the years, the
 platform has changed how it stages jars between versions and tapping into 
 the existing task is more stable.  The example project will be the easiest
-way to see how it works.
+way to see how it works.  Thus, to assembe your play project run the following:
+
+    activator stage stork-assembly
+
+This will result in a target/stork directory containing the staged project and
+target/ will contain a tarball of the assembly. 
 
 
 ## Examples

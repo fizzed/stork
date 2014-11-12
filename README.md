@@ -437,7 +437,40 @@ The PlayFramework is a popular Scala/Java framework that uses SBT underneath
 for its build system.  Stork has tight integration with PlayFramework via its
 plugin.
 
+NOTE: You must be using PlayFramework version >= 2.3.6 and SBT 0.13.5
+
+This plugin takes advantage of being an AutoPlugin which was introduced in
+PlayFramework 2.3.6 and SBT 0.13.5 -- which makes auto importing of settings and
+activation of plugins a piece of cake.
+
 Example Play project: examples/hello-server-play
+
+Play is great, but there are some strange choices (IMHO) regarding config files
+during startup and where it finds them.  By default, Play will use your conf/
+directory during development, but then add them as resources to your compiled
+JARs for deployment.  Nothing like hard-coded configs, eh?  The only way to
+modify a config in production is to create your own new conf/ directory, 
+extract the configs from the compiled JARS, and then add a Java system property
+before you run Play that tells it the new config to run at start.  It's logging
+levels for production also are less than desired (IMHO).  Therefore, this plugin
+will add 2 system properties by default to your startup -- to force play to
+read the files from conf/ in production:
+
+    -Dconfig.file=conf/application.conf -Dlogger.file=conf/logger.xml
+
+These defaults can customized in your app to something else.  Simply set the
+"java_args" property in your conf/stork-launcher.yml file to whatever you'd like
+the line to be. There are four SettingKeys to customize what the plugin does:
+
+ - storkPlayConf: Config file to load at runtime to configure play app. Defaults
+        to conf/application.conf (play's default)
+ - storkPlayLauncherConf: Launcher config file to use to override this plugins
+        default launcher config.  Defaults to conf/stork-launcher.yml
+ - storkPlayBootstrapConf: The launcher bootstrap config file to use at runtime
+        to set system properties before starting play. Useful for setting the
+        http.port play will bind to by default. Defaults to conf/stork-bootstrap.conf
+ - storkAssemblyStageDir: The directory this plugin will stage the stork
+        compliant assembly. Defaults to target/stork
 
 The plugin affects your application in two main ways.  First, since Play only
 has a well-defined entry point to your application, the plugin includes a 
@@ -501,9 +534,7 @@ The PlayFramework allows you to use a mix of Scala/Java for creating web
 applications.  Play uses SBT underneath the hood, but they also define many
 special settings in SBT for building their applications.
 
-To build the project and use this plugin, you'll need to run the following.  If
-you use Play <= 2.2, then run with the "play" executable or for Play >= 2.3
-(shown below), you use the "activator" command.
+To build the project and use this plugin, you'll need to run the following.
 
     activator stage stork-assembly
     target/stork/bin/hello-server-play --run

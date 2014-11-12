@@ -13,9 +13,13 @@ Stork by Fizzed
 ## Release
     
 The "release" profile will only publish a subset of projects to Maven (e.g.
-it won't publish the example projects to Maven Central).
+it won't publish the example projects to Maven Central). Also, the release plugin
+does not "install" to local repo during prepare which breaks the SBT build
+of this project. To workaround this error:
 
-    mvn release:prepare -Prelease
+mvn release:prepare -Prelease
+mvn install
+mvn release:prepare -Prelease -Dresume=true
 
 ## Testing command-line version during development.
 

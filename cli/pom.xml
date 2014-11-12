@@ -9,7 +9,7 @@
     <parent>
         <groupId>co.fizzed</groupId>
         <artifactId>fizzed-stork-parent</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0</version>
     </parent>
     
     <build>
@@ -50,7 +50,7 @@
                             <executable>java</executable>
                             <arguments>
                                 <argument>-classpath</argument>
-            			<classpath/>
+            			<classpath />
                                 <argument>co.fizzed.stork.launcher.GeneratorMain</argument>
                                 <argument>-o</argument>
                                 <argument>target/stork</argument>
@@ -70,7 +70,7 @@
                             <executable>java</executable>
                             <arguments>
                                 <argument>-classpath</argument>
-            			<classpath/>
+            			<classpath />
                                 <argument>co.fizzed.stork.util.CopyFile</argument>
                                 <argument>-i</argument>
                                 <argument>../fabric/bin</argument>

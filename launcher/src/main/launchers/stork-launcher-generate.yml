@@ -9,7 +9,7 @@ short_description: "Utility for creating scripts to launch Java apps"
 
 type: CONSOLE
 
-main_class: "co.fizzed.stork.launcher.Generator"
+main_class: "co.fizzed.stork.launcher.GeneratorMain"
 
 platforms: [ WINDOWS, LINUX ]
 

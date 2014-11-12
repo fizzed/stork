@@ -23,7 +23,6 @@
         <module>bootstrap</module>
 	<module>launcher</module>
         <module>util</module>
-        <module>tasks</module>
         <module>cli</module>
         <module>maven-plugin</module>
         <module>sbt-play-plugin</module>

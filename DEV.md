@@ -10,6 +10,13 @@ Stork by Fizzed
 
     mvn install
 
+## Release
+    
+The "release" profile will only publish a subset of projects to Maven (e.g.
+it won't publish the example projects to Maven Central).
+
+    mvn release:perform
+
 ## Testing command-line version during development.
 
 ### On Linux/OSX

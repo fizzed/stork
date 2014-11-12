@@ -19,17 +19,39 @@
         <tag>master</tag>
     </scm>
 
-    <modules>
-        <module>bootstrap</module>
-	<module>launcher</module>
-        <module>util</module>
-        <module>cli</module>
-        <module>maven-plugin</module>
-        <module>sbt-play-plugin</module>
-        <module>examples/hello-world</module>
-        <module>examples/hello-server-dropwizard</module>
-        <module>examples/hello-server-play</module>
-    </modules>
+    
+    
+    <profiles>
+        <!-- DO NOT CHANGE THE *ORDER* IN WHICH THESE PROFILES ARE DEFINED! -->
+        <profile>
+            <id>release</id>
+            <modules>
+                <module>bootstrap</module>
+                <module>launcher</module>
+                <module>util</module>
+                <module>cli</module>
+                <module>maven-plugin</module>
+                <module>sbt-play-plugin</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>bootstrap</module>
+                <module>launcher</module>
+                <module>util</module>
+                <module>cli</module>
+                <module>maven-plugin</module>
+                <module>sbt-play-plugin</module>
+                <module>examples/hello-world</module>
+                <module>examples/hello-server-dropwizard</module>
+                <module>examples/hello-server-play</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
@@ -52,6 +74,14 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <!-- during release:perform, enable the "release" profile -->
+                    <releaseProfiles>release</releaseProfiles>
+                </configuration>
             </plugin>
         </plugins>
     </build>

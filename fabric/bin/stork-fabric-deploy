@@ -18,6 +18,27 @@ APP_HOME="`pwd`"
 # revert back to original working dir
 cd "$INITIAL_WORKING_DIR"
 
+# is python installed?
+PYTHON_VERSION=`python -c 'import sys; print sys.version_info' >/dev/null 2>&1`
+if [ $? -ne 0 ]; then
+    echo "Python is required to run stork-fabric-deploy"
+    echo "Please install and try again."
+    echo " Debian/Ubuntu: sudo apt-get install python"
+    echo " Redhat/CentOS: sudo yum install python"
+    echo "Visit http://www.python.org/ for more info"
+    exit 1
+fi
+
+# is fabric installed?
+FABRIC_INSTALLED=`python -c 'import fabric.api' >/dev/null 2>&1`
+if [ $? -ne 0 ]; then
+    echo "Fabric module for Python is required to run stork-fabric-deploy"
+    echo "Please install and try again"
+    echo " pip install fabric"
+    echo "Visit http://www.fabfile.org/ for more info"
+    exit 1
+fi
+
 buildTaskArgs()
 {
     local args=$1
@@ -63,7 +84,7 @@ else
     echo "Error: --assembly parameter missing"
     echo "Usage: stork-fabric-deploy --assembly <tarball> [any other fabric params]"
     echo "Example:"
-    echo "stork-fabric-deploy --assembly app-1.0.tar.gz -H host.example.com"
+    echo "  stork-fabric-deploy --assembly app-1.0.tar.gz -H host.example.com"
     exit 1
 fi
 

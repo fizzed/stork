@@ -15,7 +15,7 @@ then what? A tarball? A debian/rpm package? An Uber/Fat Jar? Some sort of instal
 The problem with all of these approaches is three-fold. First, they usually are tightly
 coupled with your build tool -- which makes it tougher to switch between projects
 that may use various build tools. Second, they lack flexibility in case you need
-to use your final assembly in different way (rapid deploy to staging, or deliver
+to use your final assembly in various ways (rapid deploy to staging, or deliver
 an installable package to a customer, etc).  Third, what do you do with the 
 non-Java aspects of your app such as configuration files? What if you want to
 distribute a command-line console app along with your daemon? What if you have
@@ -31,9 +31,9 @@ provides one or more tools in the following main "after-build" activities:
     or more console and/or daemon JVM/Java apps that users will execute -- as
     well as the companion scripts to run those scripts across numerous operating
     systems (e.g. starting your daemon at boot, running as a true service on
-    Windows).  This process is repeatable and consistent across whatever build
-    system you're using -- by being built as a library with build tool integration
-    via plugin.
+    Windows).  This part of Stork is a stand-alone Java library that isn't directly
+    tied to any single build tool.  Thus, you are not locking yourself into a
+    workflow that relies so much on your build tool.
 
  2. Assembly - package your application into a well-defined, canonical application
     layout with a consistent location for your launcher scripts, jars, config
@@ -41,7 +41,8 @@ provides one or more tools in the following main "after-build" activities:
     either use some of the provided build tool plugins or use a standard
     "assembly" approach in your build tool to meet the defined layout guidelines.
     This assembly is a universal package that is ready for install and deployment
-    on any operating system.
+    on any operating system.  As long as your assembly meets the canonical layout
+    any Stork deployment tool will be able to handle it.
 
  3. Deployment - rapidly deploy your assembly to one or more systems via a fabric-based
     installer.  Or in future versions, convert your assembly tarball into an

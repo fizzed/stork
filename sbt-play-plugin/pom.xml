@@ -22,7 +22,7 @@
     </properties>
     
     <dependencies>
-        <!-- Add dependency to force correct module build order -->
+        <!-- add dependency to force correct module build order in maven -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>fizzed-stork-launcher</artifactId>

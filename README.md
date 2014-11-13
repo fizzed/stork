@@ -7,12 +7,11 @@ Stork by Fizzed
  - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
 
 
-## Downloads
+## Versions
 
- - [Stork Command-Line v1.2.0](http://cdn.fizzed.co/releases/fizzed-stork-1.2.0.tar.gz)
+ - Stork Command-Line: (http://cdn.fizzed.co/releases/fizzed-stork-1.2.0.tar.gz)
  - Stork Maven Plugin: see section below (via Maven Central)
  - Stork SBT Plugin for Play: see section below (via Maven Central)
-
 
 ## Overview
 
@@ -307,8 +306,8 @@ To use add the following to your POM:
             ...
             <plugin>
                 <groupId>co.fizzed</groupId>
-                <artifactId>stork-maven-plugin</artifactId>
-                <version>USE-LATEST-HERE</version>
+                <artifactId>fizzed-stork-maven-plugin</artifactId>
+                <version>1.2.0</version>
                 <executions>
                     <execution>
                         <id>generate-stork-launchers</id>
@@ -352,8 +351,8 @@ of ${finalName} as the root directory of the tarball (so it unpacks correctly)
             ...
             <plugin>
                 <groupId>co.fizzed</groupId>
-                <artifactId>stork-maven-plugin</artifactId>
-                <version>USE-LATEST-HERE</version>
+                <artifactId>fizzed-stork-maven-plugin</artifactId>
+                <version>1.2.0</version>
                 <executions>
                     <execution>
                         <id>generate-stork-assembly</id>
@@ -510,7 +509,7 @@ a conf/stork-bootstrap.conf file with a system property on each line:
 To enable in your Play project add the following to project/plugins.sbt:
 
     // stork play plugin
-    addSbtPlugin("co.fizzed" % "fizzed-stork-sbt-play-plugin" % "USE LATEST VERSION HERE")
+    addSbtPlugin("co.fizzed" % "fizzed-stork-sbt-play-plugin" % "1.2.0")
 
 The plugin extends SBT AutoPlugin which auto enables settings in your project
 so you will not need to add anything else to your project to pick up the plugin.
@@ -567,4 +566,3 @@ This tarball is ready for distribution or deployment using stork-fabric-deploy.
 Copyright (C) 2014 Joe Lauer / Fizzed, Inc.
 
 This work is licensed under the Apache License, Version 2.0. See LICENSE for details.
-

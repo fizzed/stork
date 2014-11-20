@@ -22,6 +22,10 @@ main_class: "co.fizzed.stork.examples.helloserver.HelloServer"
 # Platform launchers to generate (WINDOWS, LINUX, MAC_OSX)
 platforms: [ WINDOWS, LINUX, MAC_OSX ]
 
+# Include a share/helper/java-detect script (troubleshoot JVM searching, or
+# use within an installer / deployer)
+include_java_detect_helper: true
+
 # Working directory for app
 #  RETAIN will not change the working directory
 #  APP_HOME will change the workding directory to the home of the app
@@ -39,8 +43,8 @@ java_args: "-Xrs"
 min_java_version: "1.7"
 
 # min/max fixed memory (measured in MB)
-#min_java_memory: 30
-#max_java_memory: 256
+#min_java_memory: 256
+#max_java_memory: 1024
 
 # min/max memory by percentage of system
 #min_java_memory_pct: 10

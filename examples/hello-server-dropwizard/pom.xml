@@ -4,13 +4,13 @@
     <groupId>co.fizzed</groupId>
     <artifactId>hello-server-dropwizard</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.0-SNAPSHOT</version>
     <name>fizzed-stork-examples-hello-server-dropwizard</name>
   
     <parent>
         <groupId>co.fizzed</groupId>
-        <artifactId>fizzed-maven-parent</artifactId>
-        <version>1.11</version>
+        <artifactId>fizzed-stork-parent</artifactId>
+        <version>1.2.1-SNAPSHOT</version>
+	<relativePath>../../pom.xml</relativePath>
     </parent>
     
     <build>

@@ -181,10 +181,13 @@ public class Generator {
                         generateUnixDaemonLauncher(config, launcherFile, model);
                     }
                     
-                    File helperDir = new File(shareDir, "helper");
-                    helperDir.mkdirs();
-                    File javaDetectFile = new File(helperDir, "java-detect");
-                    generateUnixJavaDetectScript(javaDetectFile);
+                    if (config.isIncludeJavaDetectHelper()) {
+                        File helperDir = new File(shareDir, "helper");
+                        helperDir.mkdirs();
+                        
+                        File javaDetectFile = new File(helperDir, "java-detect");
+                        generateUnixJavaDetectScript(javaDetectFile);
+                    }
                     
                     unixLauncherGeneratedVia = platform;
                 }

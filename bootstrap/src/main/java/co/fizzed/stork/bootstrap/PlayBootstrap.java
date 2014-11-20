@@ -51,7 +51,7 @@ public class PlayBootstrap extends Bootstrap {
         }
     }
     
-    static public void generateDefaultLauncherConfFile(File confFile, String appName, String domain, String bootstrapConfigPath, String loggerConfigPath) throws Exception {
+    static public void generateDefaultLauncherConfFile(File confFile, String appName, String domain, String playConfigPath, String bootstrapConfigPath, String loggerConfigPath) throws Exception {
         PrintWriter pw = new PrintWriter(new FileWriter(confFile));
         pw.println("name: \"" + appName + "\"");
         pw.println("domain: \"" + domain + "\"");
@@ -67,6 +67,7 @@ public class PlayBootstrap extends Bootstrap {
         
         // build args...
         String extraJvmArgs = new StringBuilder()
+                .append((playConfigPath == null || playConfigPath.equals("") ? "" : " -Dconfig.file="+playConfigPath))
                 .append((bootstrapConfigPath == null || bootstrapConfigPath.equals("") ? "" : " -Dlauncher.bootstrap="+bootstrapConfigPath))
                 .append((loggerConfigPath == null || loggerConfigPath.equals("") ? "" : " -Dlogger.file="+loggerConfigPath))
                 .toString();

@@ -22,6 +22,7 @@ object StorkPlayPlugin extends AutoPlugin {
     override def trigger = allRequirements
 
     object autoImport {
+        lazy val storkPlayConf = settingKey[File]("Play config file to load at startup.")
         lazy val storkPlayLauncherConf = settingKey[File]("Application specific overrides against default stork play config file.")
         lazy val storkPlayBootstrapConf = settingKey[File]("System property overrides dynamically loaded at runtime from config file.")
         lazy val storkAssemblyStageDir = settingKey[File]("Directory to stage stork assembly.")
@@ -33,6 +34,10 @@ object StorkPlayPlugin extends AutoPlugin {
     import autoImport._
 
     override val projectSettings = Seq(
+
+        storkPlayConf := {
+            baseDirectory(_ / "conf" / "application.conf").value
+        },
 
         storkPlayLauncherConf := {
             baseDirectory(_ / "conf" / "stork-launcher.yml").value
@@ -93,7 +98,7 @@ object StorkPlayPlugin extends AutoPlugin {
             //
             val appLauncherConfFile = storkPlayLauncherConf.value
             val defaultLauncherConfFile = target(_ / "stork-launcher-default.yml").value
-            PlayBootstrap.generateDefaultLauncherConfFile(defaultLauncherConfFile, name.value, organization.value, "conf/" + storkPlayBootstrapConf.value.getName(), "conf/logger.xml");
+            PlayBootstrap.generateDefaultLauncherConfFile(defaultLauncherConfFile, name.value, organization.value, "conf/" + storkPlayConf.value.getName(), "conf/" + storkPlayBootstrapConf.value.getName(), "conf/logger.xml");
             var launcherConfFile = defaultLauncherConfFile
 
             if (appLauncherConfFile.exists()) {

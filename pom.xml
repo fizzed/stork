@@ -4,7 +4,7 @@
     <groupId>co.fizzed</groupId>
     <artifactId>fizzed-stork-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.1-SNAPSHOT</version>
     <name>fizzed-stork-parent</name>
 
     <parent>
@@ -19,17 +19,37 @@
         <tag>master</tag>
     </scm>
 
-    <modules>
-        <module>bootstrap</module>
-	<module>launcher</module>
-        <module>util</module>
-        <module>cli</module>
-        <module>maven-plugin</module>
-        <module>sbt-play-plugin</module>
-        <module>examples/hello-world</module>
-        <module>examples/hello-server-dropwizard</module>
-        <module>examples/hello-server-play</module>
-    </modules>
+    <profiles>
+        <!-- DO NOT CHANGE THE *ORDER* IN WHICH THESE PROFILES ARE DEFINED! -->
+        <profile>
+            <id>release</id>
+            <modules>
+                <module>bootstrap</module>
+                <module>launcher</module>
+                <module>util</module>
+                <module>cli</module>
+                <module>maven-plugin</module>
+                <module>sbt-play-plugin</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>bootstrap</module>
+                <module>launcher</module>
+                <module>util</module>
+                <module>cli</module>
+                <module>maven-plugin</module>
+                <module>sbt-play-plugin</module>
+                <module>examples/hello-world</module>
+                <module>examples/hello-server-dropwizard</module>
+                <module>examples/hello-server-play</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
@@ -52,6 +72,14 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <!-- during release:perform, enable the "release" profile -->
+                    <releaseProfiles>release</releaseProfiles>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -81,7 +109,7 @@
     </dependencyManagement>
 
     <properties>
-        <main.java.package></main.java.package>
+        <main.java.package />
         <slf4j.version>1.7.7</slf4j.version>
         <logback.version>1.1.2</logback.version>
         <license.skip>true</license.skip>

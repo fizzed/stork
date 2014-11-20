@@ -7,6 +7,12 @@ Stork by Fizzed
  - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
 
 
+## Versions
+
+ - Stork Command-Line: http://cdn.fizzed.co/releases/fizzed-stork-1.2.0.tar.gz
+ - Stork Maven Plugin: see section below (via Maven Central)
+ - Stork SBT Plugin for Play: see section below (via Maven Central)
+
 ## Overview
 
 What comes after your Java/JVM build tool (Maven, SBT, Gradle, Ant, etc.) compiles
@@ -15,7 +21,7 @@ then what? A tarball? A debian/rpm package? An Uber/Fat Jar? Some sort of instal
 The problem with all of these approaches is three-fold. First, they usually are tightly
 coupled with your build tool -- which makes it tougher to switch between projects
 that may use various build tools. Second, they lack flexibility in case you need
-to use your final assembly in different way (rapid deploy to staging, or deliver
+to use your final assembly in various ways (rapid deploy to staging, or deliver
 an installable package to a customer, etc).  Third, what do you do with the 
 non-Java aspects of your app such as configuration files? What if you want to
 distribute a command-line console app along with your daemon? What if you have
@@ -31,9 +37,9 @@ provides one or more tools in the following main "after-build" activities:
     or more console and/or daemon JVM/Java apps that users will execute -- as
     well as the companion scripts to run those scripts across numerous operating
     systems (e.g. starting your daemon at boot, running as a true service on
-    Windows).  This process is repeatable and consistent across whatever build
-    system you're using -- by being built as a library with build tool integration
-    via plugin.
+    Windows).  This part of Stork is a stand-alone Java library that isn't directly
+    tied to any single build tool.  Thus, you are not locking yourself into a
+    workflow that relies so much on your build tool.
 
  2. Assembly - package your application into a well-defined, canonical application
     layout with a consistent location for your launcher scripts, jars, config
@@ -41,7 +47,8 @@ provides one or more tools in the following main "after-build" activities:
     either use some of the provided build tool plugins or use a standard
     "assembly" approach in your build tool to meet the defined layout guidelines.
     This assembly is a universal package that is ready for install and deployment
-    on any operating system.
+    on any operating system.  As long as your assembly meets the canonical layout
+    any Stork deployment tool will be able to handle it.
 
  3. Deployment - rapidly deploy your assembly to one or more systems via a fabric-based
     installer.  Or in future versions, convert your assembly tarball into an
@@ -57,7 +64,7 @@ your JVM-based apps.
 
 ### Why are Uber/Fat jars not recommended for *most* applications?
 
-An Uber/Fat jar is where all dependencies are merged into a single jar. There
+An Uber/Fat jar is a jar that has all dependencies merged into it. There
 are several reasons why Stork suggests avoiding this approach. First, if you
 want to "rsync" your deployment for rapidly deploying an upgrade -- in most cases
 the dependencies do not change much and usually eat up most of the disk space.
@@ -76,6 +83,123 @@ small apps.
 Fourth, many libraries include resources within their .jar that may or may not
 work correctly when re-packaged into another .jar.  Avoiding that entirely
 is a good thing.
+
+
+## The Stork Launcher
+
+Utility for generating native launchers for Java-based applications
+across Windows, Linux, Mac OSX, and many other UNIX-like systems (any NIX with a
+JVM and bourne shell support). 
+
+You simply create a YAML-based config file (that you can check-in to
+source control) and then you compile/generate it into one or more launchers. These
+launchers can then be distributed with your final tarball/assembly/package so 
+that your app looks like a native compiled executable.
+
+### Development workflow
+
+Use it via one of the build tool plugins or simply call "stork-generate" from the
+command-line version.  Simply include Stork as part of your build workflow to
+generate the launcher scripts while you also compile your JVM bytecode classes.
+
+### Features
+
+ * Create launchers for one or more CONSOLE or DAEMON applications that will be
+   included in your assembly. Launchers feel like a natively compiled app.
+
+ * Console and daemon launchers are supported across all popular operating systems:
+
+    * Windows XP+ (32-bit and 64-bit)
+    * Linux (32-bit and 64-bit)
+    * Mac OSX (32-bit and 64-bit)
+    * FreeBSD
+    * OpenBSD
+
+ * Intelligent & automatic JVM detection (e.g. no need to have JAVA_HOME set)
+    
+ * Carefully researched, tested, and optimized daemonizing methods for each OS:
+
+    * Windows daemons installed as a service (32 and/or 64-bit daemons supported)
+    * Linux/UNIX daemons use NOHUP, detach TTY properly, and do NOT spawn any
+      sort of annoying helper/controller process
+    * Mac OSX daemons integrate seamlessly with launchctl
+    * All daemons can easily be run in non-daemon mode
+    * All companion helper scripts are included to get the daemon to start
+      at boot
+ 
+ * Configurable methods supported for verifying a daemon started -- including useful
+   debug output (e.g. if daemon fails to start, tail the log so the error is printed
+   if an error is encountered).
+
+ * Supports fixed or percentage-based min/max memory at JVM startup
+ 
+ * Supports launching apps with retaining the working dir of the shell or setting
+   the working directory to the home of app.
+
+ * Sets the working directory of the app without annoyingly changing the working
+   directory of the shell that launched the app (even on Windows).
+
+ * Command-line arguments are seamlessly passed thru to underlying Java app
+
+ * Runtime debugging using simple LAUNCHER_DEBUG=1 env var before executing binary
+   to see what's going on (e.g. how is the JVM found?)
+
+ * Support for symlinking detected JVM as application name so that Linux/UNIX commands
+   such as TOP/PS make identifying application easier.
+
+### Sample Launcher Config
+
+    # Name of application (make sure it has no spaces)
+    name: "hello-console"
+
+    # Domain of application (e.g. your organization such as com.example)
+    domain: "co.fizzed.stork.sample"
+
+    # Display name of application (can have spaces)
+    display_name: "Hello Console App"
+
+    short_description: "Demo console app"
+
+    long_description: "Demo of console app for mfizz jtools launcher"
+
+    # Type of launcher (CONSOLE or DAEMON)
+    type: CONSOLE
+
+    # Java class to run
+    main_class: "co.fizzed.stork.sample.HelloConsole"
+
+    # Platform launchers to generate (WINDOWS, LINUX, MAC_OSX)
+    # Linux launcher is suitable for Bourne shells (e.g. Linux/BSD)
+    platforms: [ WINDOWS, LINUX, MAC_OSX ]
+
+    # Working directory for app
+    #  RETAIN will not change the working directory
+    #  APP_HOME will change the working directory to the home of the app
+    #    (where it was intalled) before running the main class
+    working_dir_mode: RETAIN
+
+    # Arguments for application (as though user typed them on command-line)
+    # These will be added immediately after the main class part of java command
+    #app_args: "-c config.yml"
+
+    # Arguments to use with the java command (e.g. way to pass -D arguments)
+    #java_args: "-Dtest=foo"
+
+    # Minimum version of java required (system will be searched for acceptable jvm)
+    min_java_version: "1.6"
+
+    # Min/max fixed memory (measured in MB)
+    min_java_memory: 30
+    max_java_memory: 256
+
+    # Min/max memory by percentage of system
+    #min_java_memory_pct: 10
+    #max_java_memory_pct: 20
+
+    # Try to create a symbolic link to java executable in <app_home>/run with
+    # the name of "<app_name>-java" so that commands like "ps" will make it
+    # easier to find your app
+    symlink_java: true
 
 
 ### Canonical/Conventional Java application layout
@@ -182,8 +306,8 @@ To use add the following to your POM:
             ...
             <plugin>
                 <groupId>co.fizzed</groupId>
-                <artifactId>stork-maven-plugin</artifactId>
-                <version>USE-LATEST-HERE</version>
+                <artifactId>fizzed-stork-maven-plugin</artifactId>
+                <version>1.2.0</version>
                 <executions>
                     <execution>
                         <id>generate-stork-launchers</id>
@@ -227,8 +351,8 @@ of ${finalName} as the root directory of the tarball (so it unpacks correctly)
             ...
             <plugin>
                 <groupId>co.fizzed</groupId>
-                <artifactId>stork-maven-plugin</artifactId>
-                <version>USE-LATEST-HERE</version>
+                <artifactId>fizzed-stork-maven-plugin</artifactId>
+                <version>1.2.0</version>
                 <executions>
                     <execution>
                         <id>generate-stork-assembly</id>
@@ -319,7 +443,52 @@ The PlayFramework is a popular Scala/Java framework that uses SBT underneath
 for its build system.  Stork has tight integration with PlayFramework via its
 plugin.
 
+NOTE: You must be using PlayFramework version >= 2.3.6 and SBT 0.13.5
+
+This plugin takes advantage of being an AutoPlugin which was introduced in
+PlayFramework 2.3.6 and SBT 0.13.5 -- which makes auto importing of settings and
+activation of plugins a piece of cake.
+
 Example Play project: examples/hello-server-play
+
+Play is great, but there are some strange choices (IMHO) regarding config files
+during startup and where it finds them.  By default, Play will use your conf/
+directory during development, but then add them as resources to your compiled
+JARs for deployment.  Nothing like hard-coded configs, eh?  The only way to
+modify a config in production is to create your own new conf/ directory, 
+extract the configs from the compiled JARS, and then add a Java system property
+before you run Play that tells it the new config to run at start.  It's logging
+levels for production also are less than desired (IMHO).  Therefore, this plugin
+will add two system properties by default to your startup -- to force play to
+read the files from conf/ in production:
+
+    -Dconfig.file=conf/application.conf -Dlogger.file=conf/logger.xml
+
+Since Stork's canonical app layout always includes a conf directory -- this plugin
+will copy whatever is in your conf/ directory to your assembly tarball.  The
+ones Play hard-coded in your compiled jars still exists, but Play will at least
+be forced to load the conf/application.conf from the conf/ directory vs. the
+one compiled into your .jar.  Remember that this plugin also opts to start your
+Java app with it's bootstrap main class vs. Play's default NettyServer.  It's 
+a little easier to understand what happens by seeing the final java command used
+to start your app:
+
+    <java, classpath, etc. and then> -Xrs -Djava.net.preferIPv4Stack=true -Dlauncher.main=play.core.server.NettyServer -Dconfig.file=conf/application.conf -Dlauncher.bootstrap=conf/stork-bootstrap.conf -Dlogger.file=conf/logger.xml co.fizzed.stork.bootstrap.PlayBootstrap
+
+These defaults can customized in your app to something else.  Simply tweak the
+SettingKeys to something else or set the 
+"java_args" property in your conf/stork-launcher.yml file to whatever you'd like
+the line to be. There are four SettingKeys to customize what the plugin does:
+
+ - storkPlayConf: Config file to load at runtime to configure play app. Defaults
+        to conf/application.conf (play's default)
+ - storkPlayLauncherConf: Launcher config file to use to override this plugins
+        default launcher config.  Defaults to conf/stork-launcher.yml
+ - storkPlayBootstrapConf: The launcher bootstrap config file to use at runtime
+        to set system properties before starting play. Useful for setting the
+        http.port play will bind to by default. Defaults to conf/stork-bootstrap.conf
+ - storkAssemblyStageDir: The directory this plugin will stage the stork
+        compliant assembly. Defaults to target/stork
 
 The plugin affects your application in two main ways.  First, since Play only
 has a well-defined entry point to your application, the plugin includes a 
@@ -337,11 +506,24 @@ a conf/stork-bootstrap.conf file with a system property on each line:
 
     http.port=9001
 
-Finally, the plugin implementation relies on the default Play "stage" task
+To enable in your Play project add the following to project/plugins.sbt:
+
+    // stork play plugin
+    addSbtPlugin("co.fizzed" % "fizzed-stork-sbt-play-plugin" % "1.2.0")
+
+The plugin extends SBT AutoPlugin which auto enables settings in your project
+so you will not need to add anything else to your project to pick up the plugin.
+
+The plugin implementation relies on the default Play "stage" task
 to figure out what jars to copy.  As avid users of Play over the years, the
 platform has changed how it stages jars between versions and tapping into 
 the existing task is more stable.  The example project will be the easiest
-way to see how it works.
+way to see how it works.  Thus, to assembe your play project run the following:
+
+    activator stage stork-assembly
+
+This will result in a target/stork directory containing the staged project and
+target/ will contain a tarball of the assembly. 
 
 
 ## Examples
@@ -370,9 +552,7 @@ The PlayFramework allows you to use a mix of Scala/Java for creating web
 applications.  Play uses SBT underneath the hood, but they also define many
 special settings in SBT for building their applications.
 
-To build the project and use this plugin, you'll need to run the following.  If
-you use Play <= 2.2, then run with the "play" executable or for Play >= 2.3
-(shown below), you use the "activator" command.
+To build the project and use this plugin, you'll need to run the following.
 
     activator stage stork-assembly
     target/stork/bin/hello-server-play --run
@@ -381,72 +561,8 @@ On success, the target/ directory will also contain the final assembly tarball.
 This tarball is ready for distribution or deployment using stork-fabric-deploy.
 
 
-## The Stork Launcher
-
-Utility for generating native launchers for Java-based applications
-across Windows, Linux, Mac OSX, and many other UNIX-like systems (any NIX with a
-JVM and bourne shell support). 
-
-You simply create a YAML-based config file (that you can check-in to
-source control) and then you compile/generate it into one or more launchers. These
-launchers can then be distributed with your final tarball/assembly/package so 
-that your app looks like a native compiled executable.
-
-### Development workflow
-
-Use it via one of the build tool plugins or simply call "stork-generate" from the
-command-line version.  Simply include Stork as part of your build workflow to
-generate the launcher scripts while you also compile your JVM bytecode classes.
-
-### Features
-
- * Create launchers for one or more CONSOLE or DAEMON applications that will be
-   included in your assembly. Launchers feel like a natively compiled app.
-
- * Console and daemon launchers are supported across all popular operating systems:
-
-    * Windows XP+ (32-bit and 64-bit)
-    * Linux (32-bit and 64-bit)
-    * Mac OSX (32-bit and 64-bit)
-    * FreeBSD
-    * OpenBSD
-
- * Intelligent & automatic JVM detection (e.g. no need to have JAVA_HOME set)
-    
- * Carefully researched, tested, and optimized daemonizing methods for each OS:
-
-    * Windows daemons installed as a service (32 and/or 64-bit daemons supported)
-    * Linux/UNIX daemons use NOHUP, detach TTY properly, and do NOT spawn any
-      sort of annoying helper/controller process
-    * Mac OSX daemons integrate seamlessly with launchctl
-    * All daemons can easily be run in non-daemon mode
-    * All companion helper scripts are included to get the daemon to start
-      at boot
- 
- * Configurable methods supported for verifying a daemon started -- including useful
-   debug output (e.g. if daemon fails to start, tail the log so the error is printed
-   if an error is encountered).
-
- * Supports fixed or percentage-based min/max memory at JVM startup
- 
- * Supports launching apps with retaining the working dir of the shell or setting
-   the working directory to the home of app.
-
- * Sets the working directory of the app without annoyingly changing the working
-   directory of the shell that launched the app (even on Windows).
-
- * Command-line arguments are seamlessly passed thru to underlying Java app
-
- * Runtime debugging using simple LAUNCHER_DEBUG=1 env var before executing binary
-   to see what's going on (e.g. how is the JVM found?)
-
- * Support for symlinking detected JVM as application name so that Linux/UNIX commands
-   such as TOP/PS make identifying application easier.
-
-
 ## License
 
 Copyright (C) 2014 Joe Lauer / Fizzed, Inc.
 
 This work is licensed under the Apache License, Version 2.0. See LICENSE for details.
-

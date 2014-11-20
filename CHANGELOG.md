@@ -1,4 +1,11 @@
 
+#### 1.2.1 - 2014-11-19
+ - Fixed bug with template for launchers on linux when java memory setting used
+   a value >= 999 (freemarker was adding commas).
+ - Java detect helper script now excluded by default. Can be included with a new
+   configuration setting "include_java_detect_helper" set to true.
+ - Fixed bug with stork-fabric-deploy for console-only apps
+
 #### 1.2.0 - 2014-11-04
  - Added new feature: stork-maven-assembly (creates tarball from target/stage)
  - Added new feature: stork-play-assembly (creates launcher for play app and

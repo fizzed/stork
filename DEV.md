@@ -25,11 +25,11 @@ mvn release:prepare -Prelease -Dresume=true
 
 ### On Linux/OSX
 
-    export PATH=`pwd`/cli/target/stage/bin:$PATH
+    export PATH=`pwd`/cli/target/stork/bin:$PATH
 
 ### On Windows
 
-    set PATH=%CD%\cli\target\stage\bin;%PATH%
+    set PATH=%CD%\cli\target\stork\bin;%PATH%
 
 ## Testing
 

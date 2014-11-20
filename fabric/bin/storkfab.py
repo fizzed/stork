@@ -69,6 +69,10 @@ def set_app_daemons_from_assembly_dir(d):
     puts("Reading " + d.assembly_dir + "/share/init.d/*.init to detect daemons...", show_prefix=False)
 
     initd_dir = d.assembly_dir + "/share/init.d"
+
+    if not os.path.exists(initd_dir):
+        return
+
     init_files = os.listdir(initd_dir)
     
     for init_file in init_files:
@@ -257,10 +261,12 @@ def deploy(assembly):
         sudo('ln -s "{}" "{}"'.format(os.path.basename(d.remote_version_dir), os.path.basename(d.remote_current_dir)), shell=True)    
         
     # fix ownership
-    sudo('chown -R {}.{} "{}"'.format(d.app_user, d.app_group, d.remote_version_dir), shell=True)
+    sudo('chown -Rf {}.{} "{}"'.format(d.app_user, d.app_group, d.remote_version_dir), shell=True)
     # fix permissions
     sudo('chmod -R 755 "{}"'.format(d.remote_current_dir+'/bin'), shell=True)
-    sudo('chmod -R 755 "{}"'.format(d.remote_current_dir+'/share/init.d'), shell=True)
+
+    initd_dir = d.remote_current_dir + '/share/init.d'
+    sudo('if [ -d "{}" ]; then chmod -R 755 "{}"; fi'.format(initd_dir, initd_dir), shell=True)
     
     for daemon_name in d.app_daemon_names:
         # install init.d?

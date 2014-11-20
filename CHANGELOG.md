@@ -1,5 +1,5 @@
 
-#### 1.2.1 - 2014-11-19
+#### 1.2.1 - 2014-11-20
  - Fixed bug with template for launchers on linux when java memory setting used
    a value >= 999 (freemarker was adding commas).
  - Java detect helper script now excluded by default. Can be included with a new

@@ -22,13 +22,13 @@
 [ -z $PID_FILE ] && PID_FILE=""
 
 # min and max mem (in MB); leave empty for java defaults
-[ -z $JAVA_MIN_MEM ] && JAVA_MIN_MEM="${config.minJavaMemory!""}"
-[ -z $JAVA_MAX_MEM ] && JAVA_MAX_MEM="${config.maxJavaMemory!""}"
+[ -z $JAVA_MIN_MEM ] && JAVA_MIN_MEM="${(config.minJavaMemory?c)!""}"
+[ -z $JAVA_MAX_MEM ] && JAVA_MAX_MEM="${(config.maxJavaMemory?c)!""}"
 
 # min and max mem as a percent of system memory
 # they have priority over JAVA_MIN_MEM and JAVA_MAX_MEM if set
-[ -z $JAVA_MIN_MEM_PCT ] && JAVA_MIN_MEM_PCT="${config.minJavaMemoryPct!""}"
-[ -z $JAVA_MAX_MEM_PCT ] && JAVA_MAX_MEM_PCT="${config.maxJavaMemoryPct!""}"
+[ -z $JAVA_MIN_MEM_PCT ] && JAVA_MIN_MEM_PCT="${(config.minJavaMemoryPct?c)!""}"
+[ -z $JAVA_MAX_MEM_PCT ] && JAVA_MAX_MEM_PCT="${(config.maxJavaMemoryPct?c)!""}"
 
 # application run dir (e.g. for pid file)
 [ -z $RUN_DIR ] && RUN_DIR="${config.runDir!""}"

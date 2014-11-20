@@ -24,11 +24,11 @@
     </exec>
   </target>
   
-  <target name="hello-console" depends="package">
+  <target name="hello-console" depends="install">
     <exec executable="examples/hello-world/target/stork/bin/hello-console${bat}" failonerror="true"/>
   </target>
   
-  <target name="hello-daemon" depends="package">
+  <target name="hello-daemon" depends="install">
     <exec executable="examples/hello-world/target/stork/bin/hello-daemon${bat}" failonerror="true">
       <arg line="--run"/>
     </exec>

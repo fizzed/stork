@@ -20,5 +20,10 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.0.0")
 // just for testing need local maven repo
 resolvers += Resolver.mavenLocal
 
+// read app version from parent pom file
+val pom = scala.xml.XML.load(scala.xml.Source.fromFile(new File("../../pom.xml")))
+
+val appVersion = (pom \ "version").text
+
 // Stork Play plugin (auto enabled as its an AutoPlugin)
-addSbtPlugin("co.fizzed" % "fizzed-stork-sbt-play-plugin" % "1.2.0-SNAPSHOT")
+addSbtPlugin("co.fizzed" % "fizzed-stork-sbt-play-plugin" % appVersion)

@@ -1,12 +1,16 @@
-name := "hello-server-play"
 
-organization := "co.fizzed"
+// read app version from parent pom file
+val pom = scala.xml.XML.load(scala.xml.Source.fromFile(new File("../../pom.xml")))
+
+version := (pom \ "version").text
+
+organization := (pom \ "groupId").text
+
+name := "hello-server-play"
 
 organizationName := "Fizzed, Inc."
 
 organizationHomepage := Some(url("http://fizzed.co"))
-
-version := "1.2.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
@@ -20,9 +24,6 @@ libraryDependencies ++= Seq(
 )
 
 resolvers += Resolver.mavenLocal
-
-// override the directory stork assembly staged to
-// storkAssemblyTarget := target(_ / "stork-new").value
 
 //run in Compile <<= (run in Compile).dependsOn(storkRun)
 

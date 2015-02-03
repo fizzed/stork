@@ -10,6 +10,9 @@ publishTo := {
     Some("releases" at nexus + "service/local/staging/deploy/maven2")
 }
 
+// does not work with com.github.eirslett#sbt-slf4j_2.11;0.1:
+// crossScalaVersions := Seq("2.10.4", "2.11.5")
+
 publishMavenStyle := true
 
 publishArtifact in Test := false

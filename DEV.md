@@ -21,6 +21,11 @@ mvn release:prepare -Prelease
 mvn install
 mvn release:prepare -Prelease -Dresume=true
 
+Then release sbt-play-plugin... need to hardcode version we are releasing
+
+cd sbt-play-plugin
+activator +publishSigned
+
 ## Testing command-line version during development.
 
 ### On Linux/OSX

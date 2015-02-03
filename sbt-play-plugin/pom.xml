@@ -63,16 +63,16 @@
                         <configuration>
                             <artifacts>
                                 <artifact>
-                                    <file>${sbtArtifactDir}/${artifactId}-${project.version}.jar</file>
+                                    <file>${sbtArtifactDir}/fizzed-stork-sbt-play-plugin-${project.version}.jar</file>
                                     <type>jar</type>
                                 </artifact>
                                 <artifact>
-                                    <file>${sbtArtifactDir}/${artifactId}-${project.version}-sources.jar</file>
+                                    <file>${sbtArtifactDir}/fizzed-stork-sbt-play-plugin-${project.version}-sources.jar</file>
                                     <type>jar</type>
                                     <classifier>sources</classifier>
                                 </artifact>
                                 <artifact>
-                                    <file>${sbtArtifactDir}/${artifactId}-${project.version}-javadoc.jar</file>
+                                    <file>${sbtArtifactDir}/fizzed-stork-sbt-play-plugin-${project.version}-javadoc.jar</file>
                                     <type>jar</type>
                                     <classifier>javadoc</classifier>
                                 </artifact>

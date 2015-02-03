@@ -29,7 +29,6 @@
                 <module>util</module>
                 <module>cli</module>
                 <module>maven-plugin</module>
-                <module>sbt-play-plugin</module>
             </modules>
         </profile>
         <profile>

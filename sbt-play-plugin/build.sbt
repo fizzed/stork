@@ -11,7 +11,7 @@ publishTo := {
 }
 
 // does not work with com.github.eirslett#sbt-slf4j_2.11;0.1:
-// crossScalaVersions := Seq("2.10.4", "2.11.5")
+//crossScalaVersions := Seq("2.10.4", "2.11.5")
 
 publishMavenStyle := true
 

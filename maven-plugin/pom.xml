@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.fizzed</groupId>
         <artifactId>fizzed-stork-parent</artifactId>
-        <version>1.2.2-SNAPSHOT</version>
+        <version>1.2.2</version>
     </parent>
     
     <build>

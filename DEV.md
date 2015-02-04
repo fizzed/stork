@@ -18,13 +18,14 @@ does not "install" to local repo during prepare which breaks the SBT build
 of this project. To workaround this error:
 
 mvn release:prepare -Prelease
-mvn install
-mvn release:prepare -Prelease -Dresume=true
 
-Then release sbt-play-plugin... need to hardcode version we are releasing
+# Do normal mvn release:perform...
+
+# Now release sbt-play-plugin... need to hardcode version we are releasing
 
 cd sbt-play-plugin
-activator +publishSigned
+nano project/StorkPluginBuild.scala
+activator clean +publishSigned
 
 ## Testing command-line version during development.
 

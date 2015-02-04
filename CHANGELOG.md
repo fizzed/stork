@@ -1,4 +1,7 @@
 
+#### 1.2.2 - 2015-02-03
+ - Migrated packages from co.fizzed to com.fizzed
+
 #### 1.2.1 - 2014-11-20
  - Fixed bug with template for launchers on linux when java memory setting used
    a value >= 999 (freemarker was adding commas).

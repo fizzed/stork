@@ -3,7 +3,7 @@ Stork by Fizzed
 
 ## Contributors
 
- - [Fizzed, Inc.](http://fizzed.co)
+ - [Fizzed, Inc.](http://fizzed.com)
  - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
 
 ## Compiling

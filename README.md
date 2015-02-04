@@ -3,13 +3,13 @@ Stork by Fizzed
 
 ## By
 
- - [Fizzed, Inc.](http://fizzed.co)
+ - [Fizzed, Inc.](http://fizzed.com)
  - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
 
 
 ## Versions
 
- - Stork Command-Line: http://cdn.fizzed.co/releases/fizzed-stork-1.2.1.tar.gz
+ - Stork Command-Line: http://cdn.fizzed.com/releases/fizzed-stork-1.2.2.tar.gz
  - Stork Maven Plugin: see section below (via Maven Central)
  - Stork SBT Plugin for Play: see section below (via Maven Central)
 
@@ -153,7 +153,7 @@ generate the launcher scripts while you also compile your JVM bytecode classes.
     name: "hello-console"
 
     # Domain of application (e.g. your organization such as com.example)
-    domain: "co.fizzed.stork.sample"
+    domain: "com.fizzed.stork.sample"
 
     # Display name of application (can have spaces)
     display_name: "Hello Console App"
@@ -166,7 +166,7 @@ generate the launcher scripts while you also compile your JVM bytecode classes.
     type: CONSOLE
 
     # Java class to run
-    main_class: "co.fizzed.stork.sample.HelloConsole"
+    main_class: "com.fizzed.stork.sample.HelloConsole"
 
     # Platform launchers to generate (WINDOWS, LINUX, MAC_OSX)
     # Linux launcher is suitable for Bourne shells (e.g. Linux/BSD)
@@ -305,9 +305,9 @@ To use add the following to your POM:
         <plugins>
             ...
             <plugin>
-                <groupId>co.fizzed</groupId>
+                <groupId>com.fizzed</groupId>
                 <artifactId>fizzed-stork-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>1.2.2</version>
                 <executions>
                     <execution>
                         <id>generate-stork-launchers</id>
@@ -350,9 +350,9 @@ of ${finalName} as the root directory of the tarball (so it unpacks correctly)
         <plugins>
             ...
             <plugin>
-                <groupId>co.fizzed</groupId>
+                <groupId>com.fizzed</groupId>
                 <artifactId>fizzed-stork-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>1.2.2</version>
                 <executions>
                     <execution>
                         <id>generate-stork-assembly</id>
@@ -473,7 +473,7 @@ Java app with it's bootstrap main class vs. Play's default NettyServer.  It's
 a little easier to understand what happens by seeing the final java command used
 to start your app:
 
-    <java, classpath, etc. and then> -Xrs -Djava.net.preferIPv4Stack=true -Dlauncher.main=play.core.server.NettyServer -Dconfig.file=conf/application.conf -Dlauncher.bootstrap=conf/stork-bootstrap.conf -Dlogger.file=conf/logger.xml co.fizzed.stork.bootstrap.PlayBootstrap
+    <java, classpath, etc. and then> -Xrs -Djava.net.preferIPv4Stack=true -Dlauncher.main=play.core.server.NettyServer -Dconfig.file=conf/application.conf -Dlauncher.bootstrap=conf/stork-bootstrap.conf -Dlogger.file=conf/logger.xml com.fizzed.stork.bootstrap.PlayBootstrap
 
 These defaults can customized in your app to something else.  Simply tweak the
 SettingKeys to something else or set the 
@@ -509,7 +509,7 @@ a conf/stork-bootstrap.conf file with a system property on each line:
 To enable in your Play project add the following to project/plugins.sbt:
 
     // stork play plugin
-    addSbtPlugin("co.fizzed" % "fizzed-stork-sbt-play-plugin" % "1.2.1")
+    addSbtPlugin("com.fizzed" % "fizzed-stork-sbt-play-plugin" % "1.2.2")
 
 The plugin extends SBT AutoPlugin which auto enables settings in your project
 so you will not need to add anything else to your project to pick up the plugin.

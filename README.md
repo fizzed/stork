@@ -9,7 +9,7 @@ Stork by Fizzed
 
 ## Versions
 
- - Stork Command-Line: http://cdn.fizzed.com/releases/fizzed-stork-1.2.2.tar.gz
+ - Stork Command-Line: https://github.com/fizzed/java-stork/releases/download/v1.2.2/fizzed-stork-1.2.2.tar.gz
  - Stork Maven Plugin: see section below (via Maven Central)
  - Stork SBT Plugin for Play: see section below (via Maven Central)
 

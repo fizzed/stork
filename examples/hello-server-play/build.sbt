@@ -10,7 +10,7 @@ name := "hello-server-play"
 
 organizationName := "Fizzed, Inc."
 
-organizationHomepage := Some(url("http://fizzed.co"))
+organizationHomepage := Some(url("http://fizzed.com"))
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 

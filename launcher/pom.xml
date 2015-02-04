@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>co.fizzed</groupId>
+    <groupId>com.fizzed</groupId>
     <artifactId>fizzed-stork-launcher</artifactId>
     <packaging>jar</packaging>
     <name>fizzed-stork-launcher</name>
     <description>Utility for generating launchers (console/daemon) for Windows, Linux, and Mac.</description>
   
     <parent>
-        <groupId>co.fizzed</groupId>
+        <groupId>com.fizzed</groupId>
         <artifactId>fizzed-stork-parent</artifactId>
         <version>1.2.2-SNAPSHOT</version>
     </parent>
@@ -66,6 +66,6 @@
     </dependencies>
 
     <properties>
-        <main.java.package>co.fizzed.stork.launcher</main.java.package>
+        <main.java.package>com.fizzed.stork.launcher</main.java.package>
     </properties>
 </project>

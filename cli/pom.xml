@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>co.fizzed</groupId>
+    <groupId>com.fizzed</groupId>
     <artifactId>fizzed-stork-cli</artifactId>
     <packaging>pom</packaging>
     <name>fizzed-stork-cli</name>
  
     <parent>
-        <groupId>co.fizzed</groupId>
+        <groupId>com.fizzed</groupId>
         <artifactId>fizzed-stork-parent</artifactId>
         <version>1.2.2-SNAPSHOT</version>
     </parent>
@@ -51,7 +51,7 @@
                             <arguments>
                                 <argument>-classpath</argument>
             			<classpath />
-                                <argument>co.fizzed.stork.launcher.GeneratorMain</argument>
+                                <argument>com.fizzed.stork.launcher.GeneratorMain</argument>
                                 <argument>-o</argument>
                                 <argument>target/stork</argument>
                                 <argument>-i</argument>
@@ -71,7 +71,7 @@
                             <arguments>
                                 <argument>-classpath</argument>
             			<classpath />
-                                <argument>co.fizzed.stork.util.CopyFile</argument>
+                                <argument>com.fizzed.stork.util.CopyFile</argument>
                                 <argument>-i</argument>
                                 <argument>../fabric/bin</argument>
                                 <argument>-o</argument>
@@ -107,12 +107,12 @@
     <dependencies>
         <!-- compile -->
         <dependency>
-            <groupId>co.fizzed</groupId>
+            <groupId>com.fizzed</groupId>
             <artifactId>fizzed-stork-launcher</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>co.fizzed</groupId>
+            <groupId>com.fizzed</groupId>
             <artifactId>fizzed-stork-util</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -124,6 +124,6 @@
     </dependencies>
 
     <properties>
-        <main.java.package>co.fizzed.stork.cli</main.java.package>
+        <main.java.package>com.fizzed.stork.cli</main.java.package>
     </properties>
 </project>

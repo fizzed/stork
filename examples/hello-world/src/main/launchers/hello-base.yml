@@ -3,7 +3,7 @@
 name: "hello-console2"
 
 # Domain of application (e.g. com.example)
-domain: "co.fizzed.stork.sample"
+domain: "com.fizzed.stork.sample"
 
 # Display name of application (can have spaces)
 display_name: "Hello Console App"

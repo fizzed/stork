@@ -34,7 +34,7 @@ pomExtra := (
     </scm>
     <developers>
         <developer>
-            <email>oss@fizzed.co</email>
+            <email>oss@fizzed.com</email>
         </developer>
     </developers>
 )

@@ -7,8 +7,8 @@ import scala.xml.{XML, Source}
 object StorkPluginBuild extends Build {
     // load version and group from project pom file
     val pom = XML.load(Source.fromFile(new File("../pom.xml")))
-    //val storkVersion = (pom \ "version").text
-    val storkVersion = "1.2.1"
+    val storkVersion = (pom \ "version").text
+    //val storkVersion = "1.2.1"
     val storkGroupId = (pom \ "groupId").text
 
     lazy val project = Project (
@@ -19,9 +19,9 @@ object StorkPluginBuild extends Build {
             name := "fizzed-stork-sbt-play-plugin",
             organization := storkGroupId,
             version := storkVersion,
-            libraryDependencies += "co.fizzed" % "fizzed-stork-util" % storkVersion,
-            libraryDependencies += "co.fizzed" % "fizzed-stork-bootstrap" % storkVersion,
-            libraryDependencies += "co.fizzed" % "fizzed-stork-launcher" % storkVersion,
+            libraryDependencies += "com.fizzed" % "fizzed-stork-util" % storkVersion,
+            libraryDependencies += "com.fizzed" % "fizzed-stork-bootstrap" % storkVersion,
+            libraryDependencies += "com.fizzed" % "fizzed-stork-launcher" % storkVersion,
             // for bridging slf4j calls to sbt logging
             // https://github.com/eirslett/sbt-slf4j
             libraryDependencies += "com.github.eirslett" % "sbt-slf4j_2.10" % "0.1" % "provided",

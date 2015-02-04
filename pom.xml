@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>co.fizzed</groupId>
+    <groupId>com.fizzed</groupId>
     <artifactId>fizzed-stork-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.2.2-SNAPSHOT</version>
     <name>fizzed-stork-parent</name>
 
     <parent>
-        <groupId>co.fizzed</groupId>
+        <groupId>com.fizzed</groupId>
         <artifactId>fizzed-maven-parent</artifactId>
-        <version>1.11</version>
+        <version>1.12</version>
     </parent>
 
     <scm>
@@ -94,7 +94,7 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.3</version>
+                <version>2.7</version>
             </dependency>
 		
             <!-- testing scope -->
@@ -109,7 +109,7 @@
 
     <properties>
         <main.java.package />
-        <slf4j.version>1.7.7</slf4j.version>
+        <slf4j.version>1.7.10</slf4j.version>
         <logback.version>1.1.2</logback.version>
         <license.skip>true</license.skip>
     </properties>

@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>co.fizzed</groupId>
+    <groupId>com.fizzed</groupId>
     <artifactId>fizzed-stork-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <name>${project.artifactId}</name>
     <description>Maven plugin for Stork utilities</description>
   
     <parent>
-        <groupId>co.fizzed</groupId>
+        <groupId>com.fizzed</groupId>
         <artifactId>fizzed-stork-parent</artifactId>
         <version>1.2.2-SNAPSHOT</version>
     </parent>
@@ -18,7 +18,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.3</version>
+                <version>3.4</version>
                 <configuration>
                     <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
@@ -58,12 +58,12 @@
     <dependencies>
         <!-- compile -->
         <dependency>
-            <groupId>co.fizzed</groupId>
+            <groupId>com.fizzed</groupId>
             <artifactId>fizzed-stork-launcher</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>co.fizzed</groupId>
+            <groupId>com.fizzed</groupId>
             <artifactId>fizzed-stork-util</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -103,40 +103,10 @@
             <artifactId>plexus-utils</artifactId>
             <version>1.5.15</version>
         </dependency>
-        
-        <!--
-        <dependency>
-            <groupId>org.zeroturnaround</groupId>
-            <artifactId>zt-exec</artifactId>
-            <version>1.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.9</version>
-        </dependency>
-        -->
-        
-        <!-- testing -->
-        <!--
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-            <scope>test</scope>
-        </dependency>
-        -->
-        
     </dependencies>
 
     <properties>
-        <main.java.package>co.fizzed.stork.maven</main.java.package>
+        <main.java.package>com.fizzed.stork.maven</main.java.package>
         <maven.version>3.1.0</maven.version>
     </properties>
     

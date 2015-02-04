@@ -3,7 +3,7 @@
 name: "hello-daemon"
 
 # Domain of application (e.g. com.example)
-domain: "co.fizzed.stork.sample"
+domain: "com.fizzed.stork.sample"
 
 # Display name of application (can have spaces)
 # Usually also the application directory for Windows/Mac OSX (e.g. Program Files\Hello Server)
@@ -17,7 +17,7 @@ long_description: "Demo of daemon app for mfizz jtools launcher"
 type: DAEMON
 
 # Java class to run
-main_class: "co.fizzed.stork.sample.HelloDaemon"
+main_class: "com.fizzed.stork.sample.HelloDaemon"
 
 # Platform launchers to generate (WINDOWS, LINUX, MAC_OSX)
 platforms: [ WINDOWS, LINUX, MAC_OSX ]

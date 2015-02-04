@@ -26,4 +26,4 @@ val pom = scala.xml.XML.load(scala.xml.Source.fromFile(new File("../../pom.xml")
 val appVersion = (pom \ "version").text
 
 // Stork Play plugin (auto enabled as its an AutoPlugin)
-addSbtPlugin("co.fizzed" % "fizzed-stork-sbt-play-plugin" % appVersion)
+addSbtPlugin("com.fizzed" % "fizzed-stork-sbt-play-plugin" % appVersion)

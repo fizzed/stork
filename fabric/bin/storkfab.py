@@ -2,6 +2,8 @@ from fabric.api import *
 import os, sys, time, datetime, fabric
 sys.dont_write_bytecode = True
 
+env.use_ssh_config = True
+
 class StorkDeployer:
     # dir for work required 
     work_dir = "work"

@@ -1,4 +1,7 @@
 
+#### To Be Released
+ - stork-fabric-deploy: use_ssh_config true by default
+
 #### 1.2.2 - 2015-02-03
  - Migrated packages from co.fizzed to com.fizzed
 

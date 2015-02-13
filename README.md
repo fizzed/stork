@@ -1,8 +1,6 @@
 Stork by Fizzed
 =======================================
 
-## By
-
  - [Fizzed, Inc.](http://fizzed.com)
  - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
 
@@ -11,22 +9,30 @@ Stork by Fizzed
 
  - Stork Command-Line: https://github.com/fizzed/java-stork/releases/download/v1.2.2/fizzed-stork-1.2.2.tar.gz
  - Stork Maven Plugin: see section below (via Maven Central)
- - Stork SBT Plugin for Play: see section below (via Maven Central)
+ - Stork SBT Plugin for Play Framework: see section below (via Maven Central)
+
+## 2-Minute Drill
+
+Demos are sometimes faster than reading this doc.  Here are some good blog posts
+on using Stork:
+
+[Using Stork to deploy a production Ninja Framework app](http://fizzed.com/blog/2015/01/using-stork-deploy-production-ninja-framework-app)
+
 
 ## Overview
 
 What comes after your Java/JVM build tool (Maven, SBT, Gradle, Ant, etc.) compiles
-your code? There are a plethora of fantastic tools for building your project, but
+your code? There are many tools for building your project, but
 then what? A tarball? A debian/rpm package? An Uber/Fat Jar? Some sort of installer?
-The problem with all of these approaches is three-fold. First, they usually are tightly
-coupled with your build tool -- which makes it tougher to switch between projects
-that may use various build tools. Second, they lack flexibility in case you need
-to use your final assembly in various ways (rapid deploy to staging, or deliver
+Here's the problem with those approaches. First, they are tightly
+coupled with your build tool -- which makes it tough to switch between projects
+that use different build tools. Second, they lack flexibility in case you need
+to use your final assembly in an unexpected way (rapid deploy to staging, or deliver
 an installable package to a customer, etc).  Third, what do you do with the 
-non-Java aspects of your app such as configuration files? What if you want to
+non-Java parts of your app such as configuration files? What if you want to
 distribute a command-line console app along with your daemon? What if you have
 little control over the end user system (e.g. not sure where they may install
-Java)?  What happens on an upgrade?  
+Java)?  What happens on an upgrade?
 
 Stork is a collection of utilities for optimizing your "after-build" workflow by
 filling in the gap between your Java build system and eventual end-user app

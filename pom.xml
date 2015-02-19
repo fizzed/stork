@@ -32,10 +32,7 @@
             </modules>
         </profile>
         <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>extra</id>
             <modules>
                 <module>bootstrap</module>
                 <module>launcher</module>
@@ -46,6 +43,20 @@
                 <module>examples/hello-world</module>
                 <module>examples/hello-server-dropwizard</module>
                 <module>examples/hello-server-play</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>bootstrap</module>
+                <module>launcher</module>
+                <module>util</module>
+                <module>cli</module>
+                <module>maven-plugin</module>
+                <module>examples/hello-world</module>
             </modules>
         </profile>
     </profiles>

@@ -1,4 +1,4 @@
-Stork by Fizzed [![Build Status](https://buildhive.cloudbees.com/job/fizzed/job/java-stork/badge/icon)](https://buildhive.cloudbees.com/job/fizzed/job/java-stork/)
+Stork by Fizzed [![Build Status](https://travis-ci.org/fizzed/java-stork.svg?branch=master)](https://travis-ci.org/fizzed/java-stork)
 =======================================
 
  - [Fizzed, Inc.](http://fizzed.com)

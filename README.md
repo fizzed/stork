@@ -1,9 +1,8 @@
-Stork by Fizzed
+Stork by Fizzed [![Build Status](https://buildhive.cloudbees.com/job/fizzed/job/java-stork/badge/icon)](https://buildhive.cloudbees.com/job/fizzed/job/java-stork/)
 =======================================
 
  - [Fizzed, Inc.](http://fizzed.com)
  - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
-
 
 ## Versions
 

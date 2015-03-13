@@ -1,5 +1,5 @@
 
-#### To Be Released
+#### 1.2.3 - 2015-03-13
  - stork-fabric-deploy: use_ssh_config true by default
 
 #### 1.2.2 - 2015-02-03

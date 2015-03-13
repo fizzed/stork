@@ -6,7 +6,7 @@ Stork by Fizzed [![Build Status](https://travis-ci.org/fizzed/java-stork.svg?bra
 
 ## Versions
 
- - Stork Command-Line: https://github.com/fizzed/java-stork/releases/download/v1.2.2/fizzed-stork-1.2.2.tar.gz
+ - Stork Command-Line: https://github.com/fizzed/java-stork/releases/download/v1.2.3/fizzed-stork-1.2.3.tar.gz
  - Stork Maven Plugin: see section below (via Maven Central)
  - Stork SBT Plugin for Play Framework: see section below (via Maven Central)
 
@@ -312,7 +312,7 @@ To use add the following to your POM:
             <plugin>
                 <groupId>com.fizzed</groupId>
                 <artifactId>fizzed-stork-maven-plugin</artifactId>
-                <version>1.2.2</version>
+                <version>1.2.3</version>
                 <executions>
                     <execution>
                         <id>generate-stork-launchers</id>
@@ -357,7 +357,7 @@ of ${finalName} as the root directory of the tarball (so it unpacks correctly)
             <plugin>
                 <groupId>com.fizzed</groupId>
                 <artifactId>fizzed-stork-maven-plugin</artifactId>
-                <version>1.2.2</version>
+                <version>1.2.3</version>
                 <executions>
                     <execution>
                         <id>generate-stork-assembly</id>
@@ -514,7 +514,7 @@ a conf/stork-bootstrap.conf file with a system property on each line:
 To enable in your Play project add the following to project/plugins.sbt:
 
     // stork play plugin
-    addSbtPlugin("com.fizzed" % "fizzed-stork-sbt-play-plugin" % "1.2.2")
+    addSbtPlugin("com.fizzed" % "fizzed-stork-sbt-play-plugin" % "1.2.3")
 
 The plugin extends SBT AutoPlugin which auto enables settings in your project
 so you will not need to add anything else to your project to pick up the plugin.

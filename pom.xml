@@ -4,7 +4,7 @@
     <groupId>com.fizzed</groupId>
     <artifactId>fizzed-stork-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.3</version>
+    <version>1.2.4-SNAPSHOT</version>
     <name>fizzed-stork-parent</name>
 
     <parent>
@@ -16,7 +16,7 @@
     <scm>
         <url>https://github.com/fizzed/java-stork</url>
         <connection>scm:git:git@github.com:fizzed/java-stork.git</connection>
-        <tag>v1.2.3</tag>
+        <tag>master</tag>
     </scm>
 
     <profiles>

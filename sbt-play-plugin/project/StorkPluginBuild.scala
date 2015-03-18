@@ -8,7 +8,7 @@ object StorkPluginBuild extends Build {
     // load version and group from project pom file
     val pom = XML.load(Source.fromFile(new File("../pom.xml")))
     val storkVersion = (pom \ "version").text
-    //val storkVersion = "1.2.1"
+    //val storkVersion = "1.2.3"
     val storkGroupId = (pom \ "groupId").text
 
     lazy val project = Project (

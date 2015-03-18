@@ -4,7 +4,7 @@
     <groupId>com.fizzed</groupId>
     <artifactId>fizzed-stork-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.4-SNAPSHOT</version>
     <name>fizzed-stork-parent</name>
 
     <parent>

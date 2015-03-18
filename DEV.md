@@ -17,15 +17,21 @@ it won't publish the example projects to Maven Central). Also, the release plugi
 does not "install" to local repo during prepare which breaks the SBT build
 of this project. To workaround this error:
 
-mvn release:prepare -Prelease
+    mvn release:prepare -Prelease
 
-# Do normal mvn release:perform...
+    mvn release:perform
 
-# Now release sbt-play-plugin... need to hardcode version we are releasing
+The sbt-play-plugin now needs released. For now, adjust version we are releasing
 
-cd sbt-play-plugin
-nano project/StorkPluginBuild.scala
-activator clean +publishSigned
+    cd sbt-play-plugin
+    nano project/StorkPluginBuild.scala
+    activator clean +publishSigned
+
+Release both versions via Sonatype.  Now upload final tarball to github and
+include release notes:
+
+    Manually copy cli/target/*.tar.gz file to github
+
 
 ## Testing command-line version during development.
 

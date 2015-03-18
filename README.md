@@ -17,7 +17,6 @@ on using Stork:
 
 [Using Stork to deploy a production Ninja Framework app](http://fizzed.com/blog/2015/01/using-stork-deploy-production-ninja-framework-app)
 
-
 ## Overview
 
 What comes after your Java/JVM build tool (Maven, SBT, Gradle, Ant, etc.) compiles

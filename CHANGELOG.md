@@ -1,4 +1,4 @@
-Release notes for Stork
+Stork by Fizzed
 =======================================
 
 #### 1.2.3 - 2015-03-13

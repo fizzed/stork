@@ -1,4 +1,4 @@
-Stork by Fizzed [![Build Status](https://travis-ci.org/fizzed/stork.svg)](https://travis-ci.org/fizzed/java-stork)
+Stork by Fizzed [![Build Status](https://travis-ci.org/fizzed/stork.svg?branch=master)](https://travis-ci.org/fizzed/java-stork)
 =======================================
 
  - [Fizzed, Inc.](http://fizzed.com)

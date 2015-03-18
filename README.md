@@ -1,4 +1,4 @@
-Stork by Fizzed [![Build Status](https://travis-ci.org/fizzed/java-stork.svg?branch=master)](https://travis-ci.org/fizzed/java-stork)
+Stork by Fizzed [![Build Status](https://travis-ci.org/fizzed/stork.svg)](https://travis-ci.org/fizzed/java-stork)
 =======================================
 
  - [Fizzed, Inc.](http://fizzed.com)
@@ -6,11 +6,11 @@ Stork by Fizzed [![Build Status](https://travis-ci.org/fizzed/java-stork.svg?bra
 
 ## Versions
 
- - Stork Command-Line: https://github.com/fizzed/java-stork/releases/download/v1.2.2/fizzed-stork-1.2.2.tar.gz
+ - Stork Command-Line: https://github.com/fizzed/java-stork/releases/download/v1.2.3/fizzed-stork-1.2.3.tar.gz
  - Stork Maven Plugin: see section below (via Maven Central)
  - Stork SBT Plugin for Play Framework: see section below (via Maven Central)
 
-## 2-Minute Drill
+## Two-minute drill
 
 Demos are sometimes faster than reading this doc.  Here are some good blog posts
 on using Stork:
@@ -67,7 +67,7 @@ system administrators, and end-users are all on the same page with how to intera
 your JVM-based apps.
 
 
-### Why are Uber/Fat jars not recommended for *most* applications?
+## What's wrong with uber/fat jars?
 
 An Uber/Fat jar is a jar that has all dependencies merged into it. There
 are several reasons why Stork suggests avoiding this approach. First, if you
@@ -90,7 +90,7 @@ work correctly when re-packaged into another .jar.  Avoiding that entirely
 is a good thing.
 
 
-## The Stork Launcher
+## Stork launcher
 
 Utility for generating native launchers for Java-based applications
 across Windows, Linux, Mac OSX, and many other UNIX-like systems (any NIX with a
@@ -101,7 +101,7 @@ source control) and then you compile/generate it into one or more launchers. The
 launchers can then be distributed with your final tarball/assembly/package so 
 that your app looks like a native compiled executable.
 
-### Development workflow
+### Workflow
 
 Use it via one of the build tool plugins or simply call "stork-generate" from the
 command-line version.  Simply include Stork as part of your build workflow to
@@ -152,7 +152,7 @@ generate the launcher scripts while you also compile your JVM bytecode classes.
  * Support for symlinking detected JVM as application name so that Linux/UNIX commands
    such as TOP/PS make identifying application easier.
 
-### Sample Launcher Config
+### Launcher configuration
 
     # Name of application (make sure it has no spaces)
     name: "hello-console"
@@ -207,7 +207,7 @@ generate the launcher scripts while you also compile your JVM bytecode classes.
     symlink_java: true
 
 
-### Canonical/Conventional Java application layout
+### Canonical java application layout
 
 All of Stork's tools need to know where to look for various files in order to
 function in a standard way.  Stork uses the following conventional app layout:
@@ -290,7 +290,7 @@ However, even if a plugin isn't provided, you can always just call the
 command-line version, code a plugin (and submit a pull request to add it),
 or tap into the main core library.
 
-## Stork Maven Plugin
+## Stork maven plugin
 
 Example Maven project: examples/hello-server-dropwizard 
 
@@ -312,7 +312,7 @@ To use add the following to your POM:
             <plugin>
                 <groupId>com.fizzed</groupId>
                 <artifactId>fizzed-stork-maven-plugin</artifactId>
-                <version>1.2.2</version>
+                <version>1.2.3</version>
                 <executions>
                     <execution>
                         <id>generate-stork-launchers</id>
@@ -357,7 +357,7 @@ of ${finalName} as the root directory of the tarball (so it unpacks correctly)
             <plugin>
                 <groupId>com.fizzed</groupId>
                 <artifactId>fizzed-stork-maven-plugin</artifactId>
-                <version>1.2.2</version>
+                <version>1.2.3</version>
                 <executions>
                     <execution>
                         <id>generate-stork-assembly</id>
@@ -389,7 +389,7 @@ To customize, the following properties are supported:
    contents of stageDirectory. Defaults to ${project.build.finalName}
 
 
-## Stork Command Line
+## Stork command line
 
 Download the stork tarball.  The "bin" directory in this tarball needs to be
 added to your PATH environment variable.  Once available in your PATH, you can
@@ -442,7 +442,7 @@ share/ directories are installed.  On an upgrade install, the bin/, lib, and
 share/ directories are installed, while conf/ and runtime dirs data/, log/, and
 run/ directories are moved.
 
-## Stork SBT Plugin for PlayFramework
+## Stork plugin for PlayFramework
 
 The PlayFramework is a popular Scala/Java framework that uses SBT underneath
 for its build system.  Stork has tight integration with PlayFramework via its
@@ -514,7 +514,7 @@ a conf/stork-bootstrap.conf file with a system property on each line:
 To enable in your Play project add the following to project/plugins.sbt:
 
     // stork play plugin
-    addSbtPlugin("com.fizzed" % "fizzed-stork-sbt-play-plugin" % "1.2.2")
+    addSbtPlugin("com.fizzed" % "fizzed-stork-sbt-play-plugin" % "1.2.3")
 
 The plugin extends SBT AutoPlugin which auto enables settings in your project
 so you will not need to add anything else to your project to pick up the plugin.
@@ -568,6 +568,6 @@ This tarball is ready for distribution or deployment using stork-fabric-deploy.
 
 ## License
 
-Copyright (C) 2014 Joe Lauer / Fizzed, Inc.
+Copyright (C) 2015 Joe Lauer / Fizzed, Inc.
 
 This work is licensed under the Apache License, Version 2.0. See LICENSE for details.

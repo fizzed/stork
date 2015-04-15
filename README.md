@@ -1,8 +1,7 @@
 Stork by Fizzed [![Build Status](https://travis-ci.org/fizzed/stork.svg?branch=master)](https://travis-ci.org/fizzed/java-stork)
 =======================================
 
- - [Fizzed, Inc.](http://fizzed.com)
- - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
+ - [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
 
 ## Versions
 

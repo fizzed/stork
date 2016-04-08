@@ -4,12 +4,12 @@
     <groupId>com.fizzed</groupId>
     <artifactId>hello-world</artifactId>
     <packaging>jar</packaging>
-    <name>fizzed-stork-examples-hello-world</name>
+    <name>stork-examples-hello-world</name>
     <description>App to test console and daemon for stork-launcher</description>
 
     <parent>
         <groupId>com.fizzed</groupId>
-        <artifactId>fizzed-stork-parent</artifactId>
+        <artifactId>stork</artifactId>
         <version>1.2.4-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
@@ -58,7 +58,7 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.fizzed</groupId>
-                        <artifactId>fizzed-stork-launcher</artifactId>
+                        <artifactId>stork-launcher</artifactId>
                         <version>${project.version}</version>
                     </dependency>
                 </dependencies>

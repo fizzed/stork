@@ -2,20 +2,20 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fizzed</groupId>
-    <artifactId>fizzed-stork-parent</artifactId>
+    <artifactId>stork</artifactId>
     <packaging>pom</packaging>
     <version>1.2.4-SNAPSHOT</version>
-    <name>fizzed-stork-parent</name>
+    <name>stork</name>
 
     <parent>
         <groupId>com.fizzed</groupId>
-        <artifactId>fizzed-maven-parent</artifactId>
-        <version>1.12</version>
+        <artifactId>maven-parent</artifactId>
+        <version>2.0.3</version>
     </parent>
 
     <scm>
-        <url>https://github.com/fizzed/java-stork</url>
-        <connection>scm:git:git@github.com:fizzed/java-stork.git</connection>
+        <url>https://github.com/fizzed/stork</url>
+        <connection>scm:git:git@github.com:fizzed/stork.git</connection>
         <tag>master</tag>
     </scm>
 
@@ -24,11 +24,11 @@
         <profile>
             <id>release</id>
             <modules>
-                <module>bootstrap</module>
-                <module>launcher</module>
-                <module>util</module>
-                <module>cli</module>
-                <module>maven-plugin</module>
+                <module>stork-bootstrap</module>
+                <module>stork-launcher</module>
+                <module>stork-core</module>
+                <module>stork-cli</module>
+                <module>stork-maven-plugin</module>
             </modules>
         </profile>
         <profile>
@@ -51,11 +51,11 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>bootstrap</module>
-                <module>launcher</module>
-                <module>util</module>
-                <module>cli</module>
-                <module>maven-plugin</module>
+                <module>stork-bootstrap</module>
+                <module>stork-launcher</module>
+                <module>stork-core</module>
+                <module>stork-cli</module>
+                <module>stork-maven-plugin</module>
                 <module>examples/hello-world</module>
             </modules>
         </profile>

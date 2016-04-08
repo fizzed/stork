@@ -2,14 +2,14 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fizzed</groupId>
-    <artifactId>fizzed-stork-maven-plugin</artifactId>
+    <artifactId>stork-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>${project.artifactId}</name>
+    <name>stork-maven-plugin</name>
     <description>Maven plugin for Stork utilities</description>
   
     <parent>
         <groupId>com.fizzed</groupId>
-        <artifactId>fizzed-stork-parent</artifactId>
+        <artifactId>stork</artifactId>
         <version>1.2.4-SNAPSHOT</version>
     </parent>
     
@@ -59,12 +59,12 @@
         <!-- compile -->
         <dependency>
             <groupId>com.fizzed</groupId>
-            <artifactId>fizzed-stork-launcher</artifactId>
+            <artifactId>stork-launcher</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fizzed</groupId>
-            <artifactId>fizzed-stork-util</artifactId>
+            <artifactId>stork-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

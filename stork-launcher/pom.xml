@@ -2,14 +2,14 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fizzed</groupId>
-    <artifactId>fizzed-stork-launcher</artifactId>
+    <artifactId>stork-launcher</artifactId>
     <packaging>jar</packaging>
-    <name>fizzed-stork-launcher</name>
+    <name>stork-launcher</name>
     <description>Utility for generating launchers (console/daemon) for Windows, Linux, and Mac.</description>
   
     <parent>
         <groupId>com.fizzed</groupId>
-        <artifactId>fizzed-stork-parent</artifactId>
+        <artifactId>stork</artifactId>
         <version>1.2.4-SNAPSHOT</version>
     </parent>
     

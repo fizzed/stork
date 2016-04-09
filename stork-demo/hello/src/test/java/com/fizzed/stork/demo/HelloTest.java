@@ -25,18 +25,37 @@ import org.zeroturnaround.exec.ProcessExecutor;
 
 public class HelloTest {
     
+    Path exe = which(Paths.get("target/stork/bin"), "stork-demo-hello");
+    
     @Test
-    public void basic() throws Exception {
-        Path exe = which(Paths.get("target/stork/bin"), "stork-demo-hello");
-        
+    public void execute() throws Exception {
         String output
             = new ProcessExecutor()
                 .command(exe.toString())
                 .readOutput(true)
+                .exitValue(0)
                 .execute()
                 .outputUTF8();
         
         assertThat(output, containsString("Hello World"));
+    }
+    
+    @Test
+    public void arguments() throws Exception {
+        String arg0 = "128401";
+        String arg1 = "ahs3h1";
+        
+        String output
+            = new ProcessExecutor()
+                .command(exe.toString(), arg0, arg1)
+                .readOutput(true)
+                .exitValue(0)
+                .execute()
+                .outputUTF8();
+        
+        assertThat(output, containsString("Hello World"));
+        assertThat(output, containsString(arg0));
+        assertThat(output, containsString(arg1));
     }
     
 }

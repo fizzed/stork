@@ -2,13 +2,13 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fizzed</groupId>
-    <artifactId>hello-server-dropwizard</artifactId>
+    <artifactId>stork-demo-dropwizard</artifactId>
     <packaging>jar</packaging>
-    <name>fizzed-stork-examples-hello-server-dropwizard</name>
+    <name>stork-demo-dropwizard</name>
   
     <parent>
         <groupId>com.fizzed</groupId>
-        <artifactId>fizzed-stork-parent</artifactId>
+        <artifactId>stork</artifactId>
         <version>1.2.4-SNAPSHOT</version>
 	<relativePath>../../pom.xml</relativePath>
     </parent>
@@ -17,7 +17,7 @@
         <plugins>
             <plugin>
                 <groupId>com.fizzed</groupId>
-                <artifactId>fizzed-stork-maven-plugin</artifactId>
+                <artifactId>stork-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <executions>
                     <execution>
@@ -59,13 +59,11 @@
             <artifactId>logback-classic</artifactId>
             <version>1.1.2</version>
         </dependency>
-        <!-- provided -->
+        
         <!-- testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

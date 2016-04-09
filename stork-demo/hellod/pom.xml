@@ -13,6 +13,10 @@
         <version>1.2.4-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
+    
+    <properties>
+        <main.java.package>com.fizzed.stork.sample</main.java.package>
+    </properties>
 
     <build>
         <plugins>
@@ -46,7 +50,7 @@
                 </executions>
             </plugin>
             <!--
-                The fizzed-stork-maven-plugin is better integration but this is a way
+                The stork-maven-plugin is better integration but this is a way
                 to call the fizzed-stork-launcher jar library directly without
                 the help of a plugin wrapping it.  This is mainly for development
                 of stork vs. a suggested way of integrating in Maven.
@@ -114,21 +118,14 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec-http</artifactId>
-            <version>${netty.version}</version>
+            <version>4.0.23.Final</version>
         </dependency>
         
-        <!-- runtime scope -->
+        <!-- usually test but runtime for assembly -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
             <scope>runtime</scope>
         </dependency>
     </dependencies>
-
-    <properties>
-        <main.java.package>com.fizzed.stork.sample</main.java.package>
-        <netty.version>4.0.23.Final</netty.version>
-    </properties>
-
 </project>

@@ -5,7 +5,7 @@
     <artifactId>stork-launcher</artifactId>
     <packaging>jar</packaging>
     <name>stork-launcher</name>
-    <description>Utility for generating launchers (console/daemon) for Windows, Linux, and Mac.</description>
+    <description>Generate cross-platform launchers for console and daemon apps</description>
   
     <parent>
         <groupId>com.fizzed</groupId>
@@ -13,12 +13,17 @@
         <version>1.2.4-SNAPSHOT</version>
     </parent>
     
+    <properties>
+        <main.java.package>com.fizzed.stork.launcher</main.java.package>
+    </properties>
+    
     <dependencies>
         <!-- compile -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -34,38 +39,51 @@
             <artifactId>jackson-dataformat-yaml</artifactId>
             <version>2.3.2</version>
         </dependency>
+        
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
         </dependency>
+        
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>5.1.0.Final</version>
         </dependency>
+        
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
             <version>2.2.4</version>
         </dependency>
+        
 	<dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>2.3.21</version>
         </dependency>
-        <!-- provided -->
+        
         <!-- testing -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>java-hamcrest</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-            <scope>test</scope>
         </dependency>
         
     </dependencies>
-
-    <properties>
-        <main.java.package>com.fizzed.stork.launcher</main.java.package>
-    </properties>
 </project>

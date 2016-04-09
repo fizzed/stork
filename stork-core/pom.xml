@@ -19,31 +19,37 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-launcher</artifactId>
-            <version>${project.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.9</version>
+        </dependency>
+
+        <!-- testing -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>java-hamcrest</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
         </dependency>
         
-        <!-- provided -->
-        
-        <!-- testing -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-            <scope>test</scope>
         </dependency>
         
     </dependencies>
-
-    <properties>
-        <main.java.package>com.fizzed.stork.util</main.java.package>
-    </properties>
-    
 </project>

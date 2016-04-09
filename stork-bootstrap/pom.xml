@@ -13,13 +13,25 @@
         <version>1.2.4-SNAPSHOT</version>
     </parent>
     
-    <dependencies>
-        <!-- compile -->
-        <!-- provided -->
-        <!-- testing -->
-    </dependencies>
-
     <properties>
         <main.java.package>com.fizzed.stork.bootstrap</main.java.package>
     </properties>
+    
+    <dependencies>
+        <!-- testing -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>java-hamcrest</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+    </dependencies>
 </project>

@@ -2,14 +2,13 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fizzed</groupId>
-    <artifactId>fizzed-stork-examples-hello-server-play</artifactId>
+    <artifactId>stork-examples-hello-server-play</artifactId>
     <packaging>pom</packaging>
-    <name>${project.artifactId}</name>
-    <description>Example play framework using sbt-play-plugin</description>
+    <name>stork-examples-hello-server-play</name>
   
     <parent>
         <groupId>com.fizzed</groupId>
-        <artifactId>fizzed-stork-parent</artifactId>
+        <artifactId>stork</artifactId>
         <version>1.2.4-SNAPSHOT</version>
 	<relativePath>../../pom.xml</relativePath>
     </parent>

@@ -73,7 +73,7 @@
             			<classpath />
                                 <argument>com.fizzed.stork.util.CopyFile</argument>
                                 <argument>-i</argument>
-                                <argument>../fabric/bin</argument>
+                                <argument>../stork-fabric/bin</argument>
                                 <argument>-o</argument>
                                 <argument>target/stork/bin</argument>
                             </arguments>
@@ -85,7 +85,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.5.1</version>
                 <configuration>
-                    <finalName>fizzed-stork-${project.version}</finalName>
+                    <finalName>stork-${project.version}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
                         <descriptor>src/main/assembly/bin.xml</descriptor>
@@ -109,21 +109,19 @@
         <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-launcher</artifactId>
-            <version>${project.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
+        <!-- usually  test but we include it in the cli -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
-
-    <properties>
-        <main.java.package>com.fizzed.stork.cli</main.java.package>
-    </properties>
 </project>

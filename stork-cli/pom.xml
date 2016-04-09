@@ -55,7 +55,7 @@
                                 <argument>-o</argument>
                                 <argument>target/stork</argument>
                                 <argument>-i</argument>
-                                <argument>../launcher/src/main/launchers</argument>
+                                <argument>../stork-launcher/src/main/launchers</argument>
                             </arguments>
                         </configuration>
                     </execution>

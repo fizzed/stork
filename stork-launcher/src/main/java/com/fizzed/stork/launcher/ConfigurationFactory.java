@@ -22,6 +22,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -34,7 +36,7 @@ import javax.validation.ValidatorFactory;
  */
 public class ConfigurationFactory {
     
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
     
     public ConfigurationFactory() {
         this.mapper = createObjectMapper();
@@ -47,27 +49,27 @@ public class ConfigurationFactory {
         return mapper;
     }
 
-    public ObjectMapper getMapper() {
+    ObjectMapper getMapper() {
         return mapper;
     }
     
-    public JsonNode createDefaultNode() {
+    JsonNode createDefaultNode() {
         return mapper.valueToTree(new Configuration());
     }
     
-    public JsonNode createConfigNode(File configFile) throws IOException {
+    JsonNode createConfigNode(File configFile) throws IOException {
         return mapper.readTree(configFile);
     }
     
-    public JsonNode mergeNodes(JsonNode node, JsonNode updateNode) {
+    JsonNode mergeNodes(JsonNode node, JsonNode updateNode) {
         return JacksonUtil.merge(node, updateNode);
     }
     
-    public Configuration create(JsonNode node) throws JsonProcessingException {
+    Configuration create(JsonNode node) throws JsonProcessingException {
         return mapper.treeToValue(node, Configuration.class);
     }
     
-    public Configuration create(File configFile) throws Exception {
+    public Configuration read(File configFile) throws IOException {
         // tree of defaults
         JsonNode defaultNode = createDefaultNode();
         
@@ -87,11 +89,31 @@ public class ConfigurationFactory {
         Set<ConstraintViolation<Configuration>> violations = validator.validate(config);
         if (violations.size() > 0) {
             for (ConstraintViolation<Configuration> violation : violations) {
-                throw new Exception("Configuration file invalid: property [" + violation.getPropertyPath() + "] error [" + violation.getMessage() + "]");
+                throw new IOException("Configuration file invalid: property [" + violation.getPropertyPath() + "] error [" + violation.getMessage() + "]");
             }
         }
         
         return config;
+    }
+    
+    public List<Configuration> read(List<File> configFiles) throws IOException {
+        List<Configuration> configs = new ArrayList<>();
+
+        // no input files return an empty array of configs
+        if (configFiles == null || configFiles.isEmpty()) {
+            return configs;
+        }
+
+        // parse each configuration file into a configuration object
+        for (File configFile : configFiles) {
+            try {
+                configs.add(this.read(configFile));
+            } catch (Exception e) {
+                throw new IOException("Launcher config file [" + configFile + "] failed parsing", e);
+            }
+        }
+
+        return configs;
     }
     
 }

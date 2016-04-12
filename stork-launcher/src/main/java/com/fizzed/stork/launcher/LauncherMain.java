@@ -93,11 +93,11 @@ public class LauncherMain extends BaseApplication {
         }
         
         try {
-            Generator generator = new Generator();
             List<File> configFiles = FileUtil.findAllFiles(configFileStrings, false);
-            List<Configuration> configs = generator.readConfigurationFiles(configFiles);
-            int generated = generator.generateAll(configs, outputDir);
-            logger.info("Done (generated " + generated + " launchers)");
+            ConfigurationFactory configFactory = new ConfigurationFactory();
+            List<Configuration> configs = configFactory.read(configFiles);
+            int generated = new Generator().generate(configs, outputDir);
+            logger.info("Created " + generated + " launchers");
         } catch (ArgumentException e) {
             printErrorThenUsageAndExit(e.getMessage());
         } catch (IOException e) {

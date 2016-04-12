@@ -27,7 +27,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 public class FileUtil {
     
     static public List<File> findAllFiles(List<String> fileStrings, boolean ignoreNonExistent) throws IOException {
-        List<File> allFiles = new ArrayList<File>();
+        List<File> allFiles = new ArrayList<>();
         for (String fileString : fileStrings) {
             List<File> files = FileUtil.findFiles(fileString, ignoreNonExistent);
             allFiles.addAll(files);

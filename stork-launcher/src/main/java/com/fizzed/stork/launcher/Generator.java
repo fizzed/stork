@@ -31,7 +31,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
@@ -39,16 +38,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Generates launchers.
+ * 
  * @author joelauer
  */
 public class Generator {
     static private final Logger logger = LoggerFactory.getLogger(Generator.class);
     
-    private final ConfigurationFactory factory;
-    
     public Generator() {
-        this.factory = new ConfigurationFactory();
+        // do nothing
     }
     
     private Path canonicalPath(File f) {
@@ -60,49 +58,11 @@ public class Generator {
         return f.toPath().normalize();
     }
     
-    public Configuration readConfigurationFile(File configFile) throws ArgumentException, IOException {
-        List<Configuration> configs = readConfigurationFiles(Arrays.asList(configFile));
-        if (configs.size() != 1) {
-            throw new IOException("Unexpected number of configs returned (expected 1 but got " + configs.size() + ")");
-        }
-        return configs.get(0);
-    }
-    
-    public List<Configuration> readConfigurationFiles(List<File> configFiles) throws ArgumentException, IOException {
-        List<Configuration> configs = new ArrayList<>();
-
-        // no input files return an empty array of configs
-        if (configFiles == null || configFiles.isEmpty()) {
-            return configs;
-        }
-
-        // parse each configuration file into a configuration object
-        for (File configFile : configFiles) {
-            try {
-                configs.add(factory.create(configFile));
-            } catch (Exception e) {
-                throw new IOException("Launcher config file [" + configFile + "] failed parsing", e);
-            }
-        }
-
-        return configs;
-    }
-    
-    public int generate(File configFile, File outputDir) throws ArgumentException, IOException {
-        List<Configuration> configs = readConfigurationFiles(Arrays.asList(configFile));
-        return generateAll(configs, outputDir);
-    }
-    
-    public int generate(List<File> configFiles, File outputDir) throws ArgumentException, IOException {
-        List<Configuration> configs = readConfigurationFiles(configFiles);
-        return generateAll(configs, outputDir);
-    }
-    
     public int generate(Configuration config, File outputDir) throws ArgumentException, IOException {
-        return generateAll(Arrays.asList(config), outputDir);
+        return generate(Arrays.asList(config), outputDir);
     }
     
-    public int generateAll(List<Configuration> configs, File outputDir) throws ArgumentException, IOException {
+    public int generate(List<Configuration> configs, File outputDir) throws ArgumentException, IOException {
         // validate output directory
         if (outputDir == null) {
             throw new ArgumentException("No output dir was specified");

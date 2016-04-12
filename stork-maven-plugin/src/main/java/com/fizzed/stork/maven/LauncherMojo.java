@@ -2,6 +2,7 @@ package com.fizzed.stork.maven;
 
 import com.fizzed.stork.launcher.ArgumentException;
 import com.fizzed.stork.launcher.Configuration;
+import com.fizzed.stork.launcher.ConfigurationFactory;
 import com.fizzed.stork.launcher.FileUtil;
 import com.fizzed.stork.launcher.Generator;
 import java.io.File;
@@ -55,11 +56,10 @@ public class LauncherMojo extends AbstractMojo {
         }
     
         try {
-            Generator generator = new Generator();
             List<File> configFiles = FileUtil.findAllFiles(Arrays.asList(inputFiles), true);
-            List<Configuration> configs = generator.readConfigurationFiles(configFiles);
-            int generated = generator.generateAll(configs, outputDirectory);
-            getLog().info("Done (generated " + generated + " launchers)");
+            List<Configuration> configs = new ConfigurationFactory().read(configFiles);
+            int generated = new Generator().generate(configs, outputDirectory);
+            getLog().info("Created " + generated + " launchers");
         } catch (ArgumentException | IOException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }

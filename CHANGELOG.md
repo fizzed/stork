@@ -10,7 +10,8 @@ Stork by Fizzed
  - All artifact ids now simply are "stork-" rather than "fizzed-stork-"
  - Fixed bug with windows .bat launchers not returning an error code if a JVM
    was not found
- - Fixed bug with java homes on linux/bsd that contained spaces not running
+ - Fixed bug with unix launchers not handling java dirs with spaces in the 
+   dir name
  - Vagrant used to unit test and verify launchers work across numerous 
    operating system distributions.
 

@@ -58,7 +58,7 @@
                 </dependencies>
                 <executions>
                     <execution>
-                        <id>stork-launcher-generate</id>
+                        <id>stork-launchers</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>java</goal>

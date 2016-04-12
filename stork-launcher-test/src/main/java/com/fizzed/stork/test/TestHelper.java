@@ -27,10 +27,10 @@ public class TestHelper {
     
     static public List<String> hosts() {
         String host = System.getProperty("host");
-        if (host != null) {
+        if (host != null && !host.equals("")) {
             return Arrays.asList(host);
         } else {
-            return Arrays.asList("local", "ubuntu1404", "freebsd102");
+            return Arrays.asList("local", "ubuntu1404", "debian8", "centos7", "freebsd102", "openbsd58");
         }
     }
     

@@ -21,12 +21,16 @@ public class blaze {
     
     public void demo_hellod() {
         exec("mvn", "package", "-am", "-pl", "stork-demo/stork-demo-hellod").run();
-        exec("stork-demo/stork-demo-hellod/target/stork/bin/stork-demo-hellod", "--run").run();
+        exec("stork-demo-hellod", "--run")
+            .path("stork-demo/stork-demo-hellod/target/stork/bin")
+            .run();
     }
     
     public void demo_dropwizard() {
         exec("mvn", "package", "-am", "-pl", "stork-demo/stork-demo-dropwizard").run();
-        exec("stork-demo/stork-demo-dropwizard/target/stork/bin/stork-demo-dropwizard", "--run").run();
+        exec("stork-demo-dropwizard", "--run")
+            .path("stork-demo/stork-demo-dropwizard/target/stork/bin")
+            .run();
     }
 
 }

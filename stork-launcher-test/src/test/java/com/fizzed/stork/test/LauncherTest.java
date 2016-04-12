@@ -55,6 +55,7 @@ public class LauncherTest {
     private final Path exeHello1;
     private final Path exeHello2;
     private final Path exeHello3;
+    private final Path symlinkJavaExe;
     private final SshSession ssh;
     static private boolean vagrantRsynced;
     private Path symlinkJava;
@@ -65,6 +66,7 @@ public class LauncherTest {
         this.exeHello1 = resolveExe("hello1");
         this.exeHello2 = resolveExe("hello2");
         this.exeHello3 = resolveExe("hello3");
+        this.symlinkJavaExe = resolveExe("symlink-java");
         this.ssh = sshConnect();
     }
     
@@ -100,14 +102,15 @@ public class LauncherTest {
     }
     
     @Before
-    public void onlyIfHostIsRunning() {
+    public void onlyIfHostIsRunning() throws Exception {
         assumeTrue("Is host running?", isHostRunning());
-    }
-    
-    @Before
-    public void symlinkJava() throws Exception {
+        
         if (symlinkJava == null) {
-            Path symlinkJavaExe = resolveExe("symlink-java");
+            // do not try to symlink java on a local windows client
+            if (host.equals("local") && TestHelper.isWindows()) {
+                return;  // skip
+            }
+            
             String output = execute(0, symlinkJavaExe);
             // 3 lines
             // /usr/lib/jvm/jdk1.8.0_77/jre
@@ -222,6 +225,8 @@ public class LauncherTest {
     
     @Test
     public void javaHomeWithSpaces() throws Exception {
+        assumeTrue("java symlink worked", symlinkJavaWithSpaces != null);
+        
         Map<String,String> environment = new HashMap<>();
         environment.put("PATH", "/bin:/usr/bin");
         environment.put("JAVA_HOME", symlinkJavaWithSpaces.toString());

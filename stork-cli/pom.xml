@@ -15,7 +15,6 @@
     <build>
         <plugins>
             <!-- until stork-fabric is deprecated, we need to copy it here -->
-            <!--
             <plugin>
                 <artifactId>exec-maven-plugin</artifactId>
                 <groupId>org.codehaus.mojo</groupId>
@@ -35,18 +34,15 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>com.fizzed.stork.util.CopyFile</mainClass>
+                            <mainClass>com.fizzed.stork.assembly.CopyFile</mainClass>
                             <arguments>
-                                <argument>-o</argument>
                                 <argument>${basedir}/target/stork/bin</argument>
-                                <argument>-i</argument>
-                                <argument>../stork-fabric/bin</argument>
+                                <argument>${basedir}/../stork-fabric/bin</argument>
                             </arguments>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            -->
             <!-- eating our own dog food :-) -->
             <plugin>
                 <groupId>com.fizzed</groupId>

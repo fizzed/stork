@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package com.fizzed.stork.util;
+package com.fizzed.stork.assembly;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * @author joelauer
+ * Utility for copy files/dirs while retaining execute permissions.
  */
 public class CopyFile {
     private static final Logger logger = LoggerFactory.getLogger(CopyFile.class);
@@ -36,38 +34,22 @@ public class CopyFile {
         new CopyFile().run(args);
     }
     
-    public String popNextArg(String argSwitch, List<String> argList) {
-        if (argList.isEmpty()) {
-            logger.error("argument switch [" + argSwitch + "] is missing value as next argument");
+    public void run(String[] args) {
+        if (args.length < 2) {
+            System.err.println("At least two arguments required");
             System.exit(1);
         }
-        return argList.remove(0);
-    }
-    
-    public void run(String[] args) {
-        List<String> argList = new ArrayList<String>(Arrays.asList(args));
-
-        List<File> inputFiles = new ArrayList<File>();
-        File outputDir = null;
         
-        // parse command-line arguments
-        while (argList.size() > 0) {
-            String argSwitch = argList.remove(0);
-
-            if (argSwitch.equals("-i")) {
-                String fileString = popNextArg(argSwitch, argList);
-                inputFiles.add(new File(fileString));
-            } else if (argSwitch.equals("-o")) {
-                String fileString = popNextArg(argSwitch, argList);
-                outputDir = new File(fileString);
-            } else {
-                logger.error("invalid argument switch [" + argSwitch + "] found");
-                System.exit(1);
-            }
+        File outputDir = new File(args[0]);
+        
+        List<File> inputFiles = new ArrayList<>();
+        
+        for (int i = 1; i < args.length; i++) {
+            inputFiles.add(new File(args[i]));
         }
         
         if (inputFiles.isEmpty()) {
-            logger.error("No input files provided");
+            logger.error("No input file(s)/dir(s)");
             System.exit(1);
         }
         

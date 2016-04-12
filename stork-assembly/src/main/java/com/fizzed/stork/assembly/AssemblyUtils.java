@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fizzed.stork.util;
+package com.fizzed.stork.assembly;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -30,10 +30,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author joelauer
- */
 public class AssemblyUtils {
     private static final Logger logger = LoggerFactory.getLogger(AssemblyUtils.class);
     
@@ -63,14 +59,8 @@ public class AssemblyUtils {
     static public File createTGZ(File outputDir, File inputDir, String name) throws IOException {
         // create tarball
         File tgzFile = new File(outputDir, name + ".tar.gz");
-        TarArchiveOutputStream tgzout = null;
-        try {
-            tgzout = AssemblyUtils.createTGZStream(tgzFile);
+        try (TarArchiveOutputStream tgzout = AssemblyUtils.createTGZStream(tgzFile)) {
             addFileToTGZStream(tgzout, inputDir, name, false);
-        } finally {
-            if (tgzout != null) {
-                    tgzout.close();
-            }
         }
         return tgzFile;
     }
@@ -112,11 +102,10 @@ public class AssemblyUtils {
         tgzout.putArchiveEntry(tarEntry);
 
         if (f.isFile()) {
-            FileInputStream in = new FileInputStream(f);
-            IOUtils.copy(in, tgzout);
-            in.close();
+            try (FileInputStream in = new FileInputStream(f)) {
+                IOUtils.copy(in, tgzout);
+            }
             tgzout.closeArchiveEntry();
-            
         } else {
             tgzout.closeArchiveEntry();
             File[] children = f.listFiles();

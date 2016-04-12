@@ -25,6 +25,7 @@
         <!-- workaround travis ci maven version requirement -->
         <maven.enforce.version>3.2.5</maven.enforce.version>
         <jackson.version>2.7.3</jackson.version>
+        <slf4j.version>1.7.20</slf4j.version>
     </properties>
 
     <modules>
@@ -44,7 +45,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.20</version>
+                <version>${slf4j.version}</version>
             </dependency>
             
             <dependency>

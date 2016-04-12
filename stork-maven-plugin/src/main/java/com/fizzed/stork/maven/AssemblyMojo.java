@@ -1,6 +1,6 @@
 package com.fizzed.stork.maven;
 
-import com.fizzed.stork.util.AssemblyUtils;
+import com.fizzed.stork.assembly.AssemblyUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;

@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +51,15 @@ public class Generator {
         this.factory = new ConfigurationFactory();
     }
     
+    private Path canonicalPath(File f) {
+        /**
+        Path workingDir = Paths.get(".");
+        Path file = f.toPath();
+        return workingDir.relativize(file);
+        */
+        return f.toPath().normalize();
+    }
+    
     public Configuration readConfigurationFile(File configFile) throws ArgumentException, IOException {
         List<Configuration> configs = readConfigurationFiles(Arrays.asList(configFile));
         if (configs.size() != 1) {
@@ -59,7 +69,7 @@ public class Generator {
     }
     
     public List<Configuration> readConfigurationFiles(List<File> configFiles) throws ArgumentException, IOException {
-        List<Configuration> configs = new ArrayList<Configuration>();
+        List<Configuration> configs = new ArrayList<>();
 
         // no input files return an empty array of configs
         if (configFiles == null || configFiles.isEmpty()) {
@@ -101,7 +111,7 @@ public class Generator {
             if (!outputDir.mkdirs()) {
                 throw new ArgumentException("Unable to crate output directory [" + outputDir + "]");
             } else {
-                logger.info("Created output directory: " + outputDir);
+                logger.info("Created dir {}", canonicalPath(outputDir));
             }
         }
         if (!outputDir.isDirectory()) {
@@ -120,7 +130,7 @@ public class Generator {
         int generated = 0;
         for (Configuration config : configs) {
             try {
-                logger.info("Generating launcher for: " + config.getFile());
+                logger.info("Launcher {}", canonicalPath(config.getFile()));
                 doGenerate(config, outputDir);
                 generated++;
             } catch (Exception e) {
@@ -156,11 +166,11 @@ public class Generator {
         File shareDir = Paths.get(outputDir.getPath(), config.getShareDir()).toFile();
 
         // sort platforms by name
-        TreeSet<Platform> sortedPlatforms = new TreeSet<Platform>(config.getPlatforms());
+        TreeSet<Platform> sortedPlatforms = new TreeSet<>(config.getPlatforms());
 
         // generate for each platform
         for (Configuration.Platform platform : sortedPlatforms) {
-            logger.info("Generating launcher for platform: " + platform);
+            logger.info(" {}", platform);
 
             // create launcher model to render
             LauncherModel model = new LauncherModel(config);
@@ -169,7 +179,7 @@ public class Generator {
 
                 if (unixLauncherGeneratedVia != null) {
                     // no need to generate again
-                    logger.info(" - launcher: same as for " + unixLauncherGeneratedVia);
+                    logger.info("  script same as {}", unixLauncherGeneratedVia);
                 } else {
                     // generate unix launcher script
                     binDir.mkdirs();
@@ -223,16 +233,17 @@ public class Generator {
                             
                 } else if (config.getType() == Type.DAEMON) {
                     
-                    //DaemonMethod dm = config.getDaemonMethods().get(Platform.WINDOWS);
                     DaemonMethod dm = config.getPlatformDaemonMethod(Platform.WINDOWS);
-                    if (dm == DaemonMethod.JSLWIN) {
-                        generateWindowsJSLWinLauncher(config, binDir, model);
-                    } else if (dm == DaemonMethod.WINSW) {
-                        generateWindowsWINSWLauncher(config, binDir, model);
-                    } else {
-                        throw new ArgumentException("Unsupported daemon method [" + dm + "] for platform WINDOWS");
+                    switch (dm) {
+                        case JSLWIN:
+                            generateWindowsJSLWinLauncher(config, binDir, model);
+                            break;
+                        case WINSW:
+                            generateWindowsWINSWLauncher(config, binDir, model);
+                            break;
+                        default:
+                            throw new ArgumentException("Unsupported daemon method [" + dm + "] for platform WINDOWS");
                     }
-                    
                 }
 
             } else {
@@ -242,127 +253,68 @@ public class Generator {
     }
 
     private void generateUnixConsoleLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
-        // make sure parent of file to be generated exists
-        FileOutputStream fos = new FileOutputStream(launcherFile);
-        Writer out = new OutputStreamWriter(fos);
-        try {
-            processTemplate("linux/script-header.ftl", out, model);
-
-            includeResource("linux/script-functions.sh", fos);
-
-            processTemplate("linux/script-java.ftl", out, model);
-
-            processTemplate("linux/script-console.ftl", out, model);
-            
-            // set to executable
-            launcherFile.setExecutable(true);
-
-            logger.info(" - launcher: " + launcherFile);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-            if (fos != null) {
-                fos.close();
+        try (FileOutputStream fos = new FileOutputStream(launcherFile)) {
+            try (Writer out = new OutputStreamWriter(fos)) {
+                processTemplate("linux/script-header.ftl", out, model);
+                includeResource("linux/script-functions.sh", fos);
+                processTemplate("linux/script-java.ftl", out, model);
+                processTemplate("linux/script-console.ftl", out, model);
+                // set to executable
+                launcherFile.setExecutable(true);
+                logger.info("  script {}", launcherFile);
             }
         }
     }
     
     private void generateUnixDaemonLauncher(Configuration config, File launcherFile, LauncherModel model) throws Exception {
-        FileOutputStream fos = new FileOutputStream(launcherFile);
-        Writer out = new OutputStreamWriter(fos);
+        try (FileOutputStream fos = new FileOutputStream(launcherFile)) {
+            try (Writer out = new OutputStreamWriter(fos)) {
+                processTemplate("linux/script-header.ftl", out, model);
+                includeResource("linux/script-functions.sh", fos);
+                processTemplate("linux/script-java.ftl", out, model);
+                
+                DaemonMethod dm = config.getPlatformDaemonMethod(Platform.LINUX);
 
-        try {
-            processTemplate("linux/script-header.ftl", out, model);
+                if (dm == DaemonMethod.NOHUP) {
+                    processTemplate("linux/script-daemon-nohup.ftl", out, model);
+                } else {
+                    throw new Exception("Unsupported daemon method [" + dm + "] for platform LINUX");
+                }
 
-            includeResource("linux/script-functions.sh", fos);
-
-            processTemplate("linux/script-java.ftl", out, model);
-
-            //DaemonMethod dm = config.getDaemonMethods().get(Platform.LINUX);
-            DaemonMethod dm = config.getPlatformDaemonMethod(Platform.LINUX);
-            
-            if (dm == DaemonMethod.NOHUP) {
-                processTemplate("linux/script-daemon-nohup.ftl", out, model);
-            } else {
-                throw new Exception("Unsupported daemon method [" + dm + "] for platform LINUX");
-            }
-            
-            // set to executable
-            launcherFile.setExecutable(true);
-
-            logger.info(" - launcher: " + launcherFile);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-            if (fos != null) {
-                fos.close();
+                launcherFile.setExecutable(true);
+                logger.info("  script {}", launcherFile);
             }
         }
     }
     
     private void generateInitdScript(Configuration config, File initdFile, LauncherModel model) throws Exception {
-        FileOutputStream fos = new FileOutputStream(initdFile);
-        Writer out = new OutputStreamWriter(fos);
-
-        try {
-            processTemplate("linux/initd-daemon.ftl", out, model);
-
-            // set to executable
-            initdFile.setExecutable(true);
-
-            logger.info(" - init.d: " + initdFile);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-            if (fos != null) {
-                fos.close();
+        try (FileOutputStream fos = new FileOutputStream(initdFile)) {
+            try (Writer out = new OutputStreamWriter(fos)) {
+                processTemplate("linux/initd-daemon.ftl", out, model);
+                initdFile.setExecutable(true);
+                logger.info("  init.d {}", initdFile);
             }
         }
     }
     
     private void generateOSXLaunchdScript(Configuration config, File launchdFile, LauncherModel model) throws Exception {
-        FileOutputStream fos = new FileOutputStream(launchdFile);
-        Writer out = new OutputStreamWriter(fos);
-
-        try {
-            processTemplate("osx/launchd.ftl", out, model);
-
-            logger.info(" - launchd: " + launchdFile);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-            if (fos != null) {
-                fos.close();
+        try (FileOutputStream fos = new FileOutputStream(launchdFile)) {
+            try (Writer out = new OutputStreamWriter(fos)) {
+                processTemplate("osx/launchd.ftl", out, model);
+                logger.info("  launchd {}", launchdFile);
             }
         }
     }
     
     
     private void generateUnixJavaDetectScript(File file) throws Exception {
-        FileOutputStream fos = new FileOutputStream(file);
-        Writer out = new OutputStreamWriter(fos);
-
-        try {
-            includeResource("linux/script-java-detect-header.sh", fos);
-
-            includeResource("linux/script-functions.sh", fos);
-            
-            includeResource("linux/script-java-detect.sh", fos);
-            
-            // set to executable
-            file.setExecutable(true);
-
-            logger.info(" - script: " + file);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-            if (fos != null) {
-                fos.close();
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            try (Writer out = new OutputStreamWriter(fos)) {
+                includeResource("linux/script-java-detect-header.sh", fos);
+                includeResource("linux/script-functions.sh", fos);
+                includeResource("linux/script-java-detect.sh", fos);
+                file.setExecutable(true);
+                logger.info("  helper {}", file);
             }
         }
     }
@@ -387,7 +339,7 @@ public class Generator {
             // set to executable
             launcherFile.setExecutable(true);
 
-            logger.info(" - launcher: " + launcherFile);
+            logger.info("  script {}", launcherFile);
         } finally {
             if (out != null) {
                 out.close();
@@ -406,10 +358,10 @@ public class Generator {
         File netFile = new File(binDir, config.getName() + ".exe.config");
         
         copyResource("windows/winsw/winsw-1.16-bin.exe", serviceFile);
-        logger.info(" - launcher helper: " + serviceFile);
+        logger.info("  created {}", serviceFile);
         
         copyResource("windows/winsw/winsw.exe.config", netFile);
-        logger.info(" - launcher helper: " + serviceFile);
+        logger.info("  created {}", serviceFile);
         
         generateWindowsWINSWConfig(config, configFile, model);
     }
@@ -453,7 +405,7 @@ public class Generator {
             // set to executable
             launcherFile.setExecutable(true);
 
-            logger.info(" - launcher: " + launcherFile);
+            logger.info("  script {}", launcherFile);
         } finally {
             if (out != null) {
                 out.close();
@@ -470,16 +422,16 @@ public class Generator {
         File ini64File = new File(binDir, config.getName() + "64.ini");
         
         copyResource("windows/jslwin/jsl_static.exe", serviceFile);
-        logger.info(" - launcher helper: " + serviceFile);
+        logger.info("  helper {}", serviceFile);
         
         generateWindowsJSLWinINI(config, iniFile, model);
-        logger.info(" - launcher helper: " + iniFile);
+        logger.info("  helper {}", iniFile);
         
         copyResource("windows/jslwin/jsl_static64.exe", service64File);
-        logger.info(" - launcher helper: " + service64File);
+        logger.info("  helper {}", service64File);
         
         generateWindowsJSLWinINI(config, ini64File, model);
-        logger.info(" - launcher helper: " + ini64File);
+        logger.info("  helper {}", ini64File);
     }
     
     private void generateWindowsJSLWinINI(Configuration config, File iniFile, LauncherModel model) throws Exception {

@@ -28,13 +28,17 @@
     </properties>
 
     <modules>
-        <module>stork-bootstrap</module>
         <module>stork-launcher</module>
+        <module>stork-launcher-test</module>
+        
+        <!--
+        <module>stork-bootstrap</module>
         <module>stork-core</module>
         <module>stork-cli</module>
         <module>stork-maven-plugin</module>
+        -->
         <!--<module>stork-sbt-play-plugin</module>-->
-        <module>stork-demo/hello</module>
+        
         <!--<module>stork-examples/hello-world</module>-->
         <!--<module>stork-examples/hello-server-dropwizard</module>-->
         <!--<module>stork-examples/hello-server-play</module>-->
@@ -101,6 +105,23 @@
                 <version>${project.version}</version>
             </dependency>
             
+            <!-- yaml config files -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.7.3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.7.3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>2.7.3</version>
+            </dependency>
+            
             <!-- testing (hamcrest BEFORE junit important) -->
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -127,6 +148,27 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>1.1.7</version>
+                <scope>test</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>crux-vagrant</artifactId>
+                <version>0.3.2</version>
+                <scope>test</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>blaze-core</artifactId>
+                <version>0.9.2</version>
+                <scope>test</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>blaze-ssh</artifactId>
+                <version>0.9.2</version>
                 <scope>test</scope>
             </dependency>
             

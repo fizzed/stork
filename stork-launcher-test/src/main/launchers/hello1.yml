@@ -1,10 +1,9 @@
-
-name: "stork-demo-hello"
-domain: "com.fizzed.stork.demo"
-display_name: "Stork Demo Hello"
-short_description: "Stork Demo Hello"
+name: "hello1"
+domain: "com.fizzed.stork.test"
+display_name: "Stork Test Hello1"
+short_description: "Simple usage for testing"
 type: CONSOLE
-main_class: "com.fizzed.stork.demo.Hello"
+main_class: "com.fizzed.stork.test.HelloMain"
 platforms: [ WINDOWS, LINUX, MAC_OSX ]
 working_dir_mode: RETAIN
 #app_args: "-c config.yml"

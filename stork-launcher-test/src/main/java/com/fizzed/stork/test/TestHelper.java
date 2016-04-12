@@ -13,11 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.stork.demo;
+package com.fizzed.stork.test;
 
+import com.fizzed.crux.vagrant.VagrantClient;
+import com.fizzed.crux.vagrant.VagrantClients;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 
 public class TestHelper {
+    
+    static public final VagrantClient VAGRANT_CLIENT = VagrantClients.cachingOrEmptyClient();
+    
+    static public List<String> hosts() {
+        String host = System.getProperty("host");
+        if (host != null) {
+            return Arrays.asList(host);
+        } else {
+            return Arrays.asList("local", "ubuntu1404", "freebsd102");
+        }
+    }
     
     static public boolean isWindows() {
         return System.getProperty("os.name").toLowerCase().contains("win");

@@ -2,17 +2,16 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fizzed</groupId>
-    <artifactId>stork-demo-hello</artifactId>
+    <artifactId>stork-launcher-test</artifactId>
     <packaging>jar</packaging>
-    <name>stork-demo-hello</name>
+    <name>stork-launcher-test</name>
 
     <parent>
         <groupId>com.fizzed</groupId>
         <artifactId>stork</artifactId>
         <version>1.2.4-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
-
+    
     <build>
         <plugins>
             <plugin>
@@ -21,41 +20,25 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+            <!-- java 8 only on test compile -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <outputDirectory>target/stork/lib</outputDirectory>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.9</version>
+                <artifactId>maven-compiler-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>stage-dependencies</id>
-                        <phase>package</phase>
+                        <id>test-compile</id>
+                        <phase>process-test-sources</phase>
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <goal>testCompile</goal>
                         </goals>
                         <configuration>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                            <prependGroupId>true</prependGroupId>
-                            <outputDirectory>target/stork/lib</outputDirectory>
+                            <source>1.8</source>
+                            <target>1.8</target>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <!--
-                The stork-maven-plugin is better integration but this is a way
-                to call the fizzed-stork-launcher jar library directly without
-                the help of a plugin wrapping it.  This is mainly for development
-                of stork vs. a suggested way of integrating in Maven.
-            -->
+            <!-- generate stork launchers using classes from stork-launcher module -->
             <plugin>
                 <artifactId>exec-maven-plugin</artifactId>
                 <groupId>org.codehaus.mojo</groupId>
@@ -79,10 +62,10 @@
                             <includePluginDependencies>true</includePluginDependencies>
                             <mainClass>com.fizzed.stork.launcher.GeneratorMain</mainClass>
                             <arguments>
-                                <argument>-i</argument>
-                                <argument>${basedir}/src/main/launchers/stork-demo-hello.yml</argument>
                                 <argument>-o</argument>
                                 <argument>${basedir}/target/stork</argument>
+                                <argument>-i</argument>
+                                <argument>${basedir}/src/main/launchers</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -90,42 +73,64 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>stage-dependencies</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>runtime</includeScope>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <prependGroupId>true</prependGroupId>
+                            <outputDirectory>target/stork/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- we must have main class(es) from this project in the stork/lib
+                 directory in order for app to run -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <executions>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>process-classes</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                        <configuration>
+                            <outputDirectory>target/stork/lib</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4.1</version>
-                <executions>
-                    <execution>
-                        <id>generate-stork-assembly</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <finalName>${project.artifactId}-${project.version}</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptors>
-                        <descriptor>src/main/assembly/bin.xml</descriptor>
-                    </descriptors>
-                </configuration>
             </plugin>
         </plugins>
     </build>
     
     <dependencies>
+        <!-- compile -->
+        <dependency>
+            <groupId>com.fizzed</groupId>
+            <artifactId>crux-vagrant</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        
         <!-- testing -->
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -141,10 +146,15 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
         </dependency>
+            
+        <dependency>
+            <groupId>com.fizzed</groupId>
+            <artifactId>blaze-ssh</artifactId>
+        </dependency>
         
         <dependency>
-            <groupId>org.zeroturnaround</groupId>
-            <artifactId>zt-exec</artifactId>
+            <groupId>com.fizzed</groupId>
+            <artifactId>blaze-core</artifactId>
         </dependency>
         
         <dependency>

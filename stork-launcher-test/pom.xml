@@ -155,11 +155,13 @@
         <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>blaze-ssh</artifactId>
+            <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>blaze-core</artifactId>
+            <scope>test</scope>
         </dependency>
         
         <dependency>

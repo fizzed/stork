@@ -1,0 +1,10 @@
+name: "stork-deploy"
+domain: "com.fizzed.stork"
+display_name: "Stork Deploy by Fizzed"
+short_description: "Utility for deploying stork assemblies"
+type: CONSOLE
+main_class: "com.fizzed.stork.deploy.DeployMain"
+platforms: [ WINDOWS, LINUX ]
+working_dir_mode: RETAIN
+min_java_version: "1.8"
+symlink_java: false

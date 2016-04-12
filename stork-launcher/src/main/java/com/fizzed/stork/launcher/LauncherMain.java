@@ -31,22 +31,24 @@ import org.slf4j.LoggerFactory;
 public class LauncherMain extends BaseApplication {
     static private final Logger logger = LoggerFactory.getLogger(LauncherMain.class);
 
-    @Override
-    public void printUsage() {
-        System.err.println("Usage: stork-launcher -o <dir> <input>...");
-        System.err.println("");
-        System.err.println("Create console/daemon launchers for your Java apps. Input may");
-        System.err.println("either be a file or include a wildcard to support searching.");
-        System.err.println("");
-        System.err.println("Arguments");
-        System.err.println(" -v, --version            Print version and exit");
-        System.err.println(" -o, --output-dir <dir>   Output directory");
-    }
-
     static public void main(String[] args) {
         new LauncherMain().run(args);
     }
-
+    
+    @Override
+    public void printUsage() {
+        System.out.println("Usage: stork-launcher -o <dir> <input>...");
+        System.out.println("");
+        System.out.println("Create console/daemon launchers for your Java apps. Input may");
+        System.out.println("either be a file or include a wildcard to support searching.");
+        System.out.println("");
+        System.out.println("Arguments");
+        System.out.println("");
+        System.out.println(" -v, --version            Print version and exit");
+        System.out.println(" -h, --help               Print help and exit");
+        System.out.println(" -o, --output-dir <dir>   Output directory");
+    }
+    
     @Override
     public void run(Deque<String> args) {
         File outputDir = null;
@@ -58,7 +60,9 @@ public class LauncherMain extends BaseApplication {
             switch (arg) {
                 case "-v":
                 case "--version": {
-                    System.err.println("stork-launcher: v" + com.fizzed.stork.launcher.Version.getLongVersion());
+                    System.out.println("stork-launcher: v" + com.fizzed.stork.launcher.Version.getLongVersion());
+                    System.out.println(" by Fizzed, Inc. (http://fizzed.com)");
+                    System.out.println(" at https://github.com/fizzed/stork");
                     System.exit(0);
                     break;
                 }

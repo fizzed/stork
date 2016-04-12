@@ -1,14 +1,18 @@
 Stork by Fizzed
 =======================================
 
-#### 2.x.x
+#### 2.x.x - xxxx-xx-xx
 
+ - Refactored and polished project layout
+ - Runs on Java 1.7+
+ - stork-sbt-play-plugin is deprecated (Fizzed has moved away from scala w/
+   Java8 and we didn't have time to update this dependency, PRs welcome)
+ - All artifact ids now simply are "stork-" rather than "fizzed-stork-"
  - Fixed bug with windows .bat launchers not returning an error code if a JVM
    was not found
  - Fixed bug with java homes on linux/bsd that contained spaces not running
  - Vagrant used to unit test and verify launchers work across numerous 
    operating system distributions.
- - Polished maven project layout
 
 #### 1.2.3 - 2015-03-13
 

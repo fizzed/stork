@@ -22,9 +22,9 @@
     <properties>
         <java.version>1.7</java.version>
         <main.java.package />
-        <!--<netbeans.compile.on.save>none</netbeans.compile.on.save>-->
         <!-- workaround travis ci maven version requirement -->
         <maven.enforce.version>3.2.5</maven.enforce.version>
+        <jackson.version>2.7.3</jackson.version>
     </properties>
 
     <modules>
@@ -34,48 +34,9 @@
         <module>stork-assembly</module>
         <module>stork-maven-plugin</module>
         <module>stork-cli</module>
-        
-        <!--
-        -->
-        <!--<module>stork-sbt-play-plugin</module>-->
-        <!--<module>stork-examples/hello-world</module>-->
-        <!--<module>stork-examples/hello-server-dropwizard</module>-->
-        <!--<module>stork-examples/hello-server-play</module>-->
-        
+        <module>stork-demo/stork-demo-hellod</module>
+        <module>stork-demo/stork-demo-dropwizard</module>
     </modules>
-
-    <!--
-    <profiles>
-        <profile>
-            <id>extra</id>
-            <modules>
-                <module>bootstrap</module>
-                <module>launcher</module>
-                <module>util</module>
-                <module>cli</module>
-                <module>maven-plugin</module>
-                <module>sbt-play-plugin</module>
-                <module>examples/hello-world</module>
-                <module>examples/hello-server-dropwizard</module>
-                <module>examples/hello-server-play</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>stork-bootstrap</module>
-                <module>stork-launcher</module>
-                <module>stork-core</module>
-                <module>stork-cli</module>
-                <module>stork-maven-plugin</module>
-                <module>examples/hello-world</module>
-            </modules>
-        </profile>
-    </profiles>
-    -->
 
     <dependencyManagement>
         <dependencies>
@@ -115,17 +76,17 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.7.3</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.7.3</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
-                <version>2.7.3</version>
+                <version>${jackson.version}</version>
             </dependency>
             
             <!-- testing (hamcrest BEFORE junit important) -->

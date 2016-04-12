@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.fizzed</groupId>
+    <artifactId>stork-demo-hellod</artifactId>
+    <packaging>jar</packaging>
+    <name>stork-demo-hellod</name>
+
+    <parent>
+        <groupId>com.fizzed</groupId>
+        <artifactId>stork</artifactId>
+        <version>1.2.4-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    
+    <properties>
+        <main.java.package>com.fizzed.stork.demo</main.java.package>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- eating our own dog food :-) -->
+            <plugin>
+                <groupId>com.fizzed</groupId>
+                <artifactId>stork-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <id>stork-launcher</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launcher</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stork-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assembly</goal>
+                        </goals>
+                    </execution>
+                </executions> 
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- compile scope -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http</artifactId>
+            <version>4.0.23.Final</version>
+        </dependency>
+        
+        <!-- usually test but runtime for assembly -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+</project>

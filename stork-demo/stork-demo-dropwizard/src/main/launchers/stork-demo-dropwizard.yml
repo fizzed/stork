@@ -1,0 +1,66 @@
+
+# Name of application (make sure it has no spaces)
+name: "stork-demo-dropwizard"
+
+# Domain of application (e.g. com.example)
+domain: "com.fizzed.stork.demo"
+
+# Display name of application (can have spaces)
+# Usually also the application directory for Windows/Mac OSX (e.g. Program Files\Hello Server)
+display_name: "Stork dropwizard demo"
+
+short_description: "Stork dropwizard demo"
+
+# Type of launcher (CONSOLE or DAEMON)
+type: DAEMON
+
+# Java class to run
+main_class: "com.fizzed.stork.demo.dropwizard.HelloApplication"
+
+# Platform launchers to generate (WINDOWS, LINUX, MAC_OSX)
+platforms: [ WINDOWS, LINUX, MAC_OSX ]
+
+# Include a share/helper/java-detect script (troubleshoot JVM searching, or
+# use within an installer / deployer)
+include_java_detect_helper: true
+
+# Working directory for app
+#  RETAIN will not change the working directory
+#  APP_HOME will change the workding directory to the home of the app
+#working_dir_mode: APP_HOME
+
+# Arguments for application (as though user typed them on command-line)
+# These will be added immediately after the main class part of java command
+app_args: "server conf/hello.yml"
+
+# Arguments to use with the java command (e.g. way to pass -D arguments)
+# "-Xrs" is good to include with daemons
+java_args: "-Xrs"
+  
+# minimum version of java required (system will be searched for acceptable jvm)
+min_java_version: "1.7"
+
+# min/max fixed memory (measured in MB)
+#min_java_memory: 256
+#max_java_memory: 1024
+
+# min/max memory by percentage of system
+#min_java_memory_pct: 10
+#max_java_memory_pct: 80
+
+platform_configurations:
+  LINUX:
+    daemon_method: NOHUP
+    user: "daemon"
+    group: "daemon"
+  
+  MAC_OSX:
+    user: "_daemon"
+    group: "_daemon"
+  
+  WINDOWS:
+    daemon_method: JSLWIN
+
+symlink_java: true
+
+#run_dir: /var/run

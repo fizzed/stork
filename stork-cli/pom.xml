@@ -14,6 +14,40 @@
     
     <build>
         <plugins>
+            <!-- until stork-fabric is deprecated, we need to copy it here -->
+            <!--
+            <plugin>
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <version>1.4.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.fizzed</groupId>
+                        <artifactId>stork-assembly</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>copy-stork-fabric</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.fizzed.stork.util.CopyFile</mainClass>
+                            <arguments>
+                                <argument>-o</argument>
+                                <argument>${basedir}/target/stork/bin</argument>
+                                <argument>-i</argument>
+                                <argument>../stork-fabric/bin</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
+            <!-- eating our own dog food :-) -->
             <plugin>
                 <groupId>com.fizzed</groupId>
                 <artifactId>stork-maven-plugin</artifactId>
@@ -21,12 +55,14 @@
                 <executions>
                     <execution>
                         <id>stork-launcher</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>launcher</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>stork-assembly</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>assembly</goal>
                         </goals>

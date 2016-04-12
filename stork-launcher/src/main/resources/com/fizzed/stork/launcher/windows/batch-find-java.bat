@@ -12,7 +12,7 @@ set target_java_ver_num=0
 call :ExtractJavaMajorVersionNum "%MIN_JAVA_VERSION%" target_java_ver_num
 if "%target_java_ver_num%"=="0" (
     echo Unable to extract major version from "%MIN_JAVA_VERSION%"
-    goto :errorlabel
+    Exit /B 1
 )
 
 call :JavaSearchDebug "target_java_ver_num: %target_java_ver_num%"
@@ -78,12 +78,12 @@ if NOT "%reg_best_java_bin%"=="" (
 :NoAcceptableJavaBinFound
 @REM if we get here then the search above failed
 call :JavaSearchDebug "No acceptable java found"
-@ECHO Unable to find Java Runtime for minimum required version %MIN_JAVA_VERSION%
+@ECHO Unable to find Java runtime on system with version ^>^= %MIN_JAVA_VERSION%
 @ECHO Please visit http://java.com to install an acceptable Java Runtime
 @ECHO For debugging how this script searches for the JRE:
 @ECHO   SET LAUNCHER_DEBUG=1
 @ECHO and then run the command again
-goto :errorlabel
+EXIT /B 1
 
 :AcceptableJavaBinFound
 call :JavaSearchDebug "Acceptable java bin found: %java_bin_accepted%"

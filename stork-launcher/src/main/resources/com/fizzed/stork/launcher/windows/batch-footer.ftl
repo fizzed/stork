@@ -2,5 +2,8 @@
 goto :eof
 
 :errorlabel
-Exit /B 1
+setlocal
+SET error_code=%~1
+IF "%error_code%" NEQ "" EXIT /B %error_code
+Exit /B %ERRORLEVEL%
 goto :eof

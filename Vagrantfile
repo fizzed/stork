@@ -14,7 +14,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "centos7", autostart: false do |guest|
     guest.vm.box = "minimal/centos7"
-    guest.vm.provision :shell, inline: "yum install -y java-1.7.0-openjdk;"
+    guest.vm.provision :shell, inline: "yum install -y java-1.7.0-openjdk-headless;"
   end
 
   #config.vm.define "centos6", autostart: false do |guest|
@@ -38,4 +38,11 @@ Vagrant.configure(2) do |config|
     guest.vm.provision :shell, inline: "cd /tmp; wget \"http://ftp.openbsd.org/pub/OpenBSD/`uname -r`/`arch -s`/xbase58.tgz\"; cd /; tar xzvphf /tmp/xbase58.tgz"
     guest.vm.provision :shell, inline: "PKG_PATH=\"http://ftp.openbsd.org/pub/OpenBSD/`uname -r`/packages/`arch -s`/\" pkg_add -I jdk-1.7.0.80p0v0"
   end
+
+  config.vm.define "omnios151014", autostart: false do |guest|
+    guest.vm.box = "http://omnios.omniti.com/media/omnios-r151014.box"
+    #guest.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
+    #guest.vm.provision :shell, inline: "pkg install -y openjdk; echo 'fdesc /dev/fd fdescfs rw 0 0' >> /etc/fstab; echo 'proc /proc procfs rw 0	0' >> /etc/fstab; mount /dev/fd; mount /proc"
+  end
+
 end

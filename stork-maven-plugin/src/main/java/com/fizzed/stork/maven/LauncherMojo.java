@@ -17,16 +17,16 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 /**
- * Maven plugin akin to the "stork-launcher-generate" command-line app but
+ * Maven plugin akin to the "stork-launcher" command-line app but
  * directly accesses Java library (negating local install requirements).
  * 
  * @author joelauer
  */
-@Mojo(name = "generate",
+@Mojo(name = "launcher",
       defaultPhase = LifecyclePhase.PACKAGE,
       threadSafe = true
     )
-public class GenerateMojo extends AbstractMojo {
+public class LauncherMojo extends AbstractMojo {
     
     /**
      * Directory to output generated launchers.
@@ -60,9 +60,7 @@ public class GenerateMojo extends AbstractMojo {
             List<Configuration> configs = generator.readConfigurationFiles(configFiles);
             int generated = generator.generateAll(configs, outputDirectory);
             getLog().info("Done (generated " + generated + " launchers)");
-        } catch (ArgumentException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (ArgumentException | IOException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
     }

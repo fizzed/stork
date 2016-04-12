@@ -60,11 +60,10 @@
                         <configuration>
                             <includeProjectDependencies>false</includeProjectDependencies>
                             <includePluginDependencies>true</includePluginDependencies>
-                            <mainClass>com.fizzed.stork.launcher.GeneratorMain</mainClass>
+                            <mainClass>com.fizzed.stork.launcher.LauncherMain</mainClass>
                             <arguments>
-                                <argument>-o</argument>
+                                <argument>--output-dir</argument>
                                 <argument>${basedir}/target/stork</argument>
-                                <argument>-i</argument>
                                 <argument>${basedir}/src/main/launchers</argument>
                             </arguments>
                         </configuration>

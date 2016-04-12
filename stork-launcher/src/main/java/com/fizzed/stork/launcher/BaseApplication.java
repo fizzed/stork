@@ -15,12 +15,11 @@
  */
 package com.fizzed.stork.launcher;
 
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 
-/**
- *
- * @author joelauer
- */
 public abstract class BaseApplication {
 
     public abstract void printUsage();
@@ -40,12 +39,16 @@ public abstract class BaseApplication {
         System.exit(1);
     }
 
-    public String popNextArg(String argSwitch, List<String> argList) {
-        if (argList.isEmpty()) {
-            printErrorThenUsageAndExit("argument switch [" + argSwitch + "] requires a value as next argument");
+    public String popNextArg(String arg, Deque<String> args) {
+        if (args.isEmpty()) {
+            printErrorThenUsageAndExit("argument [" + arg + "] requires a value as the next argument");
         }
-        return argList.remove(0);
+        return args.remove();
     }
     
-    public abstract void run(String[] args);
+    final public void run(String[] args) {
+        run(new ArrayDeque<>(Arrays.asList(args)));
+    }
+    
+    public abstract void run(Deque<String> args);
 }

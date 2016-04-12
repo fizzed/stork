@@ -1,20 +1,10 @@
-
-name: "stork-generate"
-
+name: "stork-launcher"
 domain: "com.fizzed.stork"
-
 display_name: "Stork Launcher Generator by Fizzed"
-
 short_description: "Utility for creating scripts to launch Java apps"
-
 type: CONSOLE
-
-main_class: "com.fizzed.stork.launcher.GeneratorMain"
-
+main_class: "com.fizzed.stork.launcher.LauncherMain"
 platforms: [ WINDOWS, LINUX ]
-
 working_dir_mode: RETAIN
-  
 min_java_version: "1.6"
-
 symlink_java: false

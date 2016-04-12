@@ -13,7 +13,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 /**
- * Maven plugin akin to the "stork-launcher-merge" command-line app but
+ * Maven plugin akin to the "stork-merge" command-line app but
  * directly accesses Java library (negating local install requirements).
  * 
  * @author joelauer
@@ -50,14 +50,13 @@ public class MergeMojo extends AbstractMojo {
             return;
         }
     
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         for (String f : inputFiles) {
             files.add(new File(f));
         }
         
         try {
-            Merger launcherMerger = new Merger();
-            launcherMerger.merge(files, outputFile);
+            Merger.merge(files, outputFile);
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }

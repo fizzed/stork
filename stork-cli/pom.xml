@@ -15,91 +15,26 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.9</version>
+                <groupId>com.fizzed</groupId>
+                <artifactId>stork-maven-plugin</artifactId>
+                <version>${project.version}</version>
                 <executions>
                     <execution>
-                        <id>stage-dependencies</id>
-                        <phase>package</phase>
+                        <id>stork-launcher</id>
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <goal>launcher</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stork-assembly</id>
+                        <goals>
+                            <goal>assembly</goal>
                         </goals>
                         <configuration>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                            <prependGroupId>true</prependGroupId>
-                            <outputDirectory>target/stork/lib</outputDirectory>
+                            <finalName>stork-${project.version}</finalName>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>exec-maven-plugin</artifactId>
-                <groupId>org.codehaus.mojo</groupId>
-                <version>1.3.2</version>
-                <executions>
-                    <execution>
-                        <id>generate-stork-launchers</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>java</executable>
-                            <arguments>
-                                <argument>-classpath</argument>
-            			<classpath />
-                                <argument>com.fizzed.stork.launcher.GeneratorMain</argument>
-                                <argument>-o</argument>
-                                <argument>target/stork</argument>
-                                <argument>-i</argument>
-                                <argument>../stork-launcher/src/main/launchers</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <!-- using helper class to copy files and retain executable permissions -->
-                    <execution>
-                        <id>copy-static-launchers</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>java</executable>
-                            <arguments>
-                                <argument>-classpath</argument>
-            			<classpath />
-                                <argument>com.fizzed.stork.util.CopyFile</argument>
-                                <argument>-i</argument>
-                                <argument>../stork-fabric/bin</argument>
-                                <argument>-o</argument>
-                                <argument>target/stork/bin</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <finalName>stork-${project.version}</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptors>
-                        <descriptor>src/main/assembly/bin.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                </executions> 
             </plugin>
         </plugins>
     </build>
@@ -113,11 +48,10 @@
         
         <dependency>
             <groupId>com.fizzed</groupId>
-            <artifactId>stork-core</artifactId>
-            <version>${project.version}</version>
+            <artifactId>stork-assembly</artifactId>
         </dependency>
         
-        <!-- usually  test but we include it in the cli -->
+        <!-- usually test but we need to include it in the cli -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>

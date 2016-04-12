@@ -21,7 +21,9 @@ import java.lang.reflect.Method;
 import java.util.Properties;
 
 /**
- *
+ * Bootstraps an application by becoming the main entry point, sets up other
+ * variables, and then delegates back to a different main method.
+ * 
  * @author joelauer
  */
 public class Bootstrap {

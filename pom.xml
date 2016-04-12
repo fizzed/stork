@@ -30,18 +30,18 @@
     <modules>
         <module>stork-launcher</module>
         <module>stork-launcher-test</module>
+        <module>stork-bootstrap</module>
+        <module>stork-assembly</module>
+        <module>stork-maven-plugin</module>
+        <module>stork-cli</module>
         
         <!--
-        <module>stork-bootstrap</module>
-        <module>stork-core</module>
-        <module>stork-cli</module>
-        <module>stork-maven-plugin</module>
         -->
         <!--<module>stork-sbt-play-plugin</module>-->
-        
         <!--<module>stork-examples/hello-world</module>-->
         <!--<module>stork-examples/hello-server-dropwizard</module>-->
         <!--<module>stork-examples/hello-server-play</module>-->
+        
     </modules>
 
     <!--
@@ -97,6 +97,12 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
                 <version>1.9</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>stork-assembly</artifactId>
+                <version>${project.version}</version>
             </dependency>
             
             <dependency>

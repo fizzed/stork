@@ -115,7 +115,7 @@ public class AssemblyMojo extends AbstractMojo {
     }
     
     public List<Artifact> artifactsToStage() {
-        List<Artifact> artifacts = new ArrayList<Artifact>();
+        List<Artifact> artifacts = new ArrayList<>();
         
         // include project artifact?
         if (!shouldArtifactBeStaged(project.getArtifact())) {

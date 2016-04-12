@@ -24,10 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
-/**
- *
- * @author joelauer
- */
 public class FileUtil {
     
     static public List<File> findAllFiles(List<String> fileStrings, boolean ignoreNonExistent) throws IOException {

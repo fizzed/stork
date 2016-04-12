@@ -13,6 +13,11 @@
         <version>1.2.4-SNAPSHOT</version>
     </parent>
     
+    <properties>
+        <main.java.package>com.fizzed.stork.maven</main.java.package>
+        <maven.version>3.1.0</maven.version>
+    </properties>
+    
     <build>
         <plugins>
             <plugin>
@@ -57,16 +62,17 @@
     
     <dependencies>
         <!-- compile -->
+        
         <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-launcher</artifactId>
-            <version>${project.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>com.fizzed</groupId>
-            <artifactId>stork-core</artifactId>
-            <version>${project.version}</version>
+            <artifactId>stork-assembly</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
@@ -104,10 +110,4 @@
             <version>1.5.15</version>
         </dependency>
     </dependencies>
-
-    <properties>
-        <main.java.package>com.fizzed.stork.maven</main.java.package>
-        <maven.version>3.1.0</maven.version>
-    </properties>
-    
 </project>

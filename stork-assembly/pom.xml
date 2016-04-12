@@ -2,9 +2,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fizzed</groupId>
-    <artifactId>stork-core</artifactId>
+    <artifactId>stork-assembly</artifactId>
     <packaging>jar</packaging>
-    <name>stork-core</name>
+    <name>stork-assembly</name>
     <description>Core java utility libs for stork</description>
   
     <parent>

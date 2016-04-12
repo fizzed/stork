@@ -18,12 +18,16 @@ package com.fizzed.stork.test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fizzed.blaze.SecureShells;
 import com.fizzed.blaze.Systems;
+import com.fizzed.blaze.ssh.SshExec;
 import com.fizzed.blaze.ssh.SshSession;
+import com.fizzed.blaze.system.Exec;
 import com.fizzed.blaze.util.CaptureOutput;
 import com.fizzed.blaze.util.Streamables;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
@@ -31,6 +35,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeTrue;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -46,16 +51,14 @@ public class LauncherTest {
         return TestHelper.hosts();
     }
     
-    @Before
-    public void onlyIfHostIsRunning() {
-        assumeTrue("Is host running?", isHostRunning());
-    }
-    
     private final String host;
     private final Path exeHello1;
     private final Path exeHello2;
     private final Path exeHello3;
     private final SshSession ssh;
+    static private boolean vagrantRsynced;
+    private Path symlinkJava;
+    private Path symlinkJavaWithSpaces;
     
     public LauncherTest(String host) {
         this.host = host;
@@ -84,6 +87,38 @@ public class LauncherTest {
         }
     }
     
+    @BeforeClass
+    static public void vagrantRsynced() throws Exception {
+        if (!vagrantRsynced) {
+            try {
+                Systems.exec("vagrant", "rsync").exitValues(0, 1).run();
+            } catch (Exception e) {
+                // ignore
+            }
+            vagrantRsynced = true;
+        }
+    }
+    
+    @Before
+    public void onlyIfHostIsRunning() {
+        assumeTrue("Is host running?", isHostRunning());
+    }
+    
+    @Before
+    public void symlinkJava() throws Exception {
+        if (symlinkJava == null) {
+            Path symlinkJavaExe = resolveExe("symlink-java");
+            String output = execute(0, symlinkJavaExe);
+            // 3 lines
+            // /usr/lib/jvm/jdk1.8.0_77/jre
+            ///tmp/java-linked
+            ///tmp/java-linked with spaces
+            String[] lines = output.trim().split("\n");
+            symlinkJava = Paths.get(lines[1].trim());
+            symlinkJavaWithSpaces = Paths.get(lines[2].trim());
+        }
+    }
+    
     private Path resolveExe(String exeName) {
         switch (this.host) {
             case "local":
@@ -98,24 +133,44 @@ public class LauncherTest {
     }
     
     public String execute(int exitValue, Path exe, String... args) throws Exception {
+        return execute(exitValue, exe, null, args);
+    }
+    
+    public String execute(int exitValue, Path exe, Map<String,String> environment, String... args) throws Exception {
         CaptureOutput captureOutput = Streamables.captureOutput();
         
         try {
             if (this.host.equals("local")) {
-                Systems.exec(exe)
-                   .args((Object[]) args)
-                   .exitValue(exitValue)
-                   .pipeOutput(captureOutput)
-                   .pipeError(captureOutput)
-                   .run();
+                Exec exec
+                    = Systems.exec(exe)
+                        .args((Object[]) args)
+                        .exitValue(exitValue)
+                        .pipeOutput(captureOutput)
+                        .pipeError(captureOutput);
+                
+                if (environment != null) {
+                    for (Map.Entry<String,String> entry : environment.entrySet()) {
+                        exec.env(entry.getKey(), entry.getValue());
+                    }
+                }
+                
+                exec.run();
             } else {
-                SecureShells.sshExec(ssh)
-                   .command(exe)
-                   .args((Object[]) args)
-                   .exitValue(exitValue)
-                   .pipeOutput(captureOutput)
-                   .pipeError(captureOutput)
-                   .run();
+                SshExec exec
+                    = SecureShells.sshExec(ssh)
+                        .command(exe)
+                        .args((Object[]) args)
+                        .exitValue(exitValue)
+                        .pipeOutput(captureOutput)
+                        .pipeError(captureOutput);
+                
+                if (environment != null) {
+                    for (Map.Entry<String,String> entry : environment.entrySet()) {
+                        exec.env(entry.getKey(), entry.getValue());
+                    }
+                }
+                
+                exec.run();
             }
         } catch (Exception e) {
             log.error("Unable to cleanly capture output: {}", captureOutput.asString());
@@ -163,5 +218,19 @@ public class LauncherTest {
         String output = execute(1, exeHello3);
         
         assertThat(output, containsString("Could not find or load main class com.fizzed.stork.test.ClassNotFoundMain"));
+    }
+    
+    @Test
+    public void javaHomeWithSpaces() throws Exception {
+        Map<String,String> environment = new HashMap<>();
+        environment.put("PATH", "/bin:/usr/bin");
+        environment.put("JAVA_HOME", symlinkJavaWithSpaces.toString());
+        
+        String json = execute(1, exeHello1, environment);
+        
+        HelloOutput output = new ObjectMapper().readValue(json, HelloOutput.class);
+        
+        assertThat(output.getConfirm(), is("Hello World!"));
+        assertThat(output.getArguments(), hasSize(0));
     }
 }

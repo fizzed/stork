@@ -225,13 +225,13 @@ public class LauncherTest {
     
     @Test
     public void javaHomeWithSpaces() throws Exception {
-        assumeTrue("java symlink worked", symlinkJavaWithSpaces != null);
+        assumeTrue("java symlink worked", symlinkJava != null);
         
         Map<String,String> environment = new HashMap<>();
-        environment.put("PATH", "/bin:/usr/bin");
+        //environment.put("PATH", "/bin:/usr/bin");
         environment.put("JAVA_HOME", symlinkJavaWithSpaces.toString());
         
-        String json = execute(1, exeHello1, environment);
+        String json = execute(0, exeHello1, environment);
         
         HelloOutput output = new ObjectMapper().readValue(json, HelloOutput.class);
         

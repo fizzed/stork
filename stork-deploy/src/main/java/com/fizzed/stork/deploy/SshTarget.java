@@ -48,7 +48,11 @@ abstract public class SshTarget extends Target {
             if (commands.containsKey("doas")) {
                 arguments.add("doas");
             } else {
+                // man sudo
+                // -S  The -S (stdin) option causes sudo to read the password from the
+                //     standard input instead of the terminal device.
                 arguments.add("sudo");
+                arguments.add("-S");
             }
         }
 

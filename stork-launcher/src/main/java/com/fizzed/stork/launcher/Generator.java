@@ -15,6 +15,7 @@
  */
 package com.fizzed.stork.launcher;
 
+import com.fizzed.stork.core.ArgumentException;
 import com.fizzed.stork.launcher.Configuration.DaemonMethod;
 import com.fizzed.stork.launcher.Configuration.Platform;
 import com.fizzed.stork.launcher.Configuration.Type;

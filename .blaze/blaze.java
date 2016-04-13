@@ -32,16 +32,17 @@ public class blaze {
         exec("mvn", "test", "-am", "-pl", "stork-deploy", "-Dhost=" + host).run();
     }
     
-    public void demo_deploy() {
-        /**
-        // passthru 'host' system property
-        String host = config.value("host").getOr("");
-        if (host.equals("")) {
-        log.info("You can limit which hosts unit tests run on with a -Dhost=name param");
-        }
-         */ 
+    public void demo_launcher() {
         exec("mvn", "package", "-DskipTests=true", "-am", "-pl", "stork-cli").run();
-        exec("stork-deploy", "-a", "stork-deploy/src/test/resources/fixtures/hello-console-1.2.4.tar.gz", "vagrant+ssh://ubuntu1404")
+        exec("stork-launcher", "-o", "target/stork-fake", "stork-cli/src/main/launchers")
+            .path("stork-cli/target/stork/bin")
+            .run();
+    }
+    
+    public void demo_deploy() {
+        String host = getTestHost();
+        exec("mvn", "package", "-DskipTests=true", "-am", "-pl", "stork-cli").run();
+        exec("stork-deploy", "-a", "stork-deploy/src/test/resources/fixtures/hello-console-1.2.4.tar.gz", "vagrant+ssh://" + host)
             .path("stork-cli/target/stork/bin")
             .run();
     }

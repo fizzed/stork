@@ -13,15 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.stork.launcher;
+package com.fizzed.stork.core;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BaseApplication {
-
+    
     public abstract void printUsage();
+    
+    public Logger getLogger() {
+        return LoggerFactory.getLogger(this.getClass());
+    }
+    
+    public void logWelcomeMessage() {
+        Logger log = getLogger();
+        log.info("          __                __    ");
+        log.info("  _______/  |_  ___________|  | __");
+        log.info(" /  ___/\\   __\\/  _ \\_  __ \\  |/ /");
+        log.info(" \\___ \\  |  | (  <_> )  | \\/    < ");
+        log.info("/____  > |__|  \\____/|__|  |__|_ \\");
+        log.info("     \\/                         \\/");
+        log.info("                v{}", Version.getVersion());
+        log.info("");
+    }
     
     public void printError(String errorMessage) {
         System.err.println("Error: " + errorMessage);
@@ -32,15 +50,15 @@ public abstract class BaseApplication {
         System.exit(1);
     }
 
-    public void printErrorThenUsageAndExit(String errorMessage) {
+    public void printErrorThenHelpHintAndExit(String errorMessage) {
         printError(errorMessage);
-        System.out.println("Execute with -h argument for usage info");
+        System.out.println("Try with -h argument for usage info");
         System.exit(1);
     }
 
-    public String popNextArg(String arg, Deque<String> args) {
+    public String nextArg(String arg, Deque<String> args) {
         if (args.isEmpty()) {
-            printErrorThenUsageAndExit("argument [" + arg + "] requires a value as the next argument");
+            printErrorThenHelpHintAndExit("argument '" + arg + "' requires a value as the next argument");
         }
         return args.remove();
     }
@@ -50,4 +68,5 @@ public abstract class BaseApplication {
     }
     
     public abstract void run(Deque<String> args);
+    
 }

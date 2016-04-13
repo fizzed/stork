@@ -15,23 +15,14 @@
  */
 package com.fizzed.stork.launcher;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fizzed.stork.core.BaseApplication;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author joelauer
- */
 public class MergeMain extends BaseApplication {
-    private static final Logger logger = LoggerFactory.getLogger(MergeMain.class);
-
+    
     @Override
     public void printUsage() {
         System.err.println("Usage: stork-merge -i <input config> -o <output config> [-i ...]");

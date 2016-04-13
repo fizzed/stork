@@ -15,13 +15,14 @@
  */
 package com.fizzed.stork.launcher;
 
+import com.fizzed.stork.core.ArgumentException;
+import com.fizzed.stork.core.BaseApplication;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Main entry point for creating console/daemon launchers
@@ -29,8 +30,7 @@ import org.slf4j.LoggerFactory;
  * @author joelauer
  */
 public class LauncherMain extends BaseApplication {
-    static private final Logger logger = LoggerFactory.getLogger(LauncherMain.class);
-
+    
     static public void main(String[] args) {
         new LauncherMain().run(args);
     }
@@ -60,7 +60,7 @@ public class LauncherMain extends BaseApplication {
             switch (arg) {
                 case "-v":
                 case "--version": {
-                    System.out.println("stork-launcher: v" + com.fizzed.stork.launcher.Version.getLongVersion());
+                    System.out.println("stork-launcher " + com.fizzed.stork.core.Version.getLongVersion());
                     System.out.println(" by Fizzed, Inc. (http://fizzed.com)");
                     System.out.println(" at https://github.com/fizzed/stork");
                     System.exit(0);
@@ -74,12 +74,12 @@ public class LauncherMain extends BaseApplication {
                 }
                 case "-o":
                 case "--output-dir": {
-                    outputDir = new File(popNextArg(arg, args));
+                    outputDir = new File(nextArg(arg, args));
                     break;
                 }
                 default: {
                     if (arg.startsWith("-")) {
-                        printErrorThenUsageAndExit("invalid argument [" + arg + "]");
+                        printErrorThenHelpHintAndExit("invalid argument [" + arg + "]");
                     } else {
                         configFileStrings.add(arg);
                         break;
@@ -89,25 +89,28 @@ public class LauncherMain extends BaseApplication {
         }
 
         if (outputDir == null) {
-            printErrorThenUsageAndExit("output dir required");
+            printErrorThenHelpHintAndExit("output dir required");
         }
         
         if (configFileStrings.isEmpty()) {
-            printErrorThenUsageAndExit("input file required");
+            printErrorThenHelpHintAndExit("input file required");
         }
+        
+        final Logger log = this.getLogger();
+        logWelcomeMessage();
         
         try {
             List<File> configFiles = FileUtil.findAllFiles(configFileStrings, false);
             ConfigurationFactory configFactory = new ConfigurationFactory();
             List<Configuration> configs = configFactory.read(configFiles);
             int generated = new Generator().generate(configs, outputDir);
-            logger.info("Created " + generated + " launchers");
+            log.info("Created " + generated + " launchers");
         } catch (ArgumentException e) {
-            printErrorThenUsageAndExit(e.getMessage());
+            printErrorThenHelpHintAndExit(e.getMessage());
         } catch (IOException e) {
             // serious enough to dump a stack trace
-            logger.error("Unable to cleanly process launcher configs", e);
-            printErrorThenUsageAndExit(e.getMessage());
+            log.error("Unable to cleanly generate launcher(s)", e);
+            printErrorThenHelpHintAndExit(e.getMessage());
         }
     }
 }

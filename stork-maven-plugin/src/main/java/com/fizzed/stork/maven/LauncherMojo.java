@@ -1,6 +1,6 @@
 package com.fizzed.stork.maven;
 
-import com.fizzed.stork.launcher.ArgumentException;
+import com.fizzed.stork.core.ArgumentException;
 import com.fizzed.stork.launcher.Configuration;
 import com.fizzed.stork.launcher.ConfigurationFactory;
 import com.fizzed.stork.launcher.FileUtil;

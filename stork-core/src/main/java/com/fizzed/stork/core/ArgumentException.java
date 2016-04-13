@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package com.fizzed.stork.launcher;
+package com.fizzed.stork.core;
 
-/**
- *
- * @author joelauer
- */
 public class ArgumentException extends Exception {
 
     /**

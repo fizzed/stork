@@ -2,15 +2,19 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fizzed</groupId>
-    <artifactId>stork-assembly</artifactId>
+    <artifactId>stork-core</artifactId>
     <packaging>jar</packaging>
-    <name>stork-assembly</name>
+    <name>stork-core</name>
   
     <parent>
         <groupId>com.fizzed</groupId>
         <artifactId>stork</artifactId>
         <version>1.2.4-SNAPSHOT</version>
     </parent>
+    
+    <properties>
+        <main.java.package>com.fizzed.stork.core</main.java.package>
+    </properties>
     
     <dependencies>
         <!-- compile -->
@@ -19,16 +23,6 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         
-        <dependency>
-            <groupId>com.fizzed</groupId>
-            <artifactId>stork-launcher</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-        </dependency>
-
         <!-- testing -->
         <dependency>
             <groupId>org.hamcrest</groupId>

@@ -13,15 +13,11 @@
         <version>1.2.4-SNAPSHOT</version>
     </parent>
     
-    <properties>
-        <main.java.package>com.fizzed.stork.launcher</main.java.package>
-    </properties>
-    
     <dependencies>
         <!-- compile -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>com.fizzed</groupId>
+            <artifactId>stork-core</artifactId>
         </dependency>
         
         <dependency>

@@ -29,6 +29,7 @@
     </properties>
 
     <modules>
+        <module>stork-core</module>
         <module>stork-launcher</module>
         <module>stork-launcher-test</module>
         <module>stork-assembly</module>
@@ -60,6 +61,12 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
                 <version>1.9</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>stork-core</artifactId>
+                <version>${project.version}</version>
             </dependency>
             
             <dependency>
@@ -108,13 +115,13 @@
             <dependency>
                 <groupId>com.fizzed</groupId>
                 <artifactId>blaze-core</artifactId>
-                <version>0.9.2</version>
+                <version>0.10.0</version>
             </dependency>
             
             <dependency>
                 <groupId>com.fizzed</groupId>
                 <artifactId>blaze-ssh</artifactId>
-                <version>0.9.2</version>
+                <version>0.10.0</version>
             </dependency>
             
             <!-- testing (hamcrest BEFORE junit important) -->

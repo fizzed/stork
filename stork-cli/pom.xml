@@ -14,6 +14,12 @@
     
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
             <!-- eating our own dog food :-) -->
             <plugin>
                 <groupId>com.fizzed</groupId>
@@ -47,11 +53,6 @@
         <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-launcher</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.fizzed</groupId>
-            <artifactId>stork-assembly</artifactId>
         </dependency>
         
         <dependency>

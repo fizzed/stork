@@ -14,11 +14,17 @@
     </parent>
     
     <properties>
-        <main.java.package>com.fizzed.stork.demo</main.java.package>
+        <main.java.package>com.fizzed.stork.demo.hellod</main.java.package>
     </properties>
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
             <!-- eating our own dog food :-) -->
             <plugin>
                 <groupId>com.fizzed</groupId>

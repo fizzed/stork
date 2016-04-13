@@ -15,6 +15,9 @@
  */
 package com.fizzed.stork.deploy;
 
+import com.fizzed.stork.core.ArgumentException;
+import com.fizzed.stork.core.BaseApplication;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,13 +27,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
+import org.slf4j.Logger;
 
-public class DeployMain {
+public class DeployMain extends BaseApplication {
     
     static public void main(String[] args) {
         new DeployMain().run(new ArrayDeque<>(Arrays.asList(args)));
     }
 
+    @Override
     public void printUsage() {
         System.out.println("Usage: stork-deploy [OPTIONS] -a <file> <target>...");
         System.out.println("");
@@ -45,6 +50,7 @@ public class DeployMain {
         System.out.println(" --verify                Verify only (do not deploy)");
     }
     
+    @Override
     public void run(Deque<String> args) {
         Path assemblyFile = null;
         List<String> targets = new ArrayList<>();
@@ -56,7 +62,7 @@ public class DeployMain {
             switch (arg) {
                 case "-v":
                 case "--version": {
-                    System.out.println("stork-deploy: v" + com.fizzed.stork.deploy.Version.getLongVersion());
+                    System.out.println("stork-deploy " + com.fizzed.stork.core.Version.getLongVersion());
                     System.out.println(" by Fizzed, Inc. (http://fizzed.com)");
                     System.out.println(" at https://github.com/fizzed/stork");
                     System.exit(0);
@@ -90,43 +96,40 @@ public class DeployMain {
         }
 
         if (assemblyFile == null) {
-            printErrorAndExit("assembly file is required");
+            printErrorThenHelpHintAndExit("assembly file is required");
         }
         
         if (!Files.exists(assemblyFile)) {
-            printErrorAndExit("assembly file '" + assemblyFile + "' does not exist!");
+            printErrorThenHelpHintAndExit("assembly file '" + assemblyFile + "' does not exist!");
         }
         
         if (targets.isEmpty()) {
-            printErrorAndExit("at least one target required");
+            printErrorThenHelpHintAndExit("at least one target is required");
         }
         
+        final Logger log = this.getLogger();
+        logWelcomeMessage();
+        
         try {
+            // TODO: allow this to be configured with a file / overridden with
+            // command-line parameters to make it easier to deploy apps
+            Options options = new Options();
+            
             try (Assembly assembly = Assemblys.process(assemblyFile)) {
                 for (String target : targets) {
                     if (verify) {
-                        new Deployer().verify(assembly, new Options(), target);
+                        new Deployer().verify(assembly, options, target);
                     } else {
                         new Deployer().deploy(assembly, new Options(), target);
                     }
                 }
             }
-        } catch (IOException | DeployerException e) {
-            printErrorAndExit(e.getMessage());
+            log.info("Deployed!");
+        } catch (Exception e) {
+            // serious enough to dump a stack trace
+            log.error("Unable to cleanly deploy", e);
+            printErrorThenHelpHintAndExit(e.getMessage());
         }
-    }
-    
-    public void printErrorAndExit(String message) {
-        System.err.println("[ERROR] " + message);
-        System.exit(1);
-    }
-    
-    public String nextArg(String arg, Deque<String> args) {
-        if (args.isEmpty()) {
-            System.err.println("Argument [" + arg + "] requires a value as the next argument");
-            System.exit(1);
-        }
-        return args.remove();
     }
     
 }

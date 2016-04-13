@@ -32,7 +32,6 @@ public class DeployMain {
         //String uri = "vagrant+ssh://centos7";
         //String uri = "vagrant+ssh://openbsd58";
         //String uri = "vagrant+ssh://debian8";
-        //String uri = "ssh://chi-web1";
         
         Options options = new Options()
             //.prefixDir("/opt")

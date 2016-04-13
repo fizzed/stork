@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TestHelper {
     
@@ -33,9 +32,9 @@ public class TestHelper {
         Arrays.asList("ubuntu1404", "debian8", "centos7");
     
     static public List<String> filterVagrantHosts(List<String> hosts) {
-        String vagrant = System.getProperty("vagrant");
-        if (vagrant != null) {
-            return VAGRANT_ALL_HOSTS.stream().filter((h) -> h.equals(vagrant)).collect(Collectors.toList());
+        String host = System.getProperty("host");
+        if (host != null && !host.equals("")) {
+            return Arrays.asList(host);
         } else {
             return hosts;
         }

@@ -98,23 +98,6 @@ public class DeployerConsoleTest extends DeployerBaseTest {
         List<BasicFile> listFiles = target.listFiles("/opt/hello-console/current/");
         
         assertThat(listFiles, hasSize(2));
-        
-        /**
-        CaptureOutput capture = Streamables.captureOutput();
-        try {
-        // we shouldn't be able to execute it since it was installed with sudo
-        target.sshExec(false, false, "/opt/hello-console/current/bin/hello-console")
-        .exitValues(0,1)
-        .pipeOutput(capture)
-        .pipeError(capture)
-        .runResult();
-        fail(capture.asString());
-        } catch (UnexpectedExitValueException e) {
-        // expected permission denied
-        assertThat(capture.asString(), containsString("denied"));
-        }
-         */
-
     }
     
 }

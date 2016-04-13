@@ -55,6 +55,7 @@ public class LauncherTest {
     private final Path exeHello1;
     private final Path exeHello2;
     private final Path exeHello3;
+    private final Path exeHello4;
     private final Path symlinkJavaExe;
     private final SshSession ssh;
     static private boolean vagrantRsynced;
@@ -66,6 +67,7 @@ public class LauncherTest {
         this.exeHello1 = resolveExe("hello1");
         this.exeHello2 = resolveExe("hello2");
         this.exeHello3 = resolveExe("hello3");
+        this.exeHello4 = resolveExe("hello4");
         this.symlinkJavaExe = resolveExe("symlink-java");
         this.ssh = sshConnect();
     }
@@ -184,7 +186,7 @@ public class LauncherTest {
     }
     
     @Test
-    public void basic() throws Exception {
+    public void consoleBasic() throws Exception {
         String json = execute(0, exeHello1);
         
         HelloOutput output = new ObjectMapper().readValue(json, HelloOutput.class);
@@ -194,7 +196,7 @@ public class LauncherTest {
     }
     
     @Test
-    public void argumentsPassedThrough() throws Exception {
+    public void consoleArgumentsIncluded() throws Exception {
         String arg0 = "128401";
         String arg1 = "ahs3h1";
         
@@ -209,7 +211,7 @@ public class LauncherTest {
     }
     
     @Test
-    public void minJavaVersionNotFound() throws Exception {
+    public void consoleMinJavaVersionNotFound() throws Exception {
         String output = execute(1, exeHello2);
 
         // should this be printed out to error stream rather than stdout?
@@ -217,14 +219,14 @@ public class LauncherTest {
     }
     
     @Test
-    public void mainClassNotFound() throws Exception {
+    public void consoleMainClassNotFound() throws Exception {
         String output = execute(1, exeHello3);
         
         assertThat(output, containsString("Could not find or load main class com.fizzed.stork.test.ClassNotFoundMain"));
     }
     
     @Test
-    public void javaHomeWithSpaces() throws Exception {
+    public void consoleJavaHomeWithSpaces() throws Exception {
         assumeTrue("java symlink worked", symlinkJava != null);
         
         Map<String,String> environment = new HashMap<>();
@@ -237,5 +239,14 @@ public class LauncherTest {
         
         assertThat(output.getConfirm(), is("Hello World!"));
         assertThat(output.getArguments(), hasSize(0));
+    }
+    
+    @Test
+    public void daemonBasic() throws Exception {
+        String json = execute(0, exeHello4, "--run");
+        
+        HelloOutput output = new ObjectMapper().readValue(json, HelloOutput.class);
+        
+        assertThat(output.getConfirm(), is("Hello World!"));
     }
 }

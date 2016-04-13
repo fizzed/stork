@@ -2,34 +2,34 @@
 import com.fizzed.blaze.Config;
 import com.fizzed.blaze.Contexts;
 import static com.fizzed.blaze.Systems.exec;
-import static com.fizzed.blaze.Systems.which;
-import java.nio.file.Path;
 import org.slf4j.Logger;
 
 public class blaze {
     private final Logger log = Contexts.logger();
     private final Config config = Contexts.config();
     
-    public void test_launcher() {
-        // passthru 'host' system property
+    private String getTestHost() {
         String host = config.value("host").getOr("");
         
         if (host.equals("")) {
-            log.info("You can limit which hosts unit tests run on with a -Dhost=name param");
+            log.info("NOTE: you can limit which host your unit tests run on");
+            log.info(" by adding a -Dhost=HOST to your command. Valid hosts");
+            log.info(" are either 'local' or run 'vagrant status' for a list");
+        } else {
+            log.info("NOTE: limiting unit tests to host {}", host);
         }
-
+        
+        return host;
+    }
+    
+    public void test_launcher() {
+        String host = getTestHost();
         exec("mvn", "test", "-am", "-pl", "stork-launcher-test", "-Dhost=" + host).run();
     }
 
     public void test_deploy() {
-        // passthru 'host' system property
-        String host = config.value("host").getOr("");
-
-        if (host.equals("")) {
-            log.info("You can limit which hosts unit tests run on with a -Dhost=name param");
-        }
-
-        exec("mvn", "test", "-am", "-pl", "stork-deploy", "-Dtarget=" + host).run();
+        String host = getTestHost();
+        exec("mvn", "test", "-am", "-pl", "stork-deploy", "-Dhost=" + host).run();
     }
     
     public void demo_deploy() {

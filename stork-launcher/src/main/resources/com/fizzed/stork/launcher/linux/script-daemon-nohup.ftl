@@ -94,7 +94,7 @@ case "$APP_ACTION_ARG" in
     ;;
 
   --run)
-    echo "Running $NAME: "
+    #echo "Running $NAME: "
     # some launcher frameworks manage the PID (this skips the check entirely)
     # only enable this env var if you know what you're doing
     if [ "$SKIP_PID_CHECK" = "0" ]; then

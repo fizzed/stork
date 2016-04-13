@@ -35,6 +35,11 @@ Vagrant.configure(2) do |config|
     guest.vm.provision :shell, inline: "PKG_PATH=\"http://ftp.openbsd.org/pub/OpenBSD/`uname -r`/packages/`arch -s`/\" pkg_add -I jdk-1.7.0.80p0v0"
   end
 
+  config.vm.define "osx1010", autostart: false do |guest|
+    guest.vm.box = "jhcook/osx-yosemite-10.10"
+    guest.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
+  end
+
   # hmmm... local vars in script do not work, rsync folders wrong user
   #config.vm.define "omni151014", autostart: false do |guest|
   #  guest.vm.box = "http://omnios.omniti.com/media/omnios-r151014.box"

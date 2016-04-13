@@ -1,7 +1,7 @@
 Stork by Fizzed
 =======================================
 
-#### 2.x.x - xxxx-xx-xx
+#### 2.0.0 - 2016-04-13
 
  - Major refactor and much more polished project layout
  - Requires Java 1.7+

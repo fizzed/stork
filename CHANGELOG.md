@@ -3,17 +3,34 @@ Stork by Fizzed
 
 #### 2.x.x - xxxx-xx-xx
 
- - Refactored and polished project layout
- - Runs on Java 1.7+
- - stork-sbt-play-plugin is deprecated (Fizzed has moved away from scala w/
+Major
+
+ - Major refactor and much more polished project layout
+ - Requires Java 1.7+
+ - All project artifacts now starts with "stork-" rather than "fizzed-stork-"
+ - stork-sbt-play-plugin deprecated (Fizzed has moved away from scala w/
    Java8 and we didn't have time to update this dependency, PRs welcome)
- - All artifact ids now simply are "stork-" rather than "fizzed-stork-"
+ - Vagrant used to unit test and verify launchers work across numerous 
+   operating system distributions.
+ - Launchers certified on Ubuntu 14.04, CentOS 7, Debian 8, FreeBSD 10.2,
+   OpenBSD 5.8.  You can also easily verify another platform by suppling a 
+   vagrant instance and running "mvn test -Dhost=name" with the target
+ - Command-line stork-generate renamed to stork-launcher with more polished
+   interface and arguments.
+ - stork-fabric-deploy deprecated and replaced with Java-based stork-deploy
+ - stork-deploy is embeddable within other Java apps
+ - stork-deploy supports everything stork-fabric-deploy did, but with numerous
+   new features.
+    - Deploy config files supported (in simple java properties format)
+    - Configurable prefix directory, user, and group
+    - Initial systemd support
+
+Minor
+
  - Fixed bug with windows .bat launchers not returning an error code if a JVM
    was not found
  - Fixed bug with unix launchers not handling java dirs with spaces in the 
    dir name
- - Vagrant used to unit test and verify launchers work across numerous 
-   operating system distributions.
  - Bump to JslWin v0.99l
 
 #### 1.2.3 - 2015-03-13

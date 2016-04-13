@@ -14,6 +14,7 @@ Stork by Fizzed
    dir name
  - Vagrant used to unit test and verify launchers work across numerous 
    operating system distributions.
+ - Bump to JslWin v0.99l
 
 #### 1.2.3 - 2015-03-13
 

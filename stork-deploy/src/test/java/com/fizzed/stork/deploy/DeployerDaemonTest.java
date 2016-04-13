@@ -42,7 +42,7 @@ public class DeployerDaemonTest extends DeployerBaseTest {
     public void deploy() throws Exception {
         Path assemblyFile = TestHelper.getResource("/fixtures/hello-world-1.2.4-SNAPSHOT.zip");
         
-        Options options = new Options()
+        DeployOptions options = new DeployOptions()
             .prefixDir("/opt")
             .user("daemon")
             .group("daemon");

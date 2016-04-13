@@ -28,6 +28,7 @@ import org.junit.runners.Parameterized.Parameters;
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class DeployerConsoleTest extends DeployerBaseTest {
@@ -45,7 +46,7 @@ public class DeployerConsoleTest extends DeployerBaseTest {
     public void deploy() throws Exception {
         Path assemblyFile = TestHelper.getResource("/fixtures/hello-console-1.2.4.tar.gz");
         
-        Options options = new Options()
+        DeployOptions options = new DeployOptions()
             .prefixDir("/opt")
             .user("vagrant")
             .group("vagrant");
@@ -78,7 +79,7 @@ public class DeployerConsoleTest extends DeployerBaseTest {
     }
     
     @Test
-    public void deployWithNoUserOrGroup() throws Exception {
+    public void deployWithDefaultOptions() throws Exception {
         Path assemblyFile = TestHelper.getResource("/fixtures/hello-console-1.2.4.tar.gz");
         
         // create our own target for assisting with preparing for tests
@@ -89,7 +90,7 @@ public class DeployerConsoleTest extends DeployerBaseTest {
         target.remove(true, "/opt/hello-console");
 
         try (Assembly assembly = Assemblys.process(assemblyFile)) {
-            new Deployer().deploy(assembly, new Options(), target);
+            new Deployer().deploy(assembly, new DeployOptions(), target);
         }
 
         // on freebsd and openbsd, the vagrant user is technically part of
@@ -98,6 +99,44 @@ public class DeployerConsoleTest extends DeployerBaseTest {
         List<BasicFile> listFiles = target.listFiles("/opt/hello-console/current/");
         
         assertThat(listFiles, hasSize(2));
+    }
+    
+    @Test
+    public void deployWithUserThatDoesNotExist() throws Exception {
+        Path assemblyFile = TestHelper.getResource("/fixtures/hello-console-1.2.4.tar.gz");
+
+        UnixTarget target = (UnixTarget)Targets.connect(getHostUri());
+
+        DeployOptions options = new DeployOptions()
+            .user("doesnotexist");
+
+        try {
+            try (Assembly assembly = Assemblys.process(assemblyFile)) {
+                new Deployer().deploy(assembly, options, target);
+            }
+            fail("should have failed");
+        } catch (DeployerException e) {
+            assertThat(e.getMessage(), containsString("User 'doesnotexist' does not exist on target"));
+        }
+    }
+    
+    @Test
+    public void deployWithGroupThatDoesNotExist() throws Exception {
+        Path assemblyFile = TestHelper.getResource("/fixtures/hello-console-1.2.4.tar.gz");
+
+        UnixTarget target = (UnixTarget)Targets.connect(getHostUri());
+
+        DeployOptions options = new DeployOptions()
+            .group("doesnotexist");
+
+        try {
+            try (Assembly assembly = Assemblys.process(assemblyFile)) {
+                new Deployer().deploy(assembly, options, target);
+            }
+            fail("should have failed");
+        } catch (DeployerException e) {
+            assertThat(e.getMessage(), containsString("Group 'doesnotexist' does not exist on target"));
+        }
     }
     
 }

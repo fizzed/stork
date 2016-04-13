@@ -31,27 +31,27 @@ public class Deployer {
         // do nothing
     }
     
-    public void verify(Assembly assembly, Options options, String uri) throws IOException, DeployerException {
+    public void verify(Assembly assembly, DeployOptions options, String uri) throws IOException, DeployerException {
         try (Target target = Targets.connect(uri)) {
             deploy(assembly, options, target, false);
         }
     }
     
-    public void verify(Assembly assembly, Options options, Target target) throws IOException, DeployerException {
+    public void verify(Assembly assembly, DeployOptions options, Target target) throws IOException, DeployerException {
         deploy(assembly, options, target, false);
     }
     
-    public void deploy(Assembly assembly, Options options, String uri) throws IOException, DeployerException {
+    public void deploy(Assembly assembly, DeployOptions options, String uri) throws IOException, DeployerException {
         try (Target target = Targets.connect(uri)) {
             deploy(assembly, options, target, true);
         }
     }
     
-    public void deploy(Assembly assembly, Options options, Target target) throws IOException, DeployerException {
+    public void deploy(Assembly assembly, DeployOptions options, Target target) throws IOException, DeployerException {
         deploy(assembly, options, target, true);
     }
     
-    private void deploy(Assembly assembly, Options options, Target target, boolean includeDeploy) throws IOException, DeployerException {
+    private void deploy(Assembly assembly, DeployOptions options, Target target, boolean includeDeploy) throws IOException, DeployerException {
         // use assembly + target to prepare for what to install
         Deployment install = Deployments.install(assembly, target, options);
 
@@ -90,15 +90,15 @@ public class Deployer {
         // verify target user exists
         if (install.getUser().isPresent() && !target.hasUser(install.getUser().get())) {
             throw new DeployerException(
-                "User '" + install.getUser() + "' does not exist on target. "
-                + "Run something like 'sudo useradd -r " + install.getUser() + "' then re-run.");
+                "User '" + install.getUser().get() + "' does not exist on target. "
+                + "Run something like 'sudo useradd -r " + install.getUser().get() + "' then re-run.");
         }
 
         // verify target group exists
         if (install.getGroup().isPresent() && !target.hasGroup(install.getGroup().get())) {
             throw new DeployerException(
-                "Group '" + install.getGroup() + "' does not exist on target. " 
-                + "Run something like 'sudo groupadd -r " + install.getGroup() + "' then re-run.");
+                "Group '" + install.getGroup().get() + "' does not exist on target. " 
+                + "Run something like 'sudo groupadd -r " + install.getGroup().get() + "' then re-run.");
         }
 
         // TODO: verify commands we need exist

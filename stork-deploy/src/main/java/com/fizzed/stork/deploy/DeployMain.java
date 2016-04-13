@@ -15,9 +15,7 @@
  */
 package com.fizzed.stork.deploy;
 
-import com.fizzed.stork.core.ArgumentException;
 import com.fizzed.stork.core.BaseApplication;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,12 +46,19 @@ public class DeployMain extends BaseApplication {
         System.out.println(" -h, --help              Print help and exit");
         System.out.println(" -a, --assembly <file>   Assembly file (.tar.gz or .zip)");
         System.out.println(" --verify                Verify only (do not deploy)");
+        System.out.println(" --config-file <file>    Config file for deploy options");
+        System.out.println(" --prefix-dir <dir>      Root directory to deploy in");
+        System.out.println(" --user <user>           User that owns deploy dir");
+        System.out.println(" --group <group>         Group that owns deploy dir");
+        System.out.println("");
     }
     
     @Override
     public void run(Deque<String> args) {
         Path assemblyFile = null;
         List<String> targets = new ArrayList<>();
+        DeployOptions argsOptions = new DeployOptions();
+        DeployOptions configFileOptions = null;
         boolean verify = false;
         
         while (!args.isEmpty()) {
@@ -81,6 +86,31 @@ public class DeployMain extends BaseApplication {
                 }
                 case "--verify": {
                     verify = true;
+                    break;
+                }
+                case "--config-file": {
+                    Path configFile = Paths.get(nextArg(arg, args));
+                    try {
+                        configFileOptions = DeployOptions.from(configFile);
+                    } catch (IOException e) {
+                        printErrorThenHelpHintAndExit(e.getMessage());
+                    }
+                    break;
+                }
+                case "--prefix-dir": {
+                    argsOptions.prefixDir(nextArg(arg, args));
+                    break;
+                }
+                case "--organization": {
+                    argsOptions.organization(nextArg(arg, args));
+                    break;
+                }
+                case "--user": {
+                    argsOptions.user(nextArg(arg, args));
+                    break;
+                }
+                case "--group": {
+                    argsOptions.group(nextArg(arg, args));
                     break;
                 }
                 default: {
@@ -111,20 +141,22 @@ public class DeployMain extends BaseApplication {
         logWelcomeMessage();
         
         try {
-            // TODO: allow this to be configured with a file / overridden with
-            // command-line parameters to make it easier to deploy apps
-            Options options = new Options();
+            // defaults THEN configFile THEN arguments
+            DeployOptions options = new DeployOptions();
+            options.overlay(configFileOptions);
+            options.overlay(argsOptions);
             
             try (Assembly assembly = Assemblys.process(assemblyFile)) {
                 for (String target : targets) {
                     if (verify) {
                         new Deployer().verify(assembly, options, target);
+                        log.info("Review summary above!");
                     } else {
-                        new Deployer().deploy(assembly, new Options(), target);
+                        new Deployer().deploy(assembly, options, target);
+                        log.info("Deployed!");
                     }
                 }
             }
-            log.info("Deployed!");
         } catch (Exception e) {
             // serious enough to dump a stack trace
             log.error("Unable to cleanly deploy", e);

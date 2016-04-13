@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -33,12 +32,11 @@ import org.slf4j.LoggerFactory;
 public class Deployments {
     static private final Logger log = LoggerFactory.getLogger(Deployments.class);
  
-    static public String baseDir(String name, Options options) {
+    static public String baseDir(String name, DeployOptions options) {
         Objects.requireNonNull(options, "options cannot be null");
-        Objects.requireNonNull(options.getPrefixDir(), "options.prefixDir cannot be null");
         
         // app base always starts at prefix (e.g. /opt)
-        String baseDir = options.getPrefixDir();
+        String baseDir = Optional.ofNullable(options.getPrefixDir()).orElse("/opt");
         
         // append the org name? (e.g. /opt/org)
         if (options.getOrganization() != null) {
@@ -50,7 +48,7 @@ public class Deployments {
         return baseDir;
     }
     
-    static public Deployment install(Assembly assembly, Target target, Options options) {
+    static public Deployment install(Assembly assembly, Target target, DeployOptions options) {
         String baseDir = baseDir(assembly.getName(), options);
         String currentDir = baseDir + "/current";
         String versionDir = baseDir + "/v" + assembly.getVersion();

@@ -47,6 +47,7 @@ public class LauncherMain extends BaseApplication {
         System.out.println(" -v, --version            Print version and exit");
         System.out.println(" -h, --help               Print help and exit");
         System.out.println(" -o, --output-dir <dir>   Output directory");
+        System.out.println("");
     }
     
     @Override

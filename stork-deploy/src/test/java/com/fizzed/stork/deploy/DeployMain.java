@@ -33,7 +33,7 @@ public class DeployMain {
         //String uri = "vagrant+ssh://openbsd58";
         //String uri = "vagrant+ssh://debian8";
         
-        Options options = new Options()
+        DeployOptions options = new DeployOptions()
             //.prefixDir("/opt")
             //.organization("fizzed")
             //.user("daemon")

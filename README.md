@@ -13,7 +13,9 @@ it or getting it into production is your new problem.  Fat/uber jar? Vagrant?
 Docker? Traditional deploy?
 
 Stork is a collection of utilities for optimizing your "after-build" workflow by
-filling in the gap between your Java build system and execution.
+filling in the gap between your Java build system and execution.  Stork is
+system-agnostic and supports running your app anywhere (Docker, Vagrant,
+traditional systems).
 
  - [stork-launcher](#stork-launcher) will generate well-tested, rock solid, secure launcher scripts
    from a yaml configuration file for either console or daemon/service JVM apps
@@ -67,7 +69,7 @@ so  that your app looks like a native compiled executable.
 
 ### Features
 
- * Generate launcher scripts for either console or daemon/service JVM apps
+ * Generate *secure* launcher scripts for either console or daemon/service JVM apps
  * Heavily unit tested across all major operating systems
     * Windows XP+ (32-bit and 64-bit)
     * Linux (Ubuntu, Debian, Redhat) (32-bit and 64-bit)
@@ -140,57 +142,59 @@ To customize, the following properties are supported:
 
 ### Configuration file
 
-    # Name of application (make sure it has no spaces)
-    name: "hello-console"
+```yaml
+# Name of application (make sure it has no spaces)
+name: "hello-console"
 
-    # Domain of application (e.g. your organization such as com.example)
-    domain: "com.fizzed.stork.sample"
+# Domain of application (e.g. your organization such as com.example)
+domain: "com.fizzed.stork.sample"
 
-    # Display name of application (can have spaces)
-    display_name: "Hello Console App"
+# Display name of application (can have spaces)
+display_name: "Hello Console App"
 
-    short_description: "Demo console app"
+short_description: "Demo console app"
 
-    long_description: "Demo of console app for mfizz jtools launcher"
+long_description: "Demo of console app for mfizz jtools launcher"
 
-    # Type of launcher (CONSOLE or DAEMON)
-    type: CONSOLE
+# Type of launcher (CONSOLE or DAEMON)
+type: CONSOLE
 
-    # Java class to run
-    main_class: "com.fizzed.stork.sample.HelloConsole"
+# Java class to run
+main_class: "com.fizzed.stork.sample.HelloConsole"
 
-    # Platform launchers to generate (WINDOWS, LINUX, MAC_OSX)
-    # Linux launcher is suitable for Bourne shells (e.g. Linux/BSD)
-    platforms: [ WINDOWS, LINUX, MAC_OSX ]
+# Platform launchers to generate (WINDOWS, LINUX, MAC_OSX)
+# Linux launcher is suitable for Bourne shells (e.g. Linux/BSD)
+platforms: [ WINDOWS, LINUX, MAC_OSX ]
 
-    # Working directory for app
-    #  RETAIN will not change the working directory
-    #  APP_HOME will change the working directory to the home of the app
-    #    (where it was intalled) before running the main class
-    working_dir_mode: RETAIN
+# Working directory for app
+#  RETAIN will not change the working directory
+#  APP_HOME will change the working directory to the home of the app
+#    (where it was intalled) before running the main class
+working_dir_mode: RETAIN
 
-    # Arguments for application (as though user typed them on command-line)
-    # These will be added immediately after the main class part of java command
-    #app_args: "-c config.yml"
+# Arguments for application (as though user typed them on command-line)
+# These will be added immediately after the main class part of java command
+#app_args: "-c config.yml"
 
-    # Arguments to use with the java command (e.g. way to pass -D arguments)
-    #java_args: "-Dtest=foo"
+# Arguments to use with the java command (e.g. way to pass -D arguments)
+#java_args: "-Dtest=foo"
 
-    # Minimum version of java required (system will be searched for acceptable jvm)
-    min_java_version: "1.6"
+# Minimum version of java required (system will be searched for acceptable jvm)
+min_java_version: "1.6"
 
-    # Min/max fixed memory (measured in MB)
-    min_java_memory: 30
-    max_java_memory: 256
+# Min/max fixed memory (measured in MB)
+min_java_memory: 30
+max_java_memory: 256
 
-    # Min/max memory by percentage of system
-    #min_java_memory_pct: 10
-    #max_java_memory_pct: 20
+# Min/max memory by percentage of system
+#min_java_memory_pct: 10
+#max_java_memory_pct: 20
 
-    # Try to create a symbolic link to java executable in <app_home>/run with
-    # the name of "<app_name>-java" so that commands like "ps" will make it
-    # easier to find your app
-    symlink_java: true
+# Try to create a symbolic link to java executable in <app_home>/run with
+# the name of "<app_name>-java" so that commands like "ps" will make it
+# easier to find your app
+symlink_java: true
+```
 
 ## Stork assembly
 

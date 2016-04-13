@@ -6,6 +6,26 @@ Stork by Fizzed
 
 [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
 
+## Overview
+
+So you've engineered that amazing Java-based application.  Then what?  Distributing
+it or getting it into production is your new problem.  Fat/uber jar? Vagrant?
+Docker? Traditional deploy?
+
+Stork is a collection of utilities for optimizing your "after-build" workflow by
+filling in the gap between your Java build system and execution.
+
+ - [stork-launcher](#stork-launcher) will generate well-tested, rock solid, secure launcher scripts
+   from a yaml configuration file for either console or daemon/service JVM apps
+
+ - [stork-assembly](#stork-assembly) will assemble your JVM app into a standard, well-defined
+   layout as a tarball ready for distribution or deployment
+
+ - [stork-deploy](#stork-deploy) will rapidly deploy your assembly via SSH to one or more
+   remote systems
+
+[Using Stork to deploy a production Ninja Framework app](http://fizzed.com/blog/2015/01/using-stork-deploy-production-ninja-framework-app)
+
 ## Usage
 
 ### Command-line
@@ -26,28 +46,6 @@ https://github.com/fizzed/stork/releases/download/v2.0.0/stork-2.0.0.tar.gz
     </plugins>
 </build>
 ```
-    
-## Two-minute drill
-
-[Using Stork to deploy a production Ninja Framework app](http://fizzed.com/blog/2015/01/using-stork-deploy-production-ninja-framework-app)
-
-## Overview
-
-So you've engineered that amazing Java-based application.  Then what?  Distributing
-it or getting it into production is your new problem.  Fat/uber jar? Vagrant?
-Docker? Traditional deploy?
-
-Stork is a collection of utilities for optimizing your "after-build" workflow by
-filling in the gap between your Java build system and execution.
-
- - [stork-launcher](#stork-launcher) will generate well-tested, rock solid, secure launcher scripts
-   from a yaml configuration file for either console or daemon/service JVM apps
-
- - [stork-assembly](#stork-assembly) will assemble your JVM app into a standard, well-defined
-   layout as a tarball ready for distribution or deployment
-
- - [stork-deploy](#stork-deploy) will rapidly deploy your assembly via SSH to one or more
-   remote systems
 
 ## Why not just a fat/uber jar?
 

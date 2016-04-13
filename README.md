@@ -312,6 +312,11 @@ scripting the build and execution process
 By default the server runs on port 8080 and you can then visit the sample in 
 your browser @ http://localhost:8080/
 
+## Development & contributing
+
+Please see the [development guide](docs/DEV.md) for info on building, testing,
+and eventually contributing to this project.
+
 ## License
 
 Copyright (C) 2014+ Fizzed, Inc.

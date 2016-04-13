@@ -3,8 +3,6 @@ Stork by Fizzed
 
 #### 2.x.x - xxxx-xx-xx
 
-Major
-
  - Major refactor and much more polished project layout
  - Requires Java 1.7+
  - All project artifacts now starts with "stork-" rather than "fizzed-stork-"
@@ -25,9 +23,6 @@ Major
     - Deploy config files supported (in simple java properties format)
     - Configurable prefix directory, user, and group
     - Initial systemd support
-
-Minor
-
  - Fixed bug with windows .bat launchers not returning an error code if a JVM
    was not found
  - Fixed bug with unix launchers not handling java dirs with spaces in the 

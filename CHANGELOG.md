@@ -12,15 +12,16 @@ Major
    Java8 and we didn't have time to update this dependency, PRs welcome)
  - Vagrant used to unit test and verify launchers work across numerous 
    operating system distributions.
- - Launchers certified on Ubuntu 14.04, CentOS 7, Debian 8, FreeBSD 10.2,
-   OpenBSD 5.8.  You can also easily verify another platform by suppling a 
-   vagrant instance and running "mvn test -Dhost=name" with the target
+ - Launchers certified on Windows, Mac, Ubuntu 14.04, CentOS 7, Debian 8,
+   FreeBSD 10.2, and OpenBSD 5.8.  You can also easily verify another platform
+   by suppling a vagrant instance and running "mvn test -Dhost=name" with the target
  - Command-line stork-generate renamed to stork-launcher with more polished
    interface and arguments.
  - stork-fabric-deploy deprecated and replaced with Java-based stork-deploy
  - stork-deploy is embeddable within other Java apps
  - stork-deploy supports everything stork-fabric-deploy did, but with numerous
    new features.
+    - Secure deployments by using strict permissions
     - Deploy config files supported (in simple java properties format)
     - Configurable prefix directory, user, and group
     - Initial systemd support

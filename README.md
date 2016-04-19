@@ -33,6 +33,25 @@ running your app anywhere (Docker, Vagrant, traditional systems).
 
 [Using Stork to deploy a production Ninja Framework app](http://fizzed.com/blog/2015/01/using-stork-deploy-production-ninja-framework-app)
 
+## Example
+
+[stork-demo-hellod](stork-demo/stork-demo-hellod) is an example Maven project
+for a simple Java web application.  It demos the `stork-launcher`
+and `stork-assembly` utilities and produces a tarball assembly that can be
+deployed using `stork-deploy`.  To generate the launchers and assembly:
+
+    mvn package
+
+This will generate all launchers, prep the assembly in `target/stork`, and
+tarball it up to `target/stork-demo-hellod-X.X.X.tar.gz` (X.X.X is the version
+of your project).  You can quickly try it out:
+
+    target/stork/bin/stork-demo-hellod --run
+
+Or you can deploy it via SSH using `stork-deploy`:
+
+    stork-deploy --assembly target/stork-demo-hellod-X.X.X.tar.gz ssh://host.example.com
+
 ## Usage
 
 ### Command-line
@@ -299,7 +318,7 @@ share/ directories are installed.  On an upgrade install, the bin/, lib, and
 share/ directories are installed, while conf/ and runtime dirs data/, log/, and
 run/ directories are moved.
 
-## Examples
+## More examples
 
 ### stork-demo-hellod
 

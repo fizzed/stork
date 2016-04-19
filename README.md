@@ -13,18 +13,20 @@ it or getting it into production is your new problem.  Fat/uber jar? Vagrant?
 Docker? Traditional deploy?
 
 Stork is a collection of utilities for optimizing your "after-build" workflow by
-filling in the gap between your Java build system and execution.  Stork is
-system-agnostic and supports running your app anywhere (Docker, Vagrant,
-traditional systems).
+filling in the gap between your Java build system and execution.  Stork supports
+running your app anywhere (Docker, Vagrant, traditional systems).
 
  - [stork-launcher](#stork-launcher) will generate well-tested, rock solid, secure launcher scripts
-   from a yaml configuration file for either console or daemon/service JVM apps
+   from a yaml configuration file for either console or daemon/service JVM apps.
+   The generated launchers will run your app the same way regardless of whether
+   you're running in within Docker, Vagrant, or a traditional system.
 
- - [stork-assembly](#stork-assembly) will assemble your JVM app into a standard, well-defined
-   layout as a tarball ready for distribution or deployment
+ - [stork-assembly](#stork-assembly) will assemble your JVM app into a standard,
+   well-defined [canonical layout](docs/CANONICAL_LAYOUT.md) as a tarball ready
+   for distribution or deployment.
 
- - [stork-deploy](#stork-deploy) will rapidly deploy your assembly via SSH to one or more
-   remote systems
+ - [stork-deploy](#stork-deploy) will rapidly and securely deploy your assembly
+   via SSH to one or more remote systems (with special support for Vagrant as well).
 
 [Using Stork to deploy a production Ninja Framework app](http://fizzed.com/blog/2015/01/using-stork-deploy-production-ninja-framework-app)
 

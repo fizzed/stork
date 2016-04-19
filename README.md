@@ -19,7 +19,7 @@ running your app anywhere (Docker, Vagrant, traditional systems).
  - [stork-launcher](#stork-launcher) will generate well-tested, rock solid, secure launcher scripts
    from a yaml configuration file for either console or daemon/service JVM apps.
    The generated launchers will run your app the same way regardless of whether
-   you're running in within Docker, Vagrant, or a traditional system.
+   you're running within Docker, Vagrant, or a traditional system.
 
  - [stork-assembly](#stork-assembly) will assemble your JVM app into a standard,
    well-defined [canonical layout](docs/CANONICAL_LAYOUT.md) as a tarball ready

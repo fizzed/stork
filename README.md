@@ -19,14 +19,17 @@ running your app anywhere (Docker, Vagrant, traditional systems).
  - [stork-launcher](#stork-launcher) will generate well-tested, rock solid, secure launcher scripts
    from a yaml configuration file for either console or daemon/service JVM apps.
    The generated launchers will run your app the same way regardless of whether
-   you're running within Docker, Vagrant, or a traditional system.
+   running within Docker, Vagrant, or a traditional system.
 
  - [stork-assembly](#stork-assembly) will assemble your JVM app into a standard,
    well-defined [canonical layout](docs/CANONICAL_LAYOUT.md) as a tarball ready
    for distribution or deployment.
 
  - [stork-deploy](#stork-deploy) will rapidly and securely deploy your assembly
-   via SSH to one or more remote systems (with special support for Vagrant as well).
+   via SSH into a versioned directory structure to Vagrant or a traditional system.
+   It will handle restarting daemons, use strict user/group permissions, and verify
+   the deploy worked.  Power users can combine with [Blaze](https://github.com/fizzed/blaze)
+   for even more advanced deploys.
 
 [Using Stork to deploy a production Ninja Framework app](http://fizzed.com/blog/2015/01/using-stork-deploy-production-ninja-framework-app)
 
@@ -262,18 +265,23 @@ Utility for rapidly deploying a "versioned" install on one or more remote
 Linux-based systems via SSH. Installs a stork-based assembly tarball into a
 versioned directory structure on a remote system and handles restarting daemons
 as needed.  The versioned directory structure allows rapid deployment with the
-ability to revert to a previous version if needed.
+ability to revert to a previous version if needed.  Power users can combine with
+[Blaze](https://github.com/fizzed/blaze) for even more advanced deploys.
 
 ### Usage
 
-Command-line
+Command-line to traditional remote system
 
     stork-deploy --assembly target/myapp-1.0.0-SNAPSHOT.tar.gz ssh://host.example.com
+
+Command-line to Vagrant
+
+    stork-deploy --assembly target/myapp-1.0.0-SNAPSHOT.tar.gz vagrant+ssh://machine-name
 
 ### Overview
 
 Since this a "SNAPSHOT" version, a timestamp would be generated (such as
-20141101121032 for Nov 1, 2014 12:10:32) and this application would be installed
+20160401-121032 for April 1, 2016 12:10:32) and this application would be installed
 to:
 
     /opt/myapp/v1.0.0-20160401-121032

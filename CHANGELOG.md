@@ -1,6 +1,10 @@
 Stork by Fizzed
 =======================================
 
+#### 2.0.1 - 2016-05-19
+
+ - Allow specifying APP_ARGS and JAVA_ARGS in /etc/default/myapp (gitblit)
+
 #### 2.0.0 - 2016-04-13
 
  - Major refactor and much more polished project layout

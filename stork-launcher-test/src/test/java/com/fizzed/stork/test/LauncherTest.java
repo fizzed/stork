@@ -242,6 +242,21 @@ public class LauncherTest {
     }
     
     @Test
+    public void consoleJavaArgsWithSpaces() throws Exception {
+        Map<String,String> environment = new HashMap<>();
+        environment.put("JAVA_ARGS", "-Da=1 -Db=2 -Dc=3");
+        
+        String json = execute(0, exeHello1, environment);
+        
+        HelloOutput output = new ObjectMapper().readValue(json, HelloOutput.class);
+        
+        assertThat(output.getConfirm(), is("Hello World!"));
+        assertThat(output.getSystemProperties().getProperty("a"), is("1"));
+        assertThat(output.getSystemProperties().getProperty("b"), is("2"));
+        assertThat(output.getSystemProperties().getProperty("c"), is("3"));
+    }
+    
+    @Test
     public void daemonBasic() throws Exception {
         String json = execute(0, exeHello4, "--run");
         

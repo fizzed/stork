@@ -5,22 +5,34 @@ Vagrant.configure(2) do |config|
   config.vm.define "ubuntu1404" do |guest|
     guest.vm.box = "minimal/trusty64"
     guest.vm.provision :shell, inline: "apt-get update; apt-get install -y openjdk-7-jre-headless unzip curl;"
+    # unit tests required passing along env vars in ssh commands
+    guest.vm.provision :shell, inline: "sed -i 's/\(^AcceptEnv.*$\)/AcceptEnv \*/' /etc/ssh/sshd_config"
+    guest.vm.provision :shell, inline: "/etc/init.d/ssh restart"
   end
 
   config.vm.define "debian8", autostart: false do |guest|
     guest.vm.box = "minimal/jessie64"
     guest.vm.provision :shell, inline: "apt-get update; apt-get install -y openjdk-7-jre-headless unzip curl;"
+    # unit tests required passing along env vars in ssh commands
+    guest.vm.provision :shell, inline: "sed -i 's/\(^AcceptEnv.*$\)/AcceptEnv \*/' /etc/ssh/sshd_config"
+    guest.vm.provision :shell, inline: "/etc/init.d/ssh restart"
   end
 
   config.vm.define "centos7", autostart: false do |guest|
     guest.vm.box = "minimal/centos7"
     guest.vm.provision :shell, inline: "yum install -y java-1.7.0-openjdk-headless unzip curl;"
+    # unit tests required passing along env vars in ssh commands
+    guest.vm.provision :shell, inline: "sed -i 's/\(^AcceptEnv.*$\)/AcceptEnv \*/' /etc/ssh/sshd_config"
+    guest.vm.provision :shell, inline: "systemctl restart sshd.service"
   end
 
   config.vm.define "freebsd102", autostart: false do |guest|
     guest.vm.box = "bento/freebsd-10.2"
     guest.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
     guest.vm.provision :shell, inline: "pkg install -y openjdk; echo 'fdesc /dev/fd fdescfs rw 0 0' >> /etc/fstab; echo 'proc /proc procfs rw 0	0' >> /etc/fstab; mount /dev/fd; mount /proc"
+    # unit tests required passing along env vars in ssh commands
+    guest.vm.provision :shell, inline: "echo 'AcceptEnv *' >> /etc/ssh/sshd_config"
+    guest.vm.provision :shell, inline: "service sshd restart"
   end
 
   config.vm.define "openbsd58", autostart: false do |guest|

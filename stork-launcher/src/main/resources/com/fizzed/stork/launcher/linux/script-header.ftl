@@ -19,24 +19,24 @@
 
 # if empty pid file will be created in <run_dir>/<app_name>.pid
 # provide full path if you want to override
-[ -z $PID_FILE ] && PID_FILE=""
+[ -z "$PID_FILE" ] && PID_FILE=""
 
 # min and max mem (in MB); leave empty for java defaults
-[ -z $JAVA_MIN_MEM ] && JAVA_MIN_MEM="${(config.minJavaMemory?c)!""}"
-[ -z $JAVA_MAX_MEM ] && JAVA_MAX_MEM="${(config.maxJavaMemory?c)!""}"
+[ -z "$JAVA_MIN_MEM" ] && JAVA_MIN_MEM="${(config.minJavaMemory?c)!""}"
+[ -z "$JAVA_MAX_MEM" ] && JAVA_MAX_MEM="${(config.maxJavaMemory?c)!""}"
 
 # min and max mem as a percent of system memory
 # they have priority over JAVA_MIN_MEM and JAVA_MAX_MEM if set
-[ -z $JAVA_MIN_MEM_PCT ] && JAVA_MIN_MEM_PCT="${(config.minJavaMemoryPct?c)!""}"
-[ -z $JAVA_MAX_MEM_PCT ] && JAVA_MAX_MEM_PCT="${(config.maxJavaMemoryPct?c)!""}"
+[ -z "$JAVA_MIN_MEM_PCT" ] && JAVA_MIN_MEM_PCT="${(config.minJavaMemoryPct?c)!""}"
+[ -z "$JAVA_MAX_MEM_PCT" ] && JAVA_MAX_MEM_PCT="${(config.maxJavaMemoryPct?c)!""}"
 
 # application run dir (e.g. for pid file)
-[ -z $RUN_DIR ] && RUN_DIR="${config.runDir!""}"
+[ -z "$RUN_DIR" ] && RUN_DIR="${config.runDir!""}"
 
 # application log dir (e.g. for [name.out] file)
-[ -z $LOG_DIR ] && LOG_DIR="${config.logDir!""}"
+[ -z "$LOG_DIR" ] && LOG_DIR="${config.logDir!""}"
 
-[ -z $LAUNCHER_DEBUG ] && LAUNCHER_DEBUG="0"
+[ -z "$LAUNCHER_DEBUG" ] && LAUNCHER_DEBUG="0"
 
 #
 # constants
@@ -45,16 +45,16 @@
 NAME="${config.name}"
 TYPE="${config.type}"
 MAIN_CLASS="${config.mainClass}"
-[ -z $WORKING_DIR_MODE ] && WORKING_DIR_MODE="${config.workingDirMode}"
-[ -z $APP_ARGS ] && APP_ARGS="${config.appArgs}"
-[ -z $JAVA_ARGS ] && JAVA_ARGS="${config.javaArgs}"
-LIB_DIR="${config.libDir}"
-[ -z $SKIP_PID_CHECK ] && SKIP_PID_CHECK="0"
-[ -z $MIN_JAVA_VERSION ] && MIN_JAVA_VERSION="${config.minJavaVersion}"
-SYMLINK_JAVA="${config.symlinkJava?string("1", "0")}"
+[ -z "$WORKING_DIR_MODE" ] && WORKING_DIR_MODE="${config.workingDirMode}"
+[ -z "$APP_ARGS" ] && APP_ARGS="${config.appArgs}"
+[ -z "$JAVA_ARGS" ] && JAVA_ARGS="${config.javaArgs}"
+[ -z "$LIB_DIR" ] && LIB_DIR="${config.libDir}"
+[ -z "$SKIP_PID_CHECK" ] && SKIP_PID_CHECK="0"
+[ -z "$MIN_JAVA_VERSION" ] && MIN_JAVA_VERSION="${config.minJavaVersion}"
+[ -z "$SYMLINK_JAVA" ] && SYMLINK_JAVA="${config.symlinkJava?string("1", "0")}"
 <#if (config.type == "DAEMON")>
-DAEMON_MIN_LIFETIME="${config.daemonMinLifetime!""}"
-DAEMON_LAUNCH_CONFIRM="${config.daemonLaunchConfirm!""}"
+[ -z "$DAEMON_MIN_LIFETIME" ] && DAEMON_MIN_LIFETIME="${config.daemonMinLifetime!""}"
+[ -z "$DAEMON_LAUNCH_CONFIRM" ] && DAEMON_LAUNCH_CONFIRM="${config.daemonLaunchConfirm!""}"
 </#if>
 
 #

@@ -1,6 +1,13 @@
 Stork by Fizzed
 =======================================
 
+#### 2.1.0 - 2016-06-23
+
+ - Deploys are assigned a UUID
+ - Fixed issue w/ multiple users deploying to same target being unable to 
+   delete each others temp work dir.  The work dir now has the deploy UUID
+   appended so each user + deploy gets their own unique deploy work dir.
+
 #### 2.0.1 - 2016-05-19
 
  - Allow specifying APP_ARGS and JAVA_ARGS in /etc/default/myapp (gitblit)

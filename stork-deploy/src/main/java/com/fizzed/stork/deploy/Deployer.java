@@ -116,13 +116,14 @@ public class Deployer {
         target.createDirectories(true, install.getVersionDir());
 
         // for either fresh or upgrade installs, we need a work dir
-        String targetWorkDir = target.getTempDir() + "/stork-deploy";
+        // by appending a uuid - each install gets their own unique work dir
+        // which prevents conflicts between different users doing deploys
+        String targetWorkDir = target.getTempDir() + "/stork-deploy." + install.getUuid();
 
         // create clean work directory
         target.remove(false, targetWorkDir);
         target.createDirectories(false, targetWorkDir);
 
-        
         
         String targetArchiveFile = targetWorkDir + "/" + assembly.getArchiveFile().getFileName();
 
@@ -237,6 +238,9 @@ public class Deployer {
                 }
             }
         }
+        
+        // cleanup after ourselves
+        target.remove(false, targetWorkDir);
 
         log.info("Deployed {} to {}", assembly, target);
     }
@@ -288,6 +292,7 @@ public class Deployer {
     
     private void logInstallDeployment(Deployment install, ExistingDeployment existing) {
         log.info("    Install>");
+        log.info("       uuid: {}", install.getUuid());
         log.info("       type: {}", (existing.isFresh() ? "fresh" : "upgrade"));
         log.info("   base dir: {}", install.getBaseDir());
         log.info("current dir: {}", install.getCurrentDir());

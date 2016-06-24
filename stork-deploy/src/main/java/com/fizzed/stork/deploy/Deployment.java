@@ -16,9 +16,11 @@
 package com.fizzed.stork.deploy;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class Deployment {
 
+    private final String uuid;
     private final String baseDir;
     private final String currentDir;
     private final String versionDir;
@@ -26,11 +28,16 @@ public class Deployment {
     private final Optional<String> group;
 
     public Deployment(String baseDir, String currentDir, String versionDir, String user, String group) {
+        this.uuid = UUID.randomUUID().toString();
         this.baseDir = baseDir;
         this.currentDir = currentDir;
         this.versionDir = versionDir;
         this.user = Optional.ofNullable(user);
         this.group = Optional.ofNullable(group);
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 
     public String getBaseDir() {

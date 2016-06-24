@@ -1,6 +1,11 @@
 Stork by Fizzed
 =======================================
 
+#### 2.1.1 - 2016-06-24
+
+ - Fix for environment variables (such as JAVA_ARGS) that contained spaces
+   causing a launcher script to partially fail. 
+
 #### 2.1.0 - 2016-06-23
 
  - Deploys are assigned a UUID

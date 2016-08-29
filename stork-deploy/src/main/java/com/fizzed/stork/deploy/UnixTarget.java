@@ -28,10 +28,16 @@ import com.fizzed.blaze.ssh.SshFile;
 import com.fizzed.blaze.ssh.SshFileAttributes;
 import com.fizzed.blaze.ssh.SshSftpNoSuchFileException;
 import com.fizzed.blaze.ssh.SshSftpSession;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class UnixTarget extends SshTarget {
     static private final Logger log = LoggerFactory.getLogger(UnixTarget.class);
@@ -198,7 +204,7 @@ public class UnixTarget extends SshTarget {
     
     @Override
     public void stopDaemon(Daemon daemon) throws DeployerException {
-        switch (this.getInitType()) {
+        switch (daemon.getInitType()) {
             case SYSV:
             case UPSTART:
                 try {
@@ -225,13 +231,13 @@ public class UnixTarget extends SshTarget {
                 }
                 break;
             default:
-                throw new DeployerException("Unable to support init type " + getInitType());
+                throw new DeployerException("Unable to support init type " + daemon.getInitType());
         }
     }
 
     @Override
     public void startDaemon(Daemon daemon)  throws DeployerException {
-        switch (this.getInitType()) {
+        switch (daemon.getInitType()) {
             case SYSV:
             case UPSTART:
                 try {
@@ -294,13 +300,13 @@ public class UnixTarget extends SshTarget {
                 }
                 break;
             default:
-                throw new DeployerException("Unable to support init type " + getInitType());
+                throw new DeployerException("Unable to support init type " + daemon.getInitType());
         }
     }
 
     @Override
     public void installDaemon(Deployment install, Daemon daemon, boolean onBoot) throws DeployerException {
-        switch (this.getInitType()) {
+        switch (daemon.getInitType()) {
             case SYSV:
             case UPSTART:
                 installSysvDaemon(install, daemon, onBoot);
@@ -309,7 +315,7 @@ public class UnixTarget extends SshTarget {
                 installSystemdDaemon(install, daemon, onBoot);
                 break;
             default:
-                throw new DeployerException("Unable to support init type " + getInitType());
+                throw new DeployerException("Unable to support init type " + daemon.getInitType());
         }
     }
     
@@ -388,46 +394,16 @@ public class UnixTarget extends SshTarget {
     }
     
     private void installSystemdDaemon(Deployment install, Daemon daemon, boolean onBoot) {
-        // TODO: create new daemon file locally, then upload, and install?
         
-        // copy over service file or symlink it?
-        String serviceFile = "/etc/systemd/system/" + daemon.getName() + ".service";
+        
+        // upload modified file to target, then copy it over
+        
+        
+        
         String sourceServiceFile = install.getCurrentDir() + "/share/systemd/" + daemon.getName() + ".service";
+        String serviceFile = "/etc/systemd/system/" + daemon.getName() + ".service";
         copyFiles(true, sourceServiceFile, serviceFile);
 
         installDaemonDefaults(install, daemon);
-
-        /**
-        // auto start?
-        if (onBoot) {
-            String cmd
-                = "if type \"chkconfig\" > /dev/null; then "
-                + "  chkconfig --add " + daemon.getName() + "; "
-                + "  exit 1; "
-                + "elif type \"update-rc.d\" > /dev/null; then "
-                + "  update-rc.d " + daemon.getName() + " defaults; "
-                + "  exit 2; "
-                + "else "
-                + "  exit 3; "
-                + "fi";
-
-            Integer exitValue
-                = sshExec(true, true, cmd)
-                    .exitValues(1, 2, 3)
-                    .run();
-
-            switch (exitValue) {
-                case 1:
-                    log.info("Daemon {} will start at boot (via chkconfig)", daemon.getName());
-                    break;
-                case 2:
-                    log.info("Daemon {} will start at boot (via update-rc.d)", daemon.getName());
-                    break;
-                case 3:
-                    log.error("Daemon {} will be unable to start at boot (neither chkconfig or update-rc.d found)", daemon.getName());
-                    break;
-            }
-        }
-        */
     }
 }

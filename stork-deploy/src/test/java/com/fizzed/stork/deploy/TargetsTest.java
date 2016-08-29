@@ -69,14 +69,12 @@ public class TargetsTest {
                 Target target = Targets.probe(ssh, sftp);
 
                 switch (host) {
-                    case "ubuntu1404":
+                    case "ubuntu14":
                         assertThat(target.getInitType(), is(InitType.UPSTART));
                         assertThat(target, instanceOf(UnixTarget.class));
                         break;
+                    case "ubuntu16":
                     case "debian8":
-                        assertThat(target.getInitType(), is(InitType.SYSTEMD));
-                        assertThat(target, instanceOf(UnixTarget.class));
-                        break;
                     case "centos7":
                         assertThat(target.getInitType(), is(InitType.SYSTEMD));
                         assertThat(target, instanceOf(UnixTarget.class));

@@ -2,17 +2,25 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  config.vm.define "ubuntu1404" do |guest|
+  config.vm.define "ubuntu14" do |guest|
     guest.vm.box = "minimal/trusty64"
-    guest.vm.provision :shell, inline: "apt-get update; apt-get install -y openjdk-7-jre-headless unzip curl;"
+    guest.vm.provision :shell, inline: "echo 'install depends'; apt-get update; apt-get install -y openjdk-7-jre-headless unzip curl"
     # unit tests required passing along env vars in ssh commands
-    guest.vm.provision :shell, inline: "sed -i 's/\(^AcceptEnv.*$\)/AcceptEnv \*/' /etc/ssh/sshd_config"
-    guest.vm.provision :shell, inline: "/etc/init.d/ssh restart"
+    guest.vm.provision :shell, inline: "echo 'forcing sshd to accept env'; sed -i 's/\(^AcceptEnv.*$\)/AcceptEnv \*/' /etc/ssh/sshd_config"
+    guest.vm.provision :shell, inline: "echo 'restart sshd'; service ssh restart"
+  end
+
+  config.vm.define "ubuntu16" do |guest|
+    guest.vm.box = "bento/ubuntu-16.04"
+    guest.vm.provision :shell, inline: "echo 'install depends'; apt update; apt install -y openjdk-8-jre-headless unzip curl"
+    # unit tests required passing along env vars in ssh commands
+    guest.vm.provision :shell, inline: "echo 'forcing sshd to accept env'; sed -i 's/\(^AcceptEnv.*$\)/AcceptEnv \*/' /etc/ssh/sshd_config"
+    guest.vm.provision :shell, inline: "echo 'restart sshd'; service ssh restart"
   end
 
   config.vm.define "debian8", autostart: false do |guest|
     guest.vm.box = "minimal/jessie64"
-    guest.vm.provision :shell, inline: "apt-get update; apt-get install -y openjdk-7-jre-headless unzip curl;"
+    guest.vm.provision :shell, inline: "apt-get update; apt-get install -y openjdk-7-jre-headless unzip curl"
     # unit tests required passing along env vars in ssh commands
     guest.vm.provision :shell, inline: "sed -i 's/\(^AcceptEnv.*$\)/AcceptEnv \*/' /etc/ssh/sshd_config"
     guest.vm.provision :shell, inline: "/etc/init.d/ssh restart"
@@ -20,7 +28,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "centos7", autostart: false do |guest|
     guest.vm.box = "minimal/centos7"
-    guest.vm.provision :shell, inline: "yum install -y java-1.7.0-openjdk-headless unzip curl;"
+    guest.vm.provision :shell, inline: "yum install -y java-1.7.0-openjdk-headless unzip curl"
     # unit tests required passing along env vars in ssh commands
     guest.vm.provision :shell, inline: "sed -i 's/\(^AcceptEnv.*$\)/AcceptEnv \*/' /etc/ssh/sshd_config"
     guest.vm.provision :shell, inline: "systemctl restart sshd.service"

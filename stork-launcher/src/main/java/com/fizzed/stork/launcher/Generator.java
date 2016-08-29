@@ -171,6 +171,14 @@ public class Generator {
                     // generate debian compatible init.d startup script
                     File initdFile = new File(initdDir, config.getName() + ".init");
                     generateInitdScript(config, initdFile, model);
+                    
+                    // create systemd-compat scripts
+                    File systemdDir = new File(shareDir, "systemd");
+                    systemdDir.mkdirs();
+                    
+                    // generate debian compatible init.d startup script
+                    File systemdFile = new File(systemdDir, config.getName() + ".service");
+                    generateSytemdScript(config, systemdFile, model);
                 }
                 
                 if (platform == Platform.MAC_OSX && config.getType() == Type.DAEMON) {
@@ -254,6 +262,15 @@ public class Generator {
                 processTemplate("linux/initd-daemon.ftl", out, model);
                 initdFile.setExecutable(true);
                 logger.info("  init.d {}", initdFile);
+            }
+        }
+    }
+    
+    private void generateSytemdScript(Configuration config, File systemdFile, LauncherModel model) throws Exception {
+        try (FileOutputStream fos = new FileOutputStream(systemdFile)) {
+            try (Writer out = new OutputStreamWriter(fos)) {
+                processTemplate("linux/systemd-daemon.ftl", out, model);
+                logger.info("  systemd {}", systemdFile);
             }
         }
     }

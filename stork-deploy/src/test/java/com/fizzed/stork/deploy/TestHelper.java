@@ -25,11 +25,11 @@ public class TestHelper {
     
     // all hosts we support for deploys w/ only console apps
     static private final List<String> VAGRANT_ALL_HOSTS =
-        Arrays.asList("ubuntu1404", "debian8", "centos7", "freebsd102", "openbsd58");
+        Arrays.asList("ubuntu14", "ubuntu16", "debian8", "centos7", "freebsd102", "openbsd58");
     
     // subset of hosts we support for deploys w/ daemon apps
     static private final List<String> VAGRANT_DAEMON_HOSTS =
-        Arrays.asList("ubuntu1404", "debian8", "centos7");
+        Arrays.asList("ubuntu14", "ubuntu16", "debian8", "centos7");
     
     static public List<String> filterVagrantHosts(List<String> hosts) {
         String host = System.getProperty("host");

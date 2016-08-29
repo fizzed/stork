@@ -18,6 +18,7 @@ package com.fizzed.stork.deploy;
 import com.fizzed.blaze.Contexts;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,13 +78,16 @@ public class Deployer {
         //
         // verify install would succeed as much as we can
         //
+        
+        // default the initType to what was detected on the target
+        InitType initType = target.getInitType();
 
         assembly.verify();
 
         // if we have daemons do we have support for the target platform?
         if (assembly.hasDaemons()) {
-            if (!assembly.hasDaemons(target.getInitType())) {
-                throw new DeployerException("Assembly has daemons but none matching target init type " + target.getInitType());
+            if (!assembly.hasDaemons(initType)) {
+                throw new DeployerException("Assembly has daemons but none matching target init type " + initType);
             }
         }
 
@@ -101,9 +105,15 @@ public class Deployer {
                 + "Run something like 'sudo groupadd -r " + install.getGroup().get() + "' then re-run.");
         }
 
-        // TODO: verify commands we need exist
+        // TODO: verify commands we need exist?
         //   tar if (.tar.gz), gunzip if (.zip)
 
+        // systemd daemons need their .service files modified to include adjusted
+        // paths, users, and groups
+        // TODO: perhaps this is a good "hook" for other last minute customizations
+        // before the deploy is packaged backup and copied upstream
+        SystemdHelper.modifyForInstall(log, assembly, install);
+        
         if (!includeDeploy) {
             return;
         }
@@ -111,7 +121,11 @@ public class Deployer {
         //
         // do deploy
         //
-
+        
+        // repackage into a new archive using same format as source
+        Path storkPackageFile = assembly.getUnpackedDir().resolveSibling("stork-package." + assembly.getArchive().getFormat());
+        Archive.pack(assembly.getUnpackedDir(), storkPackageFile, assembly.getArchive().getFormat());
+        
         // create version directory (where we will install to)
         target.createDirectories(true, install.getVersionDir());
 
@@ -124,11 +138,12 @@ public class Deployer {
         target.remove(false, targetWorkDir);
         target.createDirectories(false, targetWorkDir);
 
-        
-        String targetArchiveFile = targetWorkDir + "/" + assembly.getArchiveFile().getFileName();
+        // always a .zip since we're re-packaging so that customizations can
+        // be made after exploding package, modifying it, then uploading
+        String targetArchiveFile = targetWorkDir + "/" + assembly.getArchive().getName();
 
         // upload assembly
-        target.put(assembly.getArchiveFile(), targetArchiveFile);
+        target.put(storkPackageFile, targetArchiveFile);
 
         // unpack archive
         target.unpack(targetArchiveFile, targetWorkDir);
@@ -143,7 +158,7 @@ public class Deployer {
         } else {
             // stop daemons
             if (assembly.hasDaemons()) {
-                for (Daemon daemon : assembly.getDaemons(target.getInitType())) {
+                for (Daemon daemon : assembly.getDaemons(initType)) {
                     target.stopDaemon(daemon);
                 }
             }
@@ -204,7 +219,7 @@ public class Deployer {
             //
             // install daemons on both fresh/upgrade
             //
-            for (Daemon daemon : assembly.getDaemons(target.getInitType())) {
+            for (Daemon daemon : assembly.getDaemons(initType)) {
                 target.installDaemon(install, daemon, true);
             }
             
@@ -233,7 +248,7 @@ public class Deployer {
             }
             
             if (tryDaemonStart) {
-                for (Daemon daemon : assembly.getDaemons(target.getInitType())) {
+                for (Daemon daemon : assembly.getDaemons(initType)) {
                     target.startDaemon(daemon);
                 }
             }

@@ -67,7 +67,7 @@ public class Assemblys {
         findSysvDaemons(unpackedDir, daemons);
         findSystemdDaemons(unpackedDir, daemons);
         
-        return new Assembly(archiveFile, unpackedDir, name, version, snapshot, daemons, resources);
+        return new Assembly(archive, unpackedDir, name, version, snapshot, daemons, resources);
     }
     
     static private void findSysvDaemons(Path unpackedDir, List<Daemon> daemons) throws IOException {

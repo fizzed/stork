@@ -22,13 +22,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +43,32 @@ public class Archive {
     static private final Logger log = LoggerFactory.getLogger(Archive.class);
 
     private final Path file;
-
+    private final String format;
+    
     public Archive(Path file) {
         this.file = file;
+        this.format = format(file);
+    }
+    
+    public Path getFile() {
+        return this.file;
+    }
+    
+    public String getName() {
+        return this.file.getFileName().toString();
+    }
+    
+    public String getNameWithNoExtension() {
+        String name = getName();
+        return name.substring(0, name.length() - this.format.length() - 1);
+    }
+    
+    /**
+     * Returns the format of the archive such as "tar.gz" or ".zip"
+     * @return 
+     */
+    public String getFormat() {
+        return this.format;
     }
     
     public Path unpack(Path unpackDir) throws IOException {
@@ -51,8 +81,7 @@ public class Archive {
         final AtomicInteger count = new AtomicInteger();
         
         try (ArchiveInputStream ais = newArchiveInputStream(file)) {
-            ArchiveEntry entry = null;
-            
+            ArchiveEntry entry;
             while ((entry = ais.getNextEntry()) != null) {
                 try {
                     Path entryFile = Paths.get(entry.getName());
@@ -65,7 +94,7 @@ public class Archive {
                     if (entry.isDirectory()) {
                         Files.createDirectories(resolvedFile);
                     } else {
-                        extractEntry(ais, resolvedFile);
+                        unpackEntry(ais, resolvedFile);
                         count.incrementAndGet();
                     }
                 } catch (IOException | IllegalStateException | IllegalArgumentException e) {
@@ -86,6 +115,18 @@ public class Archive {
         return assemblyDir;
     }
     
+    
+    static public String format(Path file) {
+        String name = file.getFileName().toString();
+        if (name.endsWith(".tar.gz")) {
+            return "tar.gz";
+        } else if (name.endsWith(".zip")) {
+            return "zip";
+        } else {
+            return null;
+        }
+    }
+    
     static private ArchiveInputStream newArchiveInputStream(Path file) throws IOException {
         String name = file.getFileName().toString();
         
@@ -98,7 +139,7 @@ public class Archive {
         }
     }
     
-    static private void extractEntry(ArchiveInputStream ais, Path target) throws IOException {   
+    static private void unpackEntry(ArchiveInputStream ais, Path target) throws IOException {   
         // always make sure parent dir exists
         Files.createDirectories(target.getParent());
         
@@ -108,6 +149,78 @@ public class Archive {
             
             while ((len = ais.read(BUFFER)) != -1) {
                 bos.write(BUFFER, 0, len);
+            }
+        }
+    }
+    
+    static public Archive pack(Path unpackedDir, String format) throws IOException {
+        String name = unpackedDir.getFileName().toString();
+        Path archiveFile = unpackedDir.resolveSibling(name + "." + format);
+        return pack(unpackedDir, archiveFile, format);
+    }
+    
+    static public Archive pack(Path unpackedDir, Path archiveFile, String format) throws IOException {
+        log.info("Packing {} to {}", unpackedDir, archiveFile);
+        
+        try (ArchiveOutputStream aos = newArchiveOutputStream(archiveFile, format)) {
+            packEntry(aos, unpackedDir, unpackedDir.getFileName().toString(), false);
+        }
+        
+        return new Archive(archiveFile);
+    }
+    
+    static private ArchiveOutputStream newArchiveOutputStream(Path file, String format) throws IOException {
+        switch (format) {
+            case "tar.gz":
+                TarArchiveOutputStream tgzout = new TarArchiveOutputStream(new GzipCompressorOutputStream(Files.newOutputStream(file)));
+                tgzout.setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_STAR);
+                tgzout.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
+                return tgzout;
+            case "zip":
+                return new ZipArchiveOutputStream(Files.newOutputStream(file));
+            default:
+                throw new IOException("Unsupported archive file type (we support .tar.gz and .zip)");
+        }
+    }
+    
+    static public void packEntry(ArchiveOutputStream aos, Path dirOrFile, String base, boolean appendName) throws IOException {
+        String entryName = base;
+        
+        if (appendName) {
+            if (!entryName.equals("")) {
+                if (!entryName.endsWith("/")) {
+                    entryName += "/" + dirOrFile.getFileName();
+                } else {
+                    entryName += dirOrFile.getFileName();
+                }
+            } else {
+                entryName += dirOrFile.getFileName();
+            }
+        }
+        
+        ArchiveEntry entry = aos.createArchiveEntry(dirOrFile.toFile(), entryName);
+
+        if (Files.isRegularFile(dirOrFile)) {
+            if (entry instanceof TarArchiveEntry && Files.isExecutable(dirOrFile)) {
+                // -rwxr-xr-x
+                ((TarArchiveEntry)entry).setMode(493);
+            } else {
+                // keep default mode
+            }
+        }
+
+        aos.putArchiveEntry(entry);
+
+        if (Files.isRegularFile(dirOrFile)) {
+            Files.copy(dirOrFile, aos);
+            aos.closeArchiveEntry();
+        } else {
+            aos.closeArchiveEntry();
+            List<Path> children = Files.list(dirOrFile).collect(Collectors.toList());
+            if (children != null){
+                for (Path childFile : children) {
+                    packEntry(aos, childFile, entryName + "/", true);
+                }
             }
         }
     }

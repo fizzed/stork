@@ -28,7 +28,7 @@ import java.util.Set;
 public class Assembly implements Closeable {
 
     private final long createdAt;
-    private final Path archiveFile;
+    private final Archive archive;
     private final Path unpackedDir;
     private final String name;
     private final String version;
@@ -36,9 +36,9 @@ public class Assembly implements Closeable {
     private final Map<InitType,Set<Daemon>> daemons;
     private final List<Closeable> resources;
 
-    public Assembly(Path archiveFile, Path unpackedDir, String name, String version, boolean snapshot, List<Daemon> daemons, List<Closeable> resources) {
+    public Assembly(Archive archive, Path unpackedDir, String name, String version, boolean snapshot, List<Daemon> daemons, List<Closeable> resources) {
         this.createdAt = System.currentTimeMillis();
-        this.archiveFile = archiveFile;
+        this.archive = archive;
         this.unpackedDir = unpackedDir;
         this.name = name;
         this.version = version;
@@ -61,8 +61,12 @@ public class Assembly implements Closeable {
         return createdAt;
     }
     
+    public Archive getArchive() {
+        return this.archive;
+    }
+    
     public Path getArchiveFile() {
-        return archiveFile;
+        return this.archive.getFile();
     }
 
     public Path getUnpackedDir() {

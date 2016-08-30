@@ -14,7 +14,7 @@ To test whatever is up:
 
 To target a specific vagrant instance
 
-    mvn test -Dhost=ubuntu1404
+    mvn test -Dhost=ubuntu14
 
 For a list of possible systems
 
@@ -22,7 +22,7 @@ For a list of possible systems
 
 To bring up an instance
 
-    vagrant up ubuntu1404
+    vagrant up ubuntu14
 
 Use blaze to run various tasks
 

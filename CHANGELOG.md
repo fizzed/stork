@@ -12,6 +12,7 @@ Stork by Fizzed
  - Launchers for windows now preserve environment variables allowing users to
    override properties on an execution.
  - Fixed bug where temp deploy files were not always deleted (especially on windows)
+ - Added Ubuntu 16.04 as reference system to verify launchers & deployments.
  - Dependencies updated:
     - blaze v0.11.1 to v0.12.0
     - jackson v2.7.3 to v2.8.1

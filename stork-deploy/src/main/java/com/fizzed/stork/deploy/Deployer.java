@@ -112,7 +112,7 @@ public class Deployer {
         // paths, users, and groups
         // TODO: perhaps this is a good "hook" for other last minute customizations
         // before the deploy is packaged backup and copied upstream
-//        SystemdHelper.modifyForInstall(log, assembly, install);
+        SystemdHelper.modifyForInstall(log, assembly, install);
         
         if (!includeDeploy) {
             return;

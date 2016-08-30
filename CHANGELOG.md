@@ -3,16 +3,15 @@ Stork by Fizzed
 
 #### 2.2.0 - 2016-08-29
 
- - Full support for SystemD! `stork-launcher` will generate `share/systemd` service
-   files and `stork-deploy` does a numer of intelligent things to deploy it.
+ - Support for `systemd`! `stork-launcher` will generate `share/systemd` service
+   files and `stork-deploy` will intelligently deploy it.
  - Support for deploying thru SSH proxy/bastion/jump hosts.  If your `.ssh/config`
-   uses any common `ProxyCommand` options then stork will likely work out-of-the-box.
+   file uses any common `ProxyCommand` options then stork will likely work out-of-the-box.
    Please see [blaze ssh docs](https://github.com/fizzed/blaze/blob/master/docs/SSH.md)
-   for more info on proxy support.
- - `stork-deploy` now re-packages your assembly so that systemd service files
-   can be re-written with correct path and user/group information.  This will
-   allow future versions to allow users to customize deploys, slipstream configs,
-   etc. before final deployment.
+   for more info.
+ - Launchers for windows now preserve environment variables allowing users to
+   override properties on an execution.
+ - Fixed bug where temp deploy files were not always deleted (especially on windows)
  - Dependencies updated:
     - blaze v0.11.1 to v0.12.0
     - jackson v2.7.3 to v2.8.1

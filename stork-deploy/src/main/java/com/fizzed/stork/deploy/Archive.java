@@ -17,6 +17,7 @@ package com.fizzed.stork.deploy;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -143,12 +144,13 @@ public class Archive {
         // always make sure parent dir exists
         Files.createDirectories(target.getParent());
         
-        try (BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(target, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING))) {
-            int len = 0;
-            byte[] BUFFER = new byte[1024];
-            
-            while ((len = ais.read(BUFFER)) != -1) {
-                bos.write(BUFFER, 0, len);
+        try (OutputStream os = Files.newOutputStream(target, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+            try (BufferedOutputStream bos = new BufferedOutputStream(os)) {
+                int len = 0;
+                byte[] BUFFER = new byte[1024];
+                while ((len = ais.read(BUFFER)) != -1) {
+                    bos.write(BUFFER, 0, len);
+                }
             }
         }
     }

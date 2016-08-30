@@ -24,8 +24,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Assembly implements Closeable {
+    static private final Logger log = LoggerFactory.getLogger(Assembly.class);
 
     private final long createdAt;
     private final Archive archive;
@@ -163,10 +166,18 @@ public class Assembly implements Closeable {
     @Override
     public void close() throws IOException {
         // delete the unpacked dir and any other resources
-        DeployHelper.deleteRecursively(this.unpackedDir);
+        try {
+            DeployHelper.deleteRecursively(this.unpackedDir);
+        } catch (IOException e) {
+            log.warn("Unable to cleanup assembly: " + e.getMessage());
+        }
         if (this.resources != null) {
             for (Closeable resource : resources) {
-                resource.close();
+                try {
+                    resource.close();
+                } catch (IOException e) {
+                    log.warn("Unable to cleanup assembly resources: " + e.getMessage());
+                }
             }
         }
     }

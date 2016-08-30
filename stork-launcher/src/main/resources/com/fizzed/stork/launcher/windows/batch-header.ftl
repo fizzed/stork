@@ -16,7 +16,6 @@
 @REM
 
 if "%LOG_DIR%"=="" set LOG_DIR=${config.logDir!""}
-
 if "%RUN_DIR%"=="" set RUN_DIR=${config.runDir!""}
 
 @REM set to 1 if you want to see more info about what the script is doing
@@ -29,12 +28,12 @@ if "%LAUNCHER_DEBUG%"=="" set LAUNCHER_DEBUG=0
 set NAME=${config.name}
 set TYPE=${config.type}
 set MAIN_CLASS=${config.mainClass}
-set MIN_JAVA_VERSION=${config.minJavaVersion}
-set WORKING_DIR_MODE=${config.workingDirMode}
-set BIN_DIR=${config.binDir!""}
-set LIB_DIR=${config.libDir!""}
-set APP_ARGS=${config.appArgs}
-set JAVA_ARGS=${config.javaArgs}
+if "%MIN_JAVA_VERSION%"=="" set MIN_JAVA_VERSION=${config.minJavaVersion}
+if "%WORKING_DIR_MODE%"=="" set WORKING_DIR_MODE=${config.workingDirMode}
+if "%BIN_DIR%"=="" set BIN_DIR=${config.binDir!""}
+if "%LIB_DIR%"=="" set LIB_DIR=${config.libDir!""}
+if "%APP_ARGS%"=="" set APP_ARGS=${config.appArgs}
+if "%JAVA_ARGS%"=="" set JAVA_ARGS=${config.javaArgs}
 
 @REM
 @REM working directory setup

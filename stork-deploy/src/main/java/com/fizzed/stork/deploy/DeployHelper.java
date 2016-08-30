@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,27 +48,18 @@ public class DeployHelper {
             }
 
             @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
-                // delete everything but the actual root dir (an issue on windows)
-                if (!dir.equals(path)) {
-                    Files.delete(dir);
-                }
+            public FileVisitResult postVisitDirectory(Path dir, IOException ioe) throws IOException {
+                Files.delete(dir);
                 return FileVisitResult.CONTINUE;
             }
 
             @Override
-            public FileVisitResult visitFileFailed(Path t, IOException ioe) throws IOException {
+            public FileVisitResult visitFileFailed(Path file, IOException ioe) throws IOException {
                 return FileVisitResult.SKIP_SUBTREE;
             }
-            
         });
         
-        // try to delete root dir (works on posix, but on windows ignore error)
-        try {
-            Files.delete(path);
-        } catch (Exception e) {
-            // ignore it
-        }
+        Files.deleteIfExists(path);
     }
     
     static private final DateTimeFormatter versionDateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss", Locale.US);

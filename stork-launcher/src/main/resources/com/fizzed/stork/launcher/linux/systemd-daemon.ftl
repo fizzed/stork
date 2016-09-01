@@ -13,4 +13,3 @@ Group=${config.getPlatformGroup("LINUX")!""}
 
 [Install]
 WantedBy=multi-user.target
-Alias=${config.name}.service

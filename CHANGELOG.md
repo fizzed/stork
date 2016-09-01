@@ -1,6 +1,11 @@
 Stork by Fizzed
 =======================================
 
+#### 2.2.1 - 2016-08-31
+
+ - Fixed issue with systemd services not starting at boot. Removed `alias` from
+   default systemd template
+
 #### 2.2.0 - 2016-08-29
 
  - Support for `systemd`! `stork-launcher` will generate `share/systemd` service

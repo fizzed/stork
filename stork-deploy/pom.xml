@@ -23,9 +23,14 @@
             <artifactId>stork-core</artifactId>
         </dependency>
         
+        <!-- 
+          Only need blaze-* dependencies in stork-cli. Using provided here let's
+          users use stork-deploy inside blaze w/o dependency conflicts.
+        -->
         <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>blaze-core</artifactId>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.ivy</groupId>
@@ -37,6 +42,13 @@
         <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>blaze-ssh</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fizzed</groupId>
+            <artifactId>blaze-vagrant</artifactId>
+            <scope>provided</scope>
         </dependency>
         
         <dependency>

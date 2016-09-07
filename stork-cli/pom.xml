@@ -58,12 +58,31 @@
         <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-deploy</artifactId>
+        </dependency>
+        
+        <!-- other blaze dependencies in provided scope we need here -->
+        <dependency>
+            <groupId>com.fizzed</groupId>
+            <artifactId>blaze-core</artifactId>
+            <scope>runtime</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.ivy</groupId>
                     <artifactId>ivy</artifactId>
                 </exclusion>
-            </exclusions> 
+            </exclusions>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fizzed</groupId>
+            <artifactId>blaze-ssh</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fizzed</groupId>
+            <artifactId>blaze-vagrant</artifactId>
+            <scope>runtime</scope>
         </dependency>
         
         <!-- usually test but we need to include it in the cli -->

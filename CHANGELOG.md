@@ -1,6 +1,11 @@
 Stork by Fizzed
 =======================================
 
+#### 2.3.0 - 2016-09-07
+
+ - `stork-deploy` has all blaze-* dependencies in `provided` scope to help
+   avoid version conflicts when directly used in [Blaze](https://github.com/fizzed/blaze)
+
 #### 2.2.1 - 2016-08-31
 
  - Fixed issue with systemd services not starting at boot. Removed `alias` from

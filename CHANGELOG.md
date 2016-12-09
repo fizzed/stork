@@ -1,6 +1,10 @@
 Stork by Fizzed
 =======================================
 
+#### 2.4.0 - 2016-12-09
+
+ - Add new `unattended` option to cli and deploy options to prevent prompts during deploy
+
 #### 2.3.0 - 2016-09-07
 
  - `stork-deploy` has all blaze-* dependencies in `provided` scope to help

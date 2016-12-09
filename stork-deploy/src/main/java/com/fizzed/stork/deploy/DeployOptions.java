@@ -27,6 +27,7 @@ public class DeployOptions {
     private String organization;
     private String user;
     private String group;
+    private Boolean unattended;
 
     public DeployOptions() {
         // no defaults!
@@ -68,12 +69,26 @@ public class DeployOptions {
         return this;
     }
 
+    public Boolean getUnattended() {
+        return unattended;
+    }
+
+    public DeployOptions unattended(Boolean unattended) {
+        this.unattended = unattended;
+        return this;
+    }
+    
+    public boolean safeUnattended() {
+        return this.unattended != null && this.unattended;
+    }
+
     public void overlay(DeployOptions options) {
         if (options == null) { return; }
         if (options.prefixDir != null) { this.prefixDir = options.prefixDir; }
         if (options.organization != null) { this.organization = options.organization; }
         if (options.user != null) { this.user = options.user; }
         if (options.group != null) { this.group = options.group; }
+        if (options.unattended != null) { this.unattended = options.unattended; }
     }
     
     static public DeployOptions from(Path file) throws IOException {
@@ -90,6 +105,10 @@ public class DeployOptions {
         options.organization = properties.getProperty("organization");
         options.user = properties.getProperty("user");
         options.group = properties.getProperty("group");
+        String unattendedValue = properties.getProperty("unattended");
+        if (unattendedValue != null) {
+            options.unattended = Boolean.valueOf(unattendedValue);
+        }
         return options;
     }
     

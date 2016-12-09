@@ -50,6 +50,7 @@ public class DeployMain extends BaseApplication {
         System.out.println(" --prefix-dir <dir>      Root directory to deploy in");
         System.out.println(" --user <user>           User that owns deploy dir");
         System.out.println(" --group <group>         Group that owns deploy dir");
+        System.out.println(" --unattended            Do not prompt for answers during deploy");
         System.out.println("");
     }
     
@@ -111,6 +112,10 @@ public class DeployMain extends BaseApplication {
                 }
                 case "--group": {
                     argsOptions.group(nextArg(arg, args));
+                    break;
+                }
+                case "--unattended": {
+                    argsOptions.unattended(true);
                     break;
                 }
                 default: {

@@ -234,8 +234,7 @@ public class Deployer {
                 if (assembly.hasDirectory("conf")) {
                     log.warn("Your app has a 'conf' directory and this is a fresh install");
                     log.warn("Its possible you need to edit your conf files before it can start");
-                    while (true) {
-                        log.info("Doing prompt...");
+                    while (!options.safeUnattended()) {
                         String answer = Contexts.prompt("Do you want to try and start your daemons now [yes/no]? ");
                         if (answer.equalsIgnoreCase("yes")) {
                             break;

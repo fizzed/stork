@@ -88,7 +88,7 @@ public class Targets {
                 .command("sh").args("-c", 
                     "if $(/sbin/init --version | egrep -q 'upstart'); then echo upstart; " +
                     "elif $(systemctl | egrep -q '.mount'); then echo systemd; " +
-                    "elif [ -f /etc/init.d/cron ]; then echo sysv; " +
+                    "elif [ -f /etc/init.d/cron ] || [ -f /etc/init.d/crond ]; then echo sysv; " +
                     "else echo unknown; fi")
                 .pipeOutput(Streamables.captureOutput())
                 .pipeError(Streamables.nullOutput())

@@ -12,6 +12,28 @@
 @REM
 
 @REM
+@REM working directory setup
+@REM
+
+set INITIAL_WORKING_DIR=%CD%
+
+SET SCRIPTPATH=%~dp0
+SET SCRIPTPATH=%SCRIPTPATH:~0,-1%
+set APP_HOME_REL=%SCRIPTPATH%\..
+@REM echo app_home_relative %APP_HOME_REL%
+
+@REM do we need to change the current working directory?
+if %WORKING_DIR_MODE%==APP_HOME (
+    pushd %APP_HOME_REL%
+    set APP_HOME=.
+) else (
+    @REM echo temporarily change working directory to get good abs path
+    pushd %APP_HOME_REL%
+    set APP_HOME=!CD!
+    popd
+)
+
+@REM
 @REM settings
 @REM
 
@@ -34,28 +56,6 @@ if "%BIN_DIR%"=="" set BIN_DIR=${config.binDir!""}
 if "%LIB_DIR%"=="" set LIB_DIR=${config.libDir!""}
 if "%APP_ARGS%"=="" set APP_ARGS=${config.appArgs}
 if "%JAVA_ARGS%"=="" set JAVA_ARGS=${config.javaArgs}
-
-@REM
-@REM working directory setup
-@REM
-
-set INITIAL_WORKING_DIR=%CD%
-
-SET SCRIPTPATH=%~dp0
-SET SCRIPTPATH=%SCRIPTPATH:~0,-1%
-set APP_HOME_REL=%SCRIPTPATH%\..
-@REM echo app_home_relative %APP_HOME_REL%
-
-@REM do we need to change the current working directory?
-if %WORKING_DIR_MODE%==APP_HOME (
-    pushd %APP_HOME_REL%
-    set APP_HOME=.
-) else (
-    @REM echo temporarily change working directory to get good abs path
-    pushd %APP_HOME_REL%
-    set APP_HOME=!CD!
-    popd
-)
 
 @REM setup remaining directories
 set APP_BIN_DIR=%APP_HOME%\%BIN_DIR%

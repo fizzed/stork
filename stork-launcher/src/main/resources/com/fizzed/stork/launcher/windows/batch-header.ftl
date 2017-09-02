@@ -22,6 +22,19 @@ SET SCRIPTPATH=%SCRIPTPATH:~0,-1%
 set APP_HOME_REL=%SCRIPTPATH%\..
 @REM echo app_home_relative %APP_HOME_REL%
 
+@REM
+@REM constants
+@REM
+
+@REM set to 1 if you want to see more info about what the script is doing
+if "%LAUNCHER_DEBUG%"=="" set LAUNCHER_DEBUG=0
+
+set NAME=${config.name}
+set TYPE=${config.type}
+set MAIN_CLASS=${config.mainClass}
+if "%MIN_JAVA_VERSION%"=="" set MIN_JAVA_VERSION=${config.minJavaVersion}
+if "%WORKING_DIR_MODE%"=="" set WORKING_DIR_MODE=${config.workingDirMode}
+
 @REM do we need to change the current working directory?
 if %WORKING_DIR_MODE%==APP_HOME (
     pushd %APP_HOME_REL%
@@ -39,19 +52,6 @@ if %WORKING_DIR_MODE%==APP_HOME (
 
 if "%LOG_DIR%"=="" set LOG_DIR=${config.logDir!""}
 if "%RUN_DIR%"=="" set RUN_DIR=${config.runDir!""}
-
-@REM set to 1 if you want to see more info about what the script is doing
-if "%LAUNCHER_DEBUG%"=="" set LAUNCHER_DEBUG=0
-
-@REM
-@REM constants
-@REM
-
-set NAME=${config.name}
-set TYPE=${config.type}
-set MAIN_CLASS=${config.mainClass}
-if "%MIN_JAVA_VERSION%"=="" set MIN_JAVA_VERSION=${config.minJavaVersion}
-if "%WORKING_DIR_MODE%"=="" set WORKING_DIR_MODE=${config.workingDirMode}
 if "%BIN_DIR%"=="" set BIN_DIR=${config.binDir!""}
 if "%LIB_DIR%"=="" set LIB_DIR=${config.libDir!""}
 if "%APP_ARGS%"=="" set APP_ARGS=${config.appArgs}

@@ -204,7 +204,7 @@ findAllJavaExecutables()
     # is java in path
     logJavaSearchDebug "searching PATH..."
     local which_java=`quietWhich java`
-    if [ ! -z $which_java ]; then
+    if [ ! -z "$which_java" ]; then
         if [ -x "$which_java" ]; then
             logJavaSearchDebug "found $which_java"
             java_cmds=`appendPath "$java_cmds" "$which_java"`

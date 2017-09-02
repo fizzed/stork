@@ -25,7 +25,7 @@ doFirstMinVersion()
 
     local java_bin=`findFirstJavaExecutableByMinimumMajorVersion "$all_java_bins" "$min_version"`
     if [ -z "$java_bin" ]; then
-        if [ ! -z $all_java_bins ]; then
+        if [ ! -z "$all_java_bins" ]; then
             echo "Java executables found but all < $min_version"
             exit 3
         else

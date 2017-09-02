@@ -41,7 +41,7 @@ fi
 #
 # classpath have anything?
 #
-if [ -z $APP_JAVA_CLASSPATH ]; then
+if [ -z "$APP_JAVA_CLASSPATH" ]; then
     echo "No jars found for loading into classpath (empty lib dir? $APP_HOME/$LIB_DIR)"
     exit 1
 fi
@@ -159,7 +159,7 @@ fi
 # create java command to execute
 #
 
-RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE -Dlauncher.app.dir='$APP_HOME' -classpath $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
+RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE -Dlauncher.app.dir='$APP_HOME' -classpath \"$APP_JAVA_CLASSPATH\" $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
 RUN_CMD="\"$JAVA_BIN\" $RUN_ARGS"
 
 #

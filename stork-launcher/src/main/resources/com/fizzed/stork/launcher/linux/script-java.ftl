@@ -66,9 +66,21 @@ for a in "$@"; do
 
     # does the argument need escaped?
     if [ "$a" = `echo "$a" | sed 's/ //g'` ]; then
-        APP_ARGS="$APP_ARGS $a"
+        # java system property and processing enabled?
+        case "$a" in
+            -D*)
+                JAVA_ARGS="$JAVA_ARGS $a" ;;
+            *)
+                APP_ARGS="$APP_ARGS $a" ;;
+        esac
     else
-        APP_ARGS="$APP_ARGS \"$a\""
+        # java system property and processing enabled?
+        case "$a" in
+            -D*)
+                JAVA_ARGS="$JAVA_ARGS \"$a\"" ;;
+            *)
+                APP_ARGS="$APP_ARGS \"$a\"" ;;
+        esac
     fi
 
     shift

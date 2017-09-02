@@ -6,8 +6,8 @@
 # Description: ${config.shortDescription}
 #
 # Auto generated via Stork Launcher by Fizzed, Inc.
-#  Web: http://fizzed.co
-#  Twitter: http://twitter.com/mfizz_inc
+#  Web: https://fizzed.com
+#  Twitter: http://twitter.com/fizzed_inc
 #
 
 #

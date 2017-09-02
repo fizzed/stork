@@ -7,8 +7,8 @@
 @REM Description: ${config.shortDescription}
 @REM
 @REM Auto generated via Stork Launcher by Fizzed, Inc.
-@REM  Web: http://fizzed.co
-@REM  Twitter: http://twitter.com/mfizz_inc
+@REM  Web: http://fizzed.com
+@REM  Twitter: http://twitter.com/fizzed_inc
 @REM
 
 @REM

@@ -34,8 +34,8 @@ Vagrant.configure(2) do |config|
     guest.vm.provision :shell, inline: "systemctl restart sshd.service"
   end
 
-  config.vm.define "freebsd102", autostart: false do |guest|
-    guest.vm.box = "bento/freebsd-10.2"
+  config.vm.define "freebsd103", autostart: false do |guest|
+    guest.vm.box = "bento/freebsd-10.3"
     guest.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
     guest.vm.provision :shell, inline: "pkg install -y openjdk; echo 'fdesc /dev/fd fdescfs rw 0 0' >> /etc/fstab; echo 'proc /proc procfs rw 0	0' >> /etc/fstab; mount /dev/fd; mount /proc"
     # unit tests required passing along env vars in ssh commands
@@ -43,8 +43,8 @@ Vagrant.configure(2) do |config|
     guest.vm.provision :shell, inline: "service sshd restart"
   end
 
-  config.vm.define "openbsd58", autostart: false do |guest|
-    guest.vm.box = "boxcutter/openbsd58"
+  config.vm.define "openbsd60", autostart: false do |guest|
+    guest.vm.box = "ryanmaclean/openbsd-6.0"
     guest.vm.provider "virtualbox" do |vb|
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     end
@@ -81,9 +81,9 @@ Vagrant.configure(2) do |config|
   #  guest.vm.box = "tnarik/solaris10-minimal"
   #end
 
-  config.vm.define "openbsd58" do |guest|
-    guest.vm.box = "boxcutter/openbsd58"
-  end
+  #config.vm.define "openbsd58" do |guest|
+  #  guest.vm.box = "boxcutter/openbsd58"
+  #end
 
   #config.vm.define "windows2012" do |guest|
   #  guest.vm.box = "mwrock/Windows2012R2"

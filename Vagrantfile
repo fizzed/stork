@@ -34,6 +34,11 @@ Vagrant.configure(2) do |config|
     guest.vm.provision :shell, inline: "systemctl restart sshd.service"
   end
 
+  config.vm.define "windows10" do |guest|
+    guest.vm.box = "giorgioinf/win10N-shell"
+    guest.vm.box_version = "0.0.1"
+  end
+
   config.vm.define "freebsd103", autostart: false do |guest|
     guest.vm.box = "bento/freebsd-10.3"
     guest.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"

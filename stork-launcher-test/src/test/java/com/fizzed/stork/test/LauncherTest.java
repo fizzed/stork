@@ -109,7 +109,7 @@ public class LauncherTest {
         
         if (symlinkJava == null) {
             // do not try to symlink java on a local windows client
-            if (host.equals("local") && TestHelper.isWindows()) {
+            if (host.equals("windows10") || (host.equals("local") && TestHelper.isWindows())) {
                 return;  // skip
             }
             

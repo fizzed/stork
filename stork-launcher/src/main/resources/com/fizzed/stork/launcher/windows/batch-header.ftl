@@ -9,6 +9,7 @@
 @REM Auto generated via Stork Launcher by Fizzed, Inc.
 @REM  Web: http://fizzed.com
 @REM  Twitter: http://twitter.com/fizzed_inc
+@REM  Github: https://github.com/fizzed/stork
 @REM
 
 @REM

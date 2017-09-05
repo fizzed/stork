@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import org.junit.Test;
@@ -40,7 +41,6 @@ import org.junit.Assume;
 import static org.junit.Assume.assumeTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -130,6 +130,10 @@ public class LauncherTest {
         }
     }
     
+    private boolean isLocal() {
+        return host.equals("local");
+    }
+    
     private boolean isWindows() {
         return host.startsWith("windows")
             || (host.equals("local") && TestHelper.isWindows());
@@ -146,6 +150,11 @@ public class LauncherTest {
             default:
                 return Paths.get("/vagrant/stork-launcher-test/target/stork/bin").resolve(exeName);
         }
+    }
+    
+    private Path resolveAppHomeDir() {
+        // always 2 directories back from the exe
+        return resolveExe("blah").getParent().getParent();
     }
     
     public String execute(int exitValue, Path exe, String... args) throws Exception {
@@ -214,6 +223,19 @@ public class LauncherTest {
         
         assertThat(output.getConfirm(), is("Hello World!"));
         assertThat(output.getArguments(), hasSize(0));
+        //assertThat((String)output.getSystemProperties().get("launcher.type"), is("CONSOLE"));
+        
+        // hard to determine real working dir so only do this on "local"
+        if (isLocal()) {
+            // verify working directory was retained
+            Path ourWorkingDir = Paths.get((String)System.getProperty("user.dir"));
+            Path appWorkingDir = Paths.get((String)output.getSystemProperties().get("user.dir"));
+            Path appHomeDir = Paths.get((String)output.getSystemProperties().get("launcher.app.dir"));
+
+            assertThat(appWorkingDir, is(ourWorkingDir));
+            assertThat(appHomeDir, is(not(ourWorkingDir)));
+            assertThat(appHomeDir, is(not(appWorkingDir)));
+        }
     }
     
     @Test
@@ -409,6 +431,18 @@ public class LauncherTest {
         HelloOutput output = this.readValue(json, HelloOutput.class);
         
         assertThat(output.getConfirm(), is("Hello World!"));
+        //assertThat((String)output.getSystemProperties().get("launcher.type"), is("DAEMON"));
+        
+        // only do these on local since its hard to get correct path via ssh
+        if (isLocal()) {
+            // verify working directory was retained
+            Path ourWorkingDir = Paths.get((String)System.getProperty("user.dir"));
+            Path appWorkingDir = Paths.get((String)output.getSystemProperties().get("user.dir"));
+            Path appHomeDir = Paths.get((String)output.getSystemProperties().get("launcher.app.dir"));
+
+            assertThat(appWorkingDir, is(not((ourWorkingDir))));
+            assertThat(appWorkingDir, is((appHomeDir)));
+        }
     }
     
     @Test

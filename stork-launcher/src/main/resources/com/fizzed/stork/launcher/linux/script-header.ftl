@@ -8,7 +8,19 @@
 # Auto generated via Stork Launcher by Fizzed, Inc.
 #  Web: https://fizzed.com
 #  Twitter: http://twitter.com/fizzed_inc
+#  Github: https://github.com/fizzed/stork
 #
+
+#
+# constants
+#
+
+NAME="${config.name}"
+TYPE="${config.type}"
+MAIN_CLASS="${config.mainClass}"
+[ -z "$WORKING_DIR_MODE" ] && WORKING_DIR_MODE="${config.workingDirMode}"
+[ -z "$MIN_JAVA_VERSION" ] && MIN_JAVA_VERSION="${config.minJavaVersion}"
+[ -z "$SYMLINK_JAVA" ] && SYMLINK_JAVA="${config.symlinkJava?string("1", "0")}"
 
 #
 # working directory
@@ -71,21 +83,15 @@ fi
 [ -z "$LAUNCHER_DEBUG" ] && LAUNCHER_DEBUG="0"
 
 #
-# constants
+# Variables
 #
 
-NAME="${config.name}"
-TYPE="${config.type}"
-MAIN_CLASS="${config.mainClass}"
-[ -z "$WORKING_DIR_MODE" ] && WORKING_DIR_MODE="${config.workingDirMode}"
 [ -z "$APP_ARGS" ] && APP_ARGS="${config.appArgs}"
 [ -z "$EXTRA_APP_ARGS" ] && EXTRA_APP_ARGS="${config.extraAppArgs}"
 [ -z "$JAVA_ARGS" ] && JAVA_ARGS="${config.javaArgs}"
 [ -z "$EXTRA_JAVA_ARGS" ] && EXTRA_JAVA_ARGS="${config.extraJavaArgs}"
 [ -z "$LIB_DIR" ] && LIB_DIR="${config.libDir}"
 [ -z "$SKIP_PID_CHECK" ] && SKIP_PID_CHECK="0"
-[ -z "$MIN_JAVA_VERSION" ] && MIN_JAVA_VERSION="${config.minJavaVersion}"
-[ -z "$SYMLINK_JAVA" ] && SYMLINK_JAVA="${config.symlinkJava?string("1", "0")}"
 <#if (config.type == "DAEMON")>
 [ -z "$DAEMON_MIN_LIFETIME" ] && DAEMON_MIN_LIFETIME="${config.daemonMinLifetime!""}"
 [ -z "$DAEMON_LAUNCH_CONFIRM" ] && DAEMON_LAUNCH_CONFIRM="${config.daemonLaunchConfirm!""}"

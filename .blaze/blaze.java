@@ -55,6 +55,10 @@ public class blaze {
         exec("mvn", "package", "-DskipTests=true", "-am", "-pl", "stork-demo/stork-demo-hellod").run();
         exec("stork-demo-hellod", "--run")
             .path("stork-demo/stork-demo-hellod/target/stork/bin")
+            .arg("8888")
+            .arg("a")
+            .arg("b")
+            .env("EXTRA_JAVA_ARGS", "-Da=1")
             .run();
     }
     
@@ -62,6 +66,7 @@ public class blaze {
         exec("mvn", "package", "-DskipTests=true", "-am", "-pl", "stork-demo/stork-demo-dropwizard").run();
         exec("stork-demo-dropwizard", "--run")
             .path("stork-demo/stork-demo-dropwizard/target/stork/bin")
+            .env("EXTRA_JAVA_ARGS", "-Da=1")
             .run();
     }
 

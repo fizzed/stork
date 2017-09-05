@@ -55,7 +55,9 @@ if "%RUN_DIR%"=="" set RUN_DIR=${config.runDir!""}
 if "%BIN_DIR%"=="" set BIN_DIR=${config.binDir!""}
 if "%LIB_DIR%"=="" set LIB_DIR=${config.libDir!""}
 if "%APP_ARGS%"=="" set APP_ARGS=${config.appArgs}
+if "%EXTRA_APP_ARGS%"=="" set EXTRA_APP_ARGS=${config.extraAppArgs}
 if "%JAVA_ARGS%"=="" set JAVA_ARGS=${config.javaArgs}
+if "%EXTRA_JAVA_ARGS%"=="" set EXTRA_JAVA_ARGS=${config.extraJavaArgs}
 
 @REM setup remaining directories
 set APP_BIN_DIR=%APP_HOME%\%BIN_DIR%

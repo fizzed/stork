@@ -86,6 +86,8 @@ public class Configuration {
     private WorkingDirMode workingDirMode;
     private String appArgs = "";
     private String javaArgs = "";
+    private String extraAppArgs = "";
+    private String extraJavaArgs = "";
     private String minJavaVersion = "1.6";
     private Integer minJavaMemory = null;
     private Integer maxJavaMemory = null;
@@ -262,6 +264,14 @@ public class Configuration {
         this.appArgs = appArgs;
     }
 
+    public String getExtraAppArgs() {
+        return extraAppArgs;
+    }
+
+    public void setExtraAppArgs(String extraAppArgs) {
+        this.extraAppArgs = extraAppArgs;
+    }
+
     public String getJavaArgs() {
         return javaArgs;
     }
@@ -270,6 +280,14 @@ public class Configuration {
         this.javaArgs = javaArgs;
     }
 
+    public String getExtraJavaArgs() {
+        return extraJavaArgs;
+    }
+
+    public void setExtraJavaArgs(String extraJavaArgs) {
+        this.extraJavaArgs = extraJavaArgs;
+    }
+    
     public String getLibDir() {
         return libDir;
     }

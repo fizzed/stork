@@ -60,6 +60,9 @@ if [ "$TYPE" = "DAEMON" ] && [ $# -gt 0 ]; then
   JAVA_ARGS="$JAVA_ARGS -Dlauncher.action=$APP_ACTION_ARG"
 fi
 
+# append extra app and java args
+JAVA_ARGS="$JAVA_ARGS $EXTRA_JAVA_ARGS"
+APP_ARGS="$APP_ARGS $EXTRA_APP_ARGS"
 
 for a in "$@"; do
     if [ $LAUNCHER_DEBUG = "1" ]; then echo "[LAUNCHER] processing arg: $a"; fi

@@ -23,6 +23,7 @@ import com.fizzed.blaze.ssh.SshSession;
 import com.fizzed.blaze.system.Exec;
 import com.fizzed.blaze.util.CaptureOutput;
 import com.fizzed.blaze.util.Streamables;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -30,12 +31,16 @@ import java.util.HashMap;
 import java.util.Map;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import org.junit.Assume;
 import static org.junit.Assume.assumeTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -51,6 +56,7 @@ public class LauncherTest {
         return TestHelper.hosts();
     }
     
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final String host;
     private final Path exeHello1;
     private final Path exeHello2;
@@ -109,7 +115,7 @@ public class LauncherTest {
         
         if (symlinkJava == null) {
             // do not try to symlink java on a local windows client
-            if (host.equals("windows10") || (host.equals("local") && TestHelper.isWindows())) {
+            if (isWindows()) {
                 return;  // skip
             }
             
@@ -124,14 +130,19 @@ public class LauncherTest {
         }
     }
     
+    private boolean isWindows() {
+        return host.startsWith("windows")
+            || (host.equals("local") && TestHelper.isWindows());
+    }
+    
     private Path resolveExe(String exeName) {
+        if (isWindows()) {
+            exeName += ".bat";
+        }
+        
         switch (this.host) {
             case "local":
-                if (TestHelper.isWindows()) {
-                    return Paths.get("target/stork/bin").resolve(exeName + ".bat");
-                } else {
-                    return Paths.get("target/stork/bin").resolve(exeName);
-                }
+                return Paths.get("target/stork/bin").resolve(exeName);
             default:
                 return Paths.get("/vagrant/stork-launcher-test/target/stork/bin").resolve(exeName);
         }
@@ -185,29 +196,161 @@ public class LauncherTest {
         return captureOutput.asString();
     }
     
+    public <T> T readValue(String json, Class<T> type) {
+        try {
+            return objectMapper.readValue(json, type);
+        } catch (IOException e) {
+            log.error("Unable to parse into json. json was\n{}", json);
+            fail(e.getMessage());
+            return null;
+        }
+    }
+    
     @Test
-    public void consoleBasic() throws Exception {
+    public void console() throws Exception {
         String json = execute(0, exeHello1);
         
-        HelloOutput output = new ObjectMapper().readValue(json, HelloOutput.class);
+        HelloOutput output = this.readValue(json, HelloOutput.class);
         
         assertThat(output.getConfirm(), is("Hello World!"));
         assertThat(output.getArguments(), hasSize(0));
     }
     
     @Test
-    public void consoleArgumentsIncluded() throws Exception {
+    public void consoleWithArguments() throws Exception {
         String arg0 = "128401";
         String arg1 = "ahs3h1";
         
         String json = execute(0, exeHello1, arg0, arg1);
         
-        HelloOutput output = new ObjectMapper().readValue(json, HelloOutput.class);
+        HelloOutput output = this.readValue(json, HelloOutput.class);
         
         assertThat(output.getConfirm(), is("Hello World!"));
         assertThat(output.getArguments(), hasSize(2));
         assertThat(output.getArguments().get(0), is(arg0));
         assertThat(output.getArguments().get(1), is(arg1));
+    }
+    
+    @Test
+    public void consoleWithArgumentsThatHaveSpaces() throws Exception {
+        // skip on windows since its just too complicated to escape them
+        // correctly using a batch file
+        Assume.assumeFalse(this.isWindows());
+        
+        String arg0 = "128 401";
+        String arg1 = "ahs 3h1";
+        
+        String json = execute(0, exeHello1, arg0, arg1);
+        
+        HelloOutput output = this.readValue(json, HelloOutput.class);
+        
+        assertThat(output.getConfirm(), is("Hello World!"));
+        assertThat(output.getArguments(), hasSize(2));
+        assertThat(output.getArguments().get(0), is(arg0));
+        assertThat(output.getArguments().get(1), is(arg1));
+    }
+    
+    @Test
+    public void consoleWithExtraArguments() throws Exception {
+        // windows sshd does NOT allow env vars
+        Assume.assumeFalse(this.host.startsWith("windows"));
+        
+        Map<String,String> environment = new HashMap<>();
+        environment.put("EXTRA_APP_ARGS", "a b");
+        
+        String json = execute(0, exeHello1, environment);
+        
+        HelloOutput output = this.readValue(json, HelloOutput.class);
+        
+        assertThat(output.getConfirm(), is("Hello World!"));
+        assertThat(output.getArguments(), hasSize(2));
+        assertThat(output.getArguments().get(0), is("a"));
+        assertThat(output.getArguments().get(1), is("b"));
+    }
+    
+    @Test
+    public void consoleWithExtraArgumentsThenCommandLineArguments() throws Exception {
+        // windows sshd does NOT allow env vars
+        Assume.assumeFalse(this.host.startsWith("windows"));
+        
+        Map<String,String> environment = new HashMap<>();
+        environment.put("EXTRA_APP_ARGS", "a b");
+        
+        String json = execute(0, exeHello1, environment, "c", "d");
+        
+        HelloOutput output = this.readValue(json, HelloOutput.class);
+        
+        assertThat(output.getConfirm(), is("Hello World!"));
+        assertThat(output.getArguments(), hasSize(4));
+        assertThat(output.getArguments().get(0), is("a"));
+        assertThat(output.getArguments().get(1), is("b"));
+        assertThat(output.getArguments().get(2), is("c"));
+        assertThat(output.getArguments().get(3), is("d"));
+    }
+    
+    @Test
+    public void consoleWithSystemProperties() throws Exception {
+        String json = execute(0, exeHello1, "-Da=1", "-Db=2");
+        
+        HelloOutput output = this.readValue(json, HelloOutput.class);
+        
+        assertThat(output.getConfirm(), is("Hello World!"));
+        assertThat(output.getArguments(), hasSize(0));
+        assertThat(output.getSystemProperties(), hasEntry("a", "1"));
+        assertThat(output.getSystemProperties(), hasEntry("b", "2"));
+    }
+    
+    @Test
+    public void consoleWithArgumentsAndSystemProperties() throws Exception {
+        String json = execute(0, exeHello1, "a", "-Da=1", "b", "-Db=2", "c");
+        
+        HelloOutput output = this.readValue(json, HelloOutput.class);
+        
+        assertThat(output.getConfirm(), is("Hello World!"));
+        assertThat(output.getArguments(), hasSize(3));
+        assertThat(output.getArguments().get(0), is("a"));
+        assertThat(output.getArguments().get(1), is("b"));
+        assertThat(output.getArguments().get(2), is("c"));
+        assertThat(output.getSystemProperties(), hasEntry("a", "1"));
+        assertThat(output.getSystemProperties(), hasEntry("b", "2"));
+    }
+    
+    @Test
+    public void consoleWithExtraJavaArgs() throws Exception {
+        // windows sshd does NOT allow env vars
+        Assume.assumeFalse(this.host.startsWith("windows"));
+        
+        Map<String,String> environment = new HashMap<>();
+        environment.put("EXTRA_JAVA_ARGS", "-Da=1 -Db=2");
+        
+        String json = execute(0, exeHello1, environment);
+        
+        HelloOutput output = this.readValue(json, HelloOutput.class);
+        
+        assertThat(output.getConfirm(), is("Hello World!"));
+        assertThat(output.getArguments(), hasSize(0));
+        assertThat(output.getSystemProperties(), hasEntry("a", "1"));
+        assertThat(output.getSystemProperties(), hasEntry("b", "2"));
+    }
+    
+    @Test
+    public void consoleWithExtraJavaArgsAndCommandLineSystemProperties() throws Exception {
+        // windows sshd does NOT allow env vars
+        Assume.assumeFalse(this.host.startsWith("windows"));
+        
+        Map<String,String> environment = new HashMap<>();
+        environment.put("EXTRA_JAVA_ARGS", "-Da=1 -Db=2");
+        
+        // this should override the "extra" one since it will be appended
+        // after the extra_java_args would be
+        String json = execute(0, exeHello1, environment, "-Da=2");
+        
+        HelloOutput output = this.readValue(json, HelloOutput.class);
+        
+        assertThat(output.getConfirm(), is("Hello World!"));
+        assertThat(output.getArguments(), hasSize(0));
+        assertThat(output.getSystemProperties(), hasEntry("a", "2"));
+        assertThat(output.getSystemProperties(), hasEntry("b", "2"));
     }
     
     @Test
@@ -235,7 +378,7 @@ public class LauncherTest {
         
         String json = execute(0, exeHello1, environment);
         
-        HelloOutput output = new ObjectMapper().readValue(json, HelloOutput.class);
+        HelloOutput output = this.readValue(json, HelloOutput.class);
         
         assertThat(output.getConfirm(), is("Hello World!"));
         assertThat(output.getArguments(), hasSize(0));
@@ -243,25 +386,52 @@ public class LauncherTest {
     
     @Test
     public void consoleJavaArgsWithSpaces() throws Exception {
+        // windows sshd does NOT allow env vars
+        Assume.assumeFalse(this.host.startsWith("windows"));
+        
         Map<String,String> environment = new HashMap<>();
         environment.put("JAVA_ARGS", "-Da=1 -Db=2 -Dc=3");
         
         String json = execute(0, exeHello1, environment);
         
-        HelloOutput output = new ObjectMapper().readValue(json, HelloOutput.class);
+        HelloOutput output = this.readValue(json, HelloOutput.class);
         
         assertThat(output.getConfirm(), is("Hello World!"));
         assertThat(output.getSystemProperties().getProperty("a"), is("1"));
         assertThat(output.getSystemProperties().getProperty("b"), is("2"));
         assertThat(output.getSystemProperties().getProperty("c"), is("3"));
     }
-    
+   
     @Test
-    public void daemonBasic() throws Exception {
+    public void daemonRun() throws Exception {
         String json = execute(0, exeHello4, "--run");
         
-        HelloOutput output = new ObjectMapper().readValue(json, HelloOutput.class);
+        HelloOutput output = this.readValue(json, HelloOutput.class);
         
         assertThat(output.getConfirm(), is("Hello World!"));
+    }
+    
+    @Test
+    public void daemonRunWithArguments() throws Exception {
+        String json = execute(0, exeHello4, "--run", "a", "b");
+        
+        HelloOutput output = this.readValue(json, HelloOutput.class);
+        
+        assertThat(output.getConfirm(), is("Hello World!"));
+        assertThat(output.getArguments(), hasSize(2));
+        assertThat(output.getArguments().get(0), is("a"));
+        assertThat(output.getArguments().get(1), is("b"));
+    }
+    
+    @Test
+    public void daemonRunWithSystemProperties() throws Exception {
+        String json = execute(0, exeHello4, "--run", "-Da=1", "-Db=2");
+        
+        HelloOutput output = this.readValue(json, HelloOutput.class);
+        
+        assertThat(output.getConfirm(), is("Hello World!"));
+        assertThat(output.getArguments(), hasSize(0));
+        assertThat(output.getSystemProperties(), hasEntry("a", "1"));
+        assertThat(output.getSystemProperties(), hasEntry("b", "2"));
     }
 }

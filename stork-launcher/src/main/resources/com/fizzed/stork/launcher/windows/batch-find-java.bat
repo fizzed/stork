@@ -43,10 +43,11 @@ IF DEFINED JAVA_IN_PATH (
 
 @REM
 @REM query registry for java runtime environment
+@REM no keys will log to stderr so we redirect to nul
 @REM
 call :JavaSearchDebug "Searching registry for JRE entries..."
 set reg_best_java_bin=
-for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\Java Runtime Environment" /s ^| find "JavaHome"') do (
+for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\Java Runtime Environment" /s 2^>nul ^| find "JavaHome"') do (
     set reg_java_bin=%%j\bin\java
     call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! java_bin_accepted
     if NOT "!java_bin_accepted!" == "" set reg_best_java_bin=!java_bin_accepted!
@@ -59,12 +60,13 @@ if NOT "%reg_best_java_bin%"=="" (
 
 @REM
 @REM query registry for java development kit
+@REM no keys will log to stderr so we redirect to nul
 @REM
 @REM special case with registry -- it queries in order of earliest installed to latest
 @REM keep searching for the most acceptable version (the last one)
 call :JavaSearchDebug "Searching registry for JDK entries..."
 set reg_best_java_bin=
-for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\Java Development Kit" /s ^| find "JavaHome"') do (
+for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\Java Development Kit" /s 2^>nul ^| find "JavaHome"') do (
     set reg_java_bin=%%j\bin\java
     call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! java_bin_accepted
     if NOT "!java_bin_accepted!" == "" set reg_best_java_bin=!java_bin_accepted!

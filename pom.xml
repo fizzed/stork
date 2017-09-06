@@ -27,6 +27,7 @@
         <jackson.version>2.8.1</jackson.version>
         <slf4j.version>1.7.21</slf4j.version>
         <blaze.version>0.13.0</blaze.version>
+        <crux.version>0.12.0</crux.version>
     </properties>
 
     <modules>
@@ -44,6 +45,18 @@
 
     <dependencyManagement>
         <dependencies>            
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>crux-util</artifactId>
+                <version>${crux.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>crux-vagrant</artifactId>
+                <version>${crux.version}</version>
+            </dependency>
             
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -128,11 +141,6 @@
             </dependency>
             
             <!-- for testing and also stork-deploy -->
-            <dependency>
-                <groupId>com.fizzed</groupId>
-                <artifactId>crux-vagrant</artifactId>
-                <version>0.12.0</version>
-            </dependency>
             
             <dependency>
                 <groupId>com.fizzed</groupId>

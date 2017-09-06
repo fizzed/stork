@@ -1,6 +1,12 @@
 Stork by Fizzed
 =======================================
 
+#### 2.5.1 - 2017-09-06
+
+ - stork-launcher: Fix systemd issue with java classpath in quotes
+ - stork-deploy: Verification of startup simply waits 5-6 seconds by default
+   rather than searching for text of OK
+
 #### 2.5.0 - 2017-09-05
 
  - stork-launcher: Command-line arguments starting with "-D" are now detected and passed to

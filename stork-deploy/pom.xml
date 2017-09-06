@@ -23,6 +23,11 @@
             <artifactId>stork-core</artifactId>
         </dependency>
         
+        <dependency>
+            <groupId>com.fizzed</groupId>
+            <artifactId>crux-util</artifactId>
+        </dependency>
+        
         <!-- 
           Only need blaze-* dependencies in stork-cli. Using provided here let's
           users use stork-deploy inside blaze w/o dependency conflicts.

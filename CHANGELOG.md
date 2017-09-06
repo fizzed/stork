@@ -4,19 +4,20 @@ Stork by Fizzed
 #### 2.5.0 - 2017-09-05
 
  - stork-launcher: Command-line arguments starting with "-D" are now detected and passed to
-   your application as Java System Properties rather than as application
-   arguments. (@jjlauer)
+   your application as Java System Properties rather than as application arguments. (@jjlauer)
  - stork-launcher: Daemons across all platforms now passthrough application arguments or
-   System properties for the "--run" command.
+   System properties for the "--run" command. (@jjlauer)
  - stork-launcher: New "EXTRA_APP_ARGS" and "EXTRA_JAVA_ARGS" configuration/variables
    so that you can define standard ones for your app, but allow users to pass in
-   extra variables vs. only being able to override what you provided.
- - stork-launcher: Cygwin compatability on Windows. The linux scripts all work on Windows when
-   running in a cygwin environment. (@jjlauer)
+   extra variables vs. only being able to override what you provided. (@jjlauer)
+ - stork-launcher: Cygwin compatability on Windows (e.g. running in Bash, Git Bash, or
+   Docker terminal). The linux scripts all work on Windows when running in a cygwin
+   environment. (@jjlauer)
  - stork-launcher: Detect APP_HOME first before initializing other variables. Allows using it
    to help build other properties. (@BertrandA)
  - stork-deploy: Added `/etc/init.d/crond` while trying to detect for SYSV init (@erbrecht)
  - Dependencies all updated to latest versions.
+ - Improved unit testing for Windows (see Vagrantfile windows10 VM)
 
 #### 2.4.0 - 2016-12-09
 

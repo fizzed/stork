@@ -46,7 +46,8 @@ running your app anywhere (Docker, Vagrant, traditional systems).
 [stork-demo-hellod](stork-demo/stork-demo-hellod) is an example Maven project
 for a simple Java web application.  It demos the `stork-launcher`
 and `stork-assembly` utilities and produces a tarball assembly that can be
-deployed using `stork-deploy`.  To generate the launchers and assembly:
+deployed using `stork-deploy`.  To generate the launchers and assembly, run
+this from the `stork` main directory:
 
     mvn package
 
@@ -54,11 +55,17 @@ This will generate all launchers, prep the assembly in `target/stork`, and
 tarball it up to `target/stork-demo-hellod-X.X.X.tar.gz` (X.X.X is the version
 of your project).  You can quickly try it out:
 
+    cd stork-demo/stork-demo-hellod
     target/stork/bin/stork-demo-hellod --run
 
 Or you can deploy it via SSH using `stork-deploy`:
 
     stork-deploy --assembly target/stork-demo-hellod-X.X.X.tar.gz ssh://host.example.com
+
+Or you can build a Docker image:
+
+    docker build -t stork-demo-hellod .
+    docker run -it stork-demo-hellod
 
 ## Usage
 

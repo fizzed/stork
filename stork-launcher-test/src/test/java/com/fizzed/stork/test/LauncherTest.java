@@ -152,11 +152,6 @@ public class LauncherTest {
         }
     }
     
-    private Path resolveAppHomeDir() {
-        // always 2 directories back from the exe
-        return resolveExe("blah").getParent().getParent();
-    }
-    
     public String execute(int exitValue, Path exe, String... args) throws Exception {
         return execute(exitValue, exe, null, args);
     }

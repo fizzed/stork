@@ -414,9 +414,9 @@ public class LauncherTest {
         HelloOutput output = this.readValue(json, HelloOutput.class);
         
         assertThat(output.getConfirm(), is("Hello World!"));
-        assertThat(output.getSystemProperties().getProperty("a"), is("1"));
-        assertThat(output.getSystemProperties().getProperty("b"), is("2"));
-        assertThat(output.getSystemProperties().getProperty("c"), is("3"));
+        assertThat(output.getSystemProperties(), hasEntry("a", "1"));
+        assertThat(output.getSystemProperties(), hasEntry("b", "2"));
+        assertThat(output.getSystemProperties(), hasEntry("c", "3"));
     }
    
     @Test

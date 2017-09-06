@@ -18,6 +18,8 @@ package com.fizzed.stork.test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HelloMain {
  
@@ -25,10 +27,16 @@ public class HelloMain {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         
+        // convert system properties to a map<string,string>
+        Map<String,String> systemProperties = new HashMap<>();
+        for (Map.Entry<Object,Object> entry : System.getProperties().entrySet()) {
+            systemProperties.put(entry.getKey().toString(), entry.getValue().toString());
+        }
+        
         HelloOutput output = new HelloOutput();
         output.setConfirm("Hello World!");
         output.setEnvironment(System.getenv());
-        output.setSystemProperties(System.getProperties());
+        output.setSystemProperties(systemProperties);
         output.setArguments(Arrays.asList(args));
         
         mapper.writeValue(System.out, output);

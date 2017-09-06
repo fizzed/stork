@@ -17,13 +17,12 @@ package com.fizzed.stork.test;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 public class HelloOutput {
 
     private String confirm;
     private Map<String,String> environment;
-    private Properties systemProperties;
+    private Map<String,String> systemProperties;
     private List<String> arguments;
 
     public String getConfirm() {
@@ -42,11 +41,11 @@ public class HelloOutput {
         this.environment = environment;
     }
 
-    public Properties getSystemProperties() {
+    public Map<String,String> getSystemProperties() {
         return systemProperties;
     }
 
-    public void setSystemProperties(Properties systemProperties) {
+    public void setSystemProperties(Map<String,String> systemProperties) {
         this.systemProperties = systemProperties;
     }
 

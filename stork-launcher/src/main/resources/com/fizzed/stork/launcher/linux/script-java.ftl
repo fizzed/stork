@@ -162,7 +162,9 @@ fi
 # create java command to execute
 #
 
-RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE -Dlauncher.app.dir='$APP_HOME' -classpath \"$APP_JAVA_CLASSPATH\" $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
+# NOTE: placing double/single quotes around classpath causes an issues using
+# --start with a small number of systemd versions
+RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE -Dlauncher.app.dir='$APP_HOME' -classpath $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
 RUN_CMD="\"$JAVA_BIN\" $RUN_ARGS"
 
 #

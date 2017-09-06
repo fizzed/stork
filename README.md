@@ -235,6 +235,27 @@ max_java_memory: 256
 symlink_java: true
 ```
 
+## Overriding launcher environment variables
+
+All launcher scripts are written to allow last-minute or per-environment 
+replacement.  As of v2.5.0, let's say you needed to add a few more Java
+system properties and wanted to execute a daemon launcher named "hellod".
+
+    EXTRA_JAVA_ARGS="-Da=1 -Db=2" /opt/hellod/current/bin/hellod --run
+
+If you run `hellod` as a daemon using SYSV or SystemD init scripts then stork
+will load environment variables from `/etc/default/hellod`.  You could place
+this value in there as well as others you need.  In `/etc/default/hellod`:
+
+    APP_HOME=/opt/hello/current
+    EXTRA_JAVA_ARGS="-Da=1 -Db=2"
+    DB_PASSWORD=mypass
+
+Stork's launcher scripts for daemons will load these environment variables
+when starting.  For variables used by the launcher script (e.g. APP_HOME or
+EXTRA_JAVA_ARGS), these are overrides.  For variables no used (e.g. DB_PASSWORD)
+these are effectively passed through to the Java process.
+
 ## Stork assembly
 
 Stages and assembles your application into a [canonical stork layout](docs/CANONICAL_LAYOUT.md).
@@ -332,6 +353,54 @@ overwritten. That means during a fresh install, the bin/, lib/, conf/, and
 share/ directories are installed.  On an upgrade install, the bin/, lib, and
 share/ directories are installed, while conf/ and runtime dirs data/, log/, and
 run/ directories are moved.
+
+## Programmatic deploys using Blaze
+
+You can combine Stork with [Blaze](https://github.com/fizzed/blaze) to make
+automating your deployments even simpler.  You'll also never need to download
+stork locally since Blaze will automatically fetch the dependency for you.
+
+Download blaze:
+
+    curl -o blaze.jar 'http://repo1.maven.org/maven2/com/fizzed/blaze-lite/0.16.0/blaze-lite-0.16.0.jar'
+
+Create a `blaze.conf` file:
+
+    blaze.dependencies = [
+      "com.fizzed:stork-deploy:2.5.0"
+    ]
+
+Create a `blaze.java` file:
+
+```java
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import com.fizzed.stork.deploy.Assembly;
+import com.fizzed.stork.deploy.Assemblys;
+import com.fizzed.stork.deploy.DeployOptions;
+import com.fizzed.stork.deploy.Deployer;
+
+public class blaze {
+
+    private final Path archiveFile = Paths.get("target/hello-0.0.1-SNAPSHOT.tar.gz");
+
+    @Task("Deploy assembly to staging env")
+    public void deploy_stg() throws Exception {
+        DeployOptions options = new DeployOptions()
+            .user("hello")
+            .group("hello");
+
+        try (Assembly assembly = Assemblys.process(archiveFile)) {
+            new Deployer().deploy(assembly, options, "ssh://app1");
+            new Deployer().deploy(assembly, options, "ssh://app2");
+        }
+    }
+}
+```
+
+Run it
+
+    java -jar blaze.jar deploy_stg
 
 ## More examples
 

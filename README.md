@@ -71,7 +71,7 @@ Or you can build a Docker image:
 
 ### Command-line
 
-https://github.com/fizzed/stork/releases/download/v2.5.0/stork-2.5.0.tar.gz
+https://github.com/fizzed/stork/releases/download/v2.5.1/stork-2.5.1.tar.gz
 
 ### Maven plugin
 
@@ -81,7 +81,7 @@ https://github.com/fizzed/stork/releases/download/v2.5.0/stork-2.5.0.tar.gz
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-maven-plugin</artifactId>
-            <version>2.5.0</version>
+            <version>2.5.1</version>
             <!-- configuration / execution (see below) -->
         </plugin>
     </plugins>
@@ -156,7 +156,7 @@ Maven
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-maven-plugin</artifactId>
-            <version>2.5.0</version>
+            <version>2.5.1</version>
             <executions>
                 <execution>
                     <id>stork-launcher</id>
@@ -238,7 +238,7 @@ symlink_java: true
 ## Overriding launcher environment variables
 
 All launcher scripts are written to allow last-minute or per-environment 
-replacement.  As of v2.5.0, let's say you needed to add a few more Java
+replacement.  As of v2.5.1, let's say you needed to add a few more Java
 system properties and wanted to execute a daemon launcher named "hellod".
 
     EXTRA_JAVA_ARGS="-Da=1 -Db=2" /opt/hellod/current/bin/hellod --run
@@ -283,7 +283,7 @@ Maven
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-maven-plugin</artifactId>
-            <version>2.5.0</version>
+            <version>2.5.1</version>
             <executions>
                 <execution>
                     <id>stork-assembly</id>
@@ -367,7 +367,7 @@ Download blaze:
 Create a `blaze.conf` file:
 
     blaze.dependencies = [
-      "com.fizzed:stork-deploy:2.5.0"
+      "com.fizzed:stork-deploy:2.5.1"
     ]
 
 Create a `blaze.java` file:

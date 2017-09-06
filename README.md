@@ -71,7 +71,7 @@ Or you can build a Docker image:
 
 ### Command-line
 
-https://github.com/fizzed/stork/releases/download/v2.4.0/stork-2.4.0.tar.gz
+https://github.com/fizzed/stork/releases/download/v2.5.0/stork-2.5.0.tar.gz
 
 ### Maven plugin
 
@@ -81,7 +81,7 @@ https://github.com/fizzed/stork/releases/download/v2.4.0/stork-2.4.0.tar.gz
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-maven-plugin</artifactId>
-            <version>2.4.0</version>
+            <version>2.5.0</version>
             <!-- configuration / execution (see below) -->
         </plugin>
     </plugins>
@@ -156,7 +156,7 @@ Maven
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-maven-plugin</artifactId>
-            <version>2.4.0</version>
+            <version>2.5.0</version>
             <executions>
                 <execution>
                     <id>stork-launcher</id>
@@ -262,7 +262,7 @@ Maven
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-maven-plugin</artifactId>
-            <version>2.4.0</version>
+            <version>2.5.0</version>
             <executions>
                 <execution>
                     <id>stork-assembly</id>

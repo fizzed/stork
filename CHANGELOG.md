@@ -1,6 +1,11 @@
 Stork by Fizzed
 =======================================
 
+#### 2.6.x - In Progress
+
+ - stork-launcher: Windows launchers now match Linux by setting system properties
+   of `launcher.name`, `launcher.type`, and `launcher.app.dir`.
+
 #### 2.5.1 - 2017-09-06
 
  - stork-launcher: Fix systemd issue with java classpath in quotes

@@ -79,3 +79,6 @@ set bit64=n
 if /I %Processor_Architecture%==AMD64 set bit64=y
 if /I "%PROCESSOR_ARCHITEW6432%"=="AMD64" set bit64=y
 @REM echo bit64: %bit64%
+
+@REM CONSOLE or DAEMON (so we can pass it thru as a system property)
+set RUN_TYPE=%TYPE%

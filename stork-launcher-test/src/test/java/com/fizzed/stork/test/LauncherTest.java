@@ -32,7 +32,9 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.hasSize;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
@@ -218,8 +220,12 @@ public class LauncherTest {
         
         assertThat(output.getConfirm(), is("Hello World!"));
         assertThat(output.getArguments(), hasSize(0));
-        //assertThat((String)output.getSystemProperties().get("launcher.type"), is("CONSOLE"));
         
+        // stork always sets launcher.name, launcher.type, launcher.app.dir
+        assertThat(output.getSystemProperties(), hasEntry("launcher.name", "hello1"));
+        assertThat(output.getSystemProperties(), hasEntry("launcher.type", "CONSOLE"));
+        assertThat(output.getSystemProperties(), hasKey("launcher.app.dir"));
+
         // hard to determine real working dir so only do this on "local"
         if (isLocal()) {
             // verify working directory was retained
@@ -426,8 +432,13 @@ public class LauncherTest {
         HelloOutput output = this.readValue(json, HelloOutput.class);
         
         assertThat(output.getConfirm(), is("Hello World!"));
-        //assertThat((String)output.getSystemProperties().get("launcher.type"), is("DAEMON"));
         
+        // stork always sets launcher.name, launcher.type, launcher.app.dir
+        // daemons that use the --run command are considered a CONSOLE app by stork
+        assertThat(output.getSystemProperties(), hasEntry("launcher.name", "hello4"));
+        assertThat(output.getSystemProperties(), hasEntry("launcher.type", "CONSOLE"));
+        assertThat(output.getSystemProperties(), hasKey("launcher.app.dir"));
+ 
         // only do these on local since its hard to get correct path via ssh
         if (isLocal()) {
             // verify working directory was retained

@@ -30,7 +30,7 @@ for /F "tokens=1*" %%a in ("%APP_ARGS%") do (
 )
 
 IF "%ARG%"=="--run" (
-    "%java_bin_accepted%" -Dlauncher.name=%NAME% -Dlauncher.type=CONSOLE "-Dlauncher.app.dir=%$APP_HOME%" -cp "%APP_CLASSPATH%" %JAVA_ARGS% %MAIN_CLASS% %APP_ARGS%
+    "%java_bin_accepted%" -Dlauncher.name=%NAME% -Dlauncher.type=CONSOLE "-Dlauncher.app.dir=%APP_HOME%" -cp "%APP_CLASSPATH%" %JAVA_ARGS% %MAIN_CLASS% %APP_ARGS%
 ) ELSE IF "%ARG%"=="--startdebug" (
     "%APP_BIN_DIR%\%TargetExe%" -debug
 ) ELSE IF "%ARG%"=="--start" (

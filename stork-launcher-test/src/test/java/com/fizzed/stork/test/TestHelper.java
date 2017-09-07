@@ -30,7 +30,7 @@ public class TestHelper {
         if (host != null && !host.equals("")) {
             return Arrays.asList(host);
         } else {
-            return Arrays.asList("local", "ubuntu14", "windows10", "debian8", "centos7", "freebsd10", "openbsd60");
+            return Arrays.asList("local", "ubuntu14", "ubuntu16", "windows10", "debian8", "centos7", "freebsd10", "openbsd60");
         }
     }
     
@@ -40,7 +40,7 @@ public class TestHelper {
     
     static public Path which(Path path, String name) {
         if (isWindows()) {
-            return path.resolve(name+".bat");
+            return path.resolve(name + ".bat");
         } else {
             return path.resolve(name);
         }

@@ -128,7 +128,7 @@ fi
 # if a daemon is being run in foreground then the type is still console
 #
 RUN_TYPE=$TYPE
-if [ "$APP_ACTION_ARG" = "-run" ]; then
+if [ "$APP_ACTION_ARG" = "--run" ]; then
     RUN_TYPE="CONSOLE"
 fi
 

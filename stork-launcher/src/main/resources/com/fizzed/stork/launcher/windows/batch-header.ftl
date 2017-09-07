@@ -36,14 +36,11 @@ set MAIN_CLASS=${config.mainClass}
 if "%MIN_JAVA_VERSION%"=="" set MIN_JAVA_VERSION=${config.minJavaVersion}
 if "%WORKING_DIR_MODE%"=="" set WORKING_DIR_MODE=${config.workingDirMode}
 
-@REM do we need to change the current working directory?
-if %WORKING_DIR_MODE%==APP_HOME (
-    pushd %APP_HOME_REL%
-    set APP_HOME=.
-) else (
-    @REM echo temporarily change working directory to get good abs path
-    pushd %APP_HOME_REL%
-    set APP_HOME=!CD!
+@REM echo temporarily change working directory to get good abs path for home
+pushd %APP_HOME_REL%
+set APP_HOME=!CD!
+
+if %WORKING_DIR_MODE%==RETAIN (
     popd
 )
 

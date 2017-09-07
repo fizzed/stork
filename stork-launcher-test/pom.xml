@@ -38,80 +38,45 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- generate stork launchers using classes from stork-launcher module -->
             <plugin>
-                <artifactId>exec-maven-plugin</artifactId>
-                <groupId>org.codehaus.mojo</groupId>
-                <version>1.4.0</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.fizzed</groupId>
-                        <artifactId>stork-launcher</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                    <!-- fix stupid slf4j bindings with exec-maven-plugin -->
-                    <dependency>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-jdk14</artifactId>
-                        <version>${slf4j.version}</version>
-                    </dependency>
-                </dependencies>
+                <groupId>com.fizzed</groupId>
+                <artifactId>stork-maven-plugin</artifactId>
+                <version>${project.version}</version>
                 <executions>
                     <execution>
                         <id>stork-launchers</id>
                         <phase>compile</phase>
                         <goals>
-                            <goal>java</goal>
+                            <goal>launcher</goal>
                         </goals>
-                        <configuration>
-                            <includeProjectDependencies>false</includeProjectDependencies>
-                            <includePluginDependencies>true</includePluginDependencies>
-                            <mainClass>com.fizzed.stork.launcher.LauncherMain</mainClass>
-                            <arguments>
-                                <argument>--output-dir</argument>
-                                <argument>${basedir}/target/stork</argument>
-                                <argument>${basedir}/src/main/launchers</argument>
-                            </arguments>
-                        </configuration>
                     </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.9</version>
-                <executions>
                     <execution>
-                        <id>stage-dependencies</id>
+                        <id>stork-assembly</id>
                         <phase>process-classes</phase>
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <goal>assembly</goal>
                         </goals>
                         <configuration>
-                            <includeScope>runtime</includeScope>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                            <prependGroupId>true</prependGroupId>
-                            <outputDirectory>target/stork/lib</outputDirectory>
+                            <skipArtifactsThatAreDirectories>true</skipArtifactsThatAreDirectories>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <!-- we must have main class(es) from this project in the stork/lib
-                 directory in order for app to run -->
+            <!-- we skip the directory above while using stork so we need to 
+                 add the project main jar here in staging -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <executions>
                     <execution>
-                        <phase>process-classes</phase>
+                        <phase>process-test-resources</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
                         <configuration>
                             <outputDirectory>target/stork/lib</outputDirectory>
+                            <useDefaultManifestFile>true</useDefaultManifestFile>
                         </configuration>
                     </execution>
                 </executions>
@@ -121,9 +86,18 @@
     
     <dependencies>
         <!-- compile -->
+        
+        <!-- provided to force correct build order -->
         <dependency>
             <groupId>com.fizzed</groupId>
-            <artifactId>crux-vagrant</artifactId>
+            <artifactId>stork-launcher</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fizzed</groupId>
+            <artifactId>stork-maven-plugin</artifactId>
+            <scope>provided</scope>
         </dependency>
         
         <dependency>
@@ -136,6 +110,12 @@
         </dependency>
         
         <!-- testing -->
+        <dependency>
+            <groupId>com.fizzed</groupId>
+            <artifactId>crux-vagrant</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>java-hamcrest</artifactId>

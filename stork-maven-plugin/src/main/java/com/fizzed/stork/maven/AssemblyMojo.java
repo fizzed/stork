@@ -52,6 +52,14 @@ public class AssemblyMojo extends AbstractMojo {
     @Parameter(property = "finalName", defaultValue = "${project.build.finalName}", required = true)
     protected String finalName;
     
+    /**
+     * Skip artifacts that are directories?
+     *
+     * @since 2.6.0
+     */
+    @Parameter(property = "skipArtifactsThatAreDirectories", defaultValue = "false", required = true)
+    protected Boolean skipArtifactsThatAreDirectories;
+    
     @Parameter( defaultValue = "${project}", readonly = true )
     protected MavenProject project;
     
@@ -79,7 +87,18 @@ public class AssemblyMojo extends AbstractMojo {
                     // generate final jar name (which appends groupId)
                     String artifactName = a.getGroupId() + "." + a.getArtifactId() + "-" + a.getVersion() + ".jar";
                     File stageArtificateFile = new File(stageLibDir, artifactName);
-                    FileUtils.copyFile(f, stageArtificateFile);
+                    
+                    // is it a directory? (probably the modules code!)
+                    if (f.isDirectory()) {
+                        if (skipArtifactsThatAreDirectories) {
+                            getLog().debug("Artifact " + f + " is a directory (skipping)");
+                        } else {
+                            throw new MojoFailureException("Artifact " + f + " is a directory! (won't be able to copy it). Maybe skipArtificatsThatAreDirectories would help?");
+                        }
+                    } else {
+                        getLog().debug("Copying artifact " + f + " to " + stageArtificateFile);
+                        FileUtils.copyFile(f, stageArtificateFile);
+                    }
                 }
             }
  

@@ -90,6 +90,12 @@
             
             <dependency>
                 <groupId>com.fizzed</groupId>
+                <artifactId>stork-maven-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
                 <artifactId>stork-deploy</artifactId>
                 <version>${project.version}</version>
             </dependency>

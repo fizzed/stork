@@ -32,7 +32,6 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.hasSize;
@@ -447,7 +446,7 @@ public class LauncherTest {
             Path appHomeDir = Paths.get((String)output.getSystemProperties().get("launcher.app.dir"));
 
             assertThat(appWorkingDir, is(not((ourWorkingDir))));
-            assertThat(appWorkingDir, is((appHomeDir)));
+            assertThat(appWorkingDir, is(appHomeDir));
         }
     }
     

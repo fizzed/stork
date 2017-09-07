@@ -5,7 +5,7 @@
 
 usage()
 {
-    echo "Usage: $0 [--start|--stop|--run|--status}"
+    echo "Usage: $0 [--start|--start-run|--stop|--run|--status}"
     exit 1
 }
 
@@ -80,7 +80,45 @@ case "$APP_ACTION_ARG" in
     if [ -z $CONFIRMED ]; then
         echo "Please 'tail -f $NOHUP_OUT' for application output"
     fi
+    ;;
 
+  # best choice for running from systemd
+  --start-run)
+    printf "Starting $NAME: "
+    verifyNotRunning $APP_PID_FILE
+
+    # log start time first into outfile
+    echo "$NAME starting at `date`" > "$NOHUP_OUT"
+
+    nohup "$JAVA_BIN" $RUN_ARGS </dev/null >"$NOHUP_OUT" 2>&1 &
+    PID=$!
+    echo $PID > $APP_PID_FILE
+
+    # confirm the daemon started by making sure its alive for a certain time
+    CONFIRMED=""
+    if [ ! -z $DAEMON_MIN_LIFETIME ]; then
+        # wait for minimum amount of time
+        timeout=$DAEMON_MIN_LIFETIME
+        while [ $timeout -gt 0 ]; do
+            sleep 1
+            # check if daemon not running
+            if running "$APP_PID_FILE"; then
+                printf "."
+            else
+                echo "failed"
+                tail -n 100 "$NOHUP_OUT"
+                exit 1
+            fi
+            timeout=`expr $timeout - 1`
+        done
+        CONFIRMED="min_lifetime"
+    fi
+
+    echo "OK"
+
+    if [ -z $CONFIRMED ]; then
+        echo "Please 'tail -f $NOHUP_OUT' for application output"
+    fi
     ;;
 
   --stop)

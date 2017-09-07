@@ -94,7 +94,6 @@ fi
 [ -z "$SKIP_PID_CHECK" ] && SKIP_PID_CHECK="0"
 <#if (config.type == "DAEMON")>
 [ -z "$DAEMON_MIN_LIFETIME" ] && DAEMON_MIN_LIFETIME="${config.daemonMinLifetime!""}"
-[ -z "$DAEMON_LAUNCH_CONFIRM" ] && DAEMON_LAUNCH_CONFIRM="${config.daemonLaunchConfirm!""}"
 </#if>
 
 

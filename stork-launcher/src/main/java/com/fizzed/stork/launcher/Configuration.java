@@ -106,29 +106,14 @@ public class Configuration {
     // still running -- a simple way to verify that it likely started
     private Integer daemonMinLifetime = 5;
     
-    // daemon will print this line to stdout/stderr to announce it started successfully
-    private String daemonLaunchConfirm = null;
-    
-    // http://stackoverflow.com/questions/958249/whats-the-difference-between-nohup-and-a-daemon
-    // really intersting discussion of NOHUP vs. other methods of daemonizing
-    //private DaemonMethod daemonMethod = DaemonMethod.NOHUP;
-    //private Map<Platform,DaemonMethod> daemonMethods;
-    // user that a daemon should run as (via startup scripts)
-    //private Map<Platform,String> daemonUsers;
-    
     private Map<Platform,PlatformConfiguration> platformConfigurations;
     
     public Configuration() {
-        /**
-        this.daemonMethods = new HashMap<Platform,DaemonMethod>();
-        this.daemonMethods.put(Platform.LINUX, DaemonMethod.NOHUP);
-        this.daemonMethods.put(Platform.WINDOWS, DaemonMethod.JSLWIN);
-        this.daemonUsers = new HashMap<Platform,String>();
-        */
-        
         this.platformConfigurations = new HashMap<Platform,PlatformConfiguration>();
         // create default linux and windows configurations
         PlatformConfiguration linuxConfig = new PlatformConfiguration();
+        // http://stackoverflow.com/questions/958249/whats-the-difference-between-nohup-and-a-daemon
+        // really intersting discussion of NOHUP vs. other methods of daemonizing
         linuxConfig.setDaemonMethod(DaemonMethod.NOHUP);
         linuxConfig.setPrefixDir("/opt");
         this.platformConfigurations.put(Platform.LINUX, linuxConfig);
@@ -358,14 +343,6 @@ public class Configuration {
 
     public void setDaemonMinLifetime(Integer daemonMinLifetime) {
         this.daemonMinLifetime = daemonMinLifetime;
-    }
-
-    public String getDaemonLaunchConfirm() {
-        return daemonLaunchConfirm;
-    }
-
-    public void setDaemonLaunchConfirm(String daemonLaunchConfirm) {
-        this.daemonLaunchConfirm = daemonLaunchConfirm;
     }
 
     public Map<Platform, PlatformConfiguration> getPlatformConfigurations() {

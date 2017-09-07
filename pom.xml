@@ -31,12 +31,11 @@
     </properties>
 
     <modules>
+        <module>stork-test-app</module>
         <module>stork-core</module>
         <module>stork-launcher</module>
-        <module>stork-launcher-test</module>
         <module>stork-assembly</module>
         <module>stork-deploy</module>
-        <module>stork-bootstrap</module>
         <module>stork-maven-plugin</module>
         <module>stork-cli</module>
         <module>stork-demo/stork-demo-hellod</module>
@@ -45,6 +44,42 @@
 
     <dependencyManagement>
         <dependencies>            
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>stork-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>stork-assembly</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>stork-test-app</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>stork-launcher</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>stork-maven-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.fizzed</groupId>
+                <artifactId>stork-deploy</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             
             <dependency>
                 <groupId>com.fizzed</groupId>
@@ -68,36 +103,6 @@
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>2.9.4</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>com.fizzed</groupId>
-                <artifactId>stork-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>com.fizzed</groupId>
-                <artifactId>stork-assembly</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>com.fizzed</groupId>
-                <artifactId>stork-launcher</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>com.fizzed</groupId>
-                <artifactId>stork-maven-plugin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>com.fizzed</groupId>
-                <artifactId>stork-deploy</artifactId>
-                <version>${project.version}</version>
             </dependency>
             
             <!-- for creating assembly -->

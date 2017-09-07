@@ -82,43 +82,19 @@ case "$APP_ACTION_ARG" in
     fi
     ;;
 
-  # best choice for running from systemd
   --start-run)
+    # best choice for running from systemd
     printf "Starting $NAME: "
-    verifyNotRunning $APP_PID_FILE
 
-    # log start time first into outfile
-    echo "$NAME starting at `date`" > "$NOHUP_OUT"
+    # some launcher frameworks manage the PID (this skips the check entirely)
+    # only enable this env var if you know what you're doing
+    if [ "$SKIP_PID_CHECK" = "0" ]; then
+        verifyNotRunning $APP_PID_FILE
+    fi
 
-    nohup "$JAVA_BIN" $RUN_ARGS </dev/null >"$NOHUP_OUT" 2>&1 &
+    "$JAVA_BIN" $RUN_ARGS &
     PID=$!
     echo $PID > $APP_PID_FILE
-
-    # confirm the daemon started by making sure its alive for a certain time
-    CONFIRMED=""
-    if [ ! -z $DAEMON_MIN_LIFETIME ]; then
-        # wait for minimum amount of time
-        timeout=$DAEMON_MIN_LIFETIME
-        while [ $timeout -gt 0 ]; do
-            sleep 1
-            # check if daemon not running
-            if running "$APP_PID_FILE"; then
-                printf "."
-            else
-                echo "failed"
-                tail -n 100 "$NOHUP_OUT"
-                exit 1
-            fi
-            timeout=`expr $timeout - 1`
-        done
-        CONFIRMED="min_lifetime"
-    fi
-
-    echo "OK"
-
-    if [ -z $CONFIRMED ]; then
-        echo "Please 'tail -f $NOHUP_OUT' for application output"
-    fi
     ;;
 
   --stop)
@@ -132,12 +108,12 @@ case "$APP_ACTION_ARG" in
     ;;
 
   --run)
-    #echo "Running $NAME: "
     # some launcher frameworks manage the PID (this skips the check entirely)
     # only enable this env var if you know what you're doing
     if [ "$SKIP_PID_CHECK" = "0" ]; then
         verifyNotRunning $APP_PID_FILE
     fi
+
     # take pid of shell for pid lock
     echo $$ > $APP_PID_FILE
     # best effort to remove pid file upon exit via trap

@@ -18,6 +18,7 @@ package com.fizzed.stork.deploy;
 import com.fizzed.blaze.core.Actions;
 import com.fizzed.blaze.util.Streamables;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -25,7 +26,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -44,7 +44,7 @@ public class DeployerConsoleTest extends DeployerBaseTest {
     
     @Test
     public void deploy() throws Exception {
-        Path assemblyFile = TestHelper.getResource("/fixtures/hello-console-1.2.4.tar.gz");
+        Path assemblyFile = Paths.get("target/stork-console1-1.0.0-SNAPSHOT.tar.gz");
         
         DeployOptions options = new DeployOptions()
             .prefixDir("/opt")
@@ -56,7 +56,7 @@ public class DeployerConsoleTest extends DeployerBaseTest {
         UnixTarget target = (UnixTarget)Targets.connect(getHostUri());
 
         // make sure app does not exist on host
-        target.remove(true, "/opt/hello-console");
+        target.remove(true, "/opt");
 
         try (Assembly assembly = Assemblys.process(assemblyFile)) {
             new Deployer().deploy(assembly, options, target);
@@ -64,7 +64,7 @@ public class DeployerConsoleTest extends DeployerBaseTest {
 
         // can we execute it
         String output
-            = target.sshExec(false, false, "/opt/hello-console/current/bin/hello-console")
+            = target.sshExec(false, false, "/opt/stork-console1/current/bin/stork-console1")
                 .exitValues(0,1)
                 .pipeOutput(Streamables.captureOutput())
                 .runResult()
@@ -73,21 +73,19 @@ public class DeployerConsoleTest extends DeployerBaseTest {
         
         // if hello world actually printed, awesome -- java is on the box
         // but if it isn't then we'll see if its the error at least
-        assertThat(output, anyOf(
-            containsString("Unable to find Java runtime"),
-            containsString("Hello World!")));
+        assertThat(output, containsString("Hello World!"));
     }
     
     @Test
     public void deployWithDefaultOptions() throws Exception {
-        Path assemblyFile = TestHelper.getResource("/fixtures/hello-console-1.2.4.tar.gz");
+        Path assemblyFile = Paths.get("target/stork-console1-1.0.0-SNAPSHOT.tar.gz");
         
         // create our own target for assisting with preparing for tests
         // assume its unix for now (so we can access exec)
         UnixTarget target = (UnixTarget)Targets.connect(getHostUri());
 
         // make sure app does not exist on host
-        target.remove(true, "/opt/hello-console");
+        target.remove(true, "/opt");
 
         try (Assembly assembly = Assemblys.process(assemblyFile)) {
             new Deployer().deploy(assembly, new DeployOptions(), target);
@@ -96,14 +94,14 @@ public class DeployerConsoleTest extends DeployerBaseTest {
         // on freebsd and openbsd, the vagrant user is technically part of
         // the wheel group which means they can execute this app by default
         // for now we'll just verify it deployed
-        List<BasicFile> listFiles = target.listFiles("/opt/hello-console/current/");
+        List<BasicFile> listFiles = target.listFiles("/opt/stork-console1/current/");
         
         assertThat(listFiles, hasSize(2));
     }
     
     @Test
     public void deployWithUserThatDoesNotExist() throws Exception {
-        Path assemblyFile = TestHelper.getResource("/fixtures/hello-console-1.2.4.tar.gz");
+        Path assemblyFile = Paths.get("target/stork-console1-1.0.0-SNAPSHOT.tar.gz");
 
         UnixTarget target = (UnixTarget)Targets.connect(getHostUri());
 
@@ -122,7 +120,7 @@ public class DeployerConsoleTest extends DeployerBaseTest {
     
     @Test
     public void deployWithGroupThatDoesNotExist() throws Exception {
-        Path assemblyFile = TestHelper.getResource("/fixtures/hello-console-1.2.4.tar.gz");
+        Path assemblyFile = Paths.get("target/stork-console1-1.0.0-SNAPSHOT.tar.gz");
 
         UnixTarget target = (UnixTarget)Targets.connect(getHostUri());
 

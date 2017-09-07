@@ -18,6 +18,7 @@ package com.fizzed.stork.deploy;
 import com.fizzed.blaze.core.Actions;
 import com.fizzed.blaze.util.Streamables;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
@@ -40,7 +41,7 @@ public class DeployerDaemonTest extends DeployerBaseTest {
     
     @Test
     public void deploy() throws Exception {
-        Path assemblyFile = TestHelper.getResource("/fixtures/hello-world-1.2.4-SNAPSHOT.zip");
+        Path assemblyFile = Paths.get("target/stork-daemon1-1.0.0-SNAPSHOT.tar.gz");
         
         DeployOptions options = new DeployOptions()
             .prefixDir("/opt")
@@ -55,26 +56,26 @@ public class DeployerDaemonTest extends DeployerBaseTest {
         target.sshExec(true, true, "kill $(ps aux | grep java | grep -v grep | awk \"{print \\$2}\")")
             .exitValues(0, 1, 2)
             .run();
-        target.remove(true, "/opt/hello-world");
-        target.remove(true, "/etc/init.d/hello-daemon");
-        target.remove(true, "/etc/default/hello-daemon");
-        target.remove(true, "/etc/sysconfig/hello-daemon");
-        target.remove(true, "/etc/systemd/system/hello-daemon.service");
+        target.remove(true, "/opt/stork-daemon1");
+        target.remove(true, "/etc/init.d/stork-daemon1");
+        target.remove(true, "/etc/default/stork-daemon1");
+        target.remove(true, "/etc/sysconfig/stork-daemon1");
+        target.remove(true, "/etc/systemd/system/stork-daemon1.service");
         
         try (Assembly assembly = Assemblys.process(assemblyFile)) {
             new Deployer().deploy(assembly, options, target);
         }
 
-        // is the server running on port 8888?
+        // is the server running on port
         String output
-            = target.sshExec(false, false, "curl", "http://localhost:8888")
+            = target.sshExec(false, false, "curl", "http://localhost:18745")
                 .exitValues(0)
                 .pipeOutput(Streamables.captureOutput())
                 .runResult()
                 .map(Actions::toCaptureOutput)
                 .asString();
         
-        assertThat(output, containsString("Hi, i am an example daemon."));
+        assertThat(output, containsString("Hello World!"));
         
         
         //
@@ -84,16 +85,16 @@ public class DeployerDaemonTest extends DeployerBaseTest {
             new Deployer().deploy(assembly, options, target);
         }
 
-        // is the server running on port 8888?
+        // is the server running on port
         output
-            = target.sshExec(false, false, "curl", "http://localhost:8888")
+            = target.sshExec(false, false, "curl", "http://localhost:18745")
                 .exitValues(0)
                 .pipeOutput(Streamables.captureOutput())
                 .runResult()
                 .map(Actions::toCaptureOutput)
                 .asString();
         
-        assertThat(output, containsString("Hi, i am an example daemon.")); 
+        assertThat(output, containsString("Hello World!")); 
     }
     
 }

@@ -3,8 +3,22 @@ Stork by Fizzed
 
 #### 2.6.x - In Progress
 
+ - stork-launcher: New `--start-run` option for Linux daemon launchers that
+   combines features from the `--start` and `--run` actions.  This action will
+   start your Java app in the background, but will not use `nohup`.  Your apps
+   `stdin`, `stdout`, and `stderr` streams will be passed thru.  Unlike `--run`
+   the system property `launcher.type` will be DAEMON -- so you can decided in 
+   your app if you need to stop logging to STDOUT at runtime.
+ - stork-launcher: SYSTEMD init scripts now use the `--start-run` action. NOTE
+   that your apps `stdout` will go to the attached `tty` -- which for SYSTEMD
+   means it will go to `journald`.
  - stork-launcher: Windows launchers now match Linux by setting system properties
    of `launcher.name`, `launcher.type`, and `launcher.app.dir`.
+ - stork-launcher: Linux daemon launcher correctly sets `launcher.type` to
+   CONSOLE if `--run` is used.
+ - Deprecated and removed stork-bootstrap. The EXTRA_JAVA_ARGS feature from v2.5.0
+   mostly addresses what it was trying to accomplish.
+ - Significant enhancements to all unit tests across the board.
 
 #### 2.5.1 - 2017-09-06
 

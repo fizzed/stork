@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.stork.demo.hellod;
+package com.fizzed.stork.test;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
@@ -37,31 +37,33 @@ import io.netty.handler.codec.http.HttpRequest;
 import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import io.netty.handler.codec.http.HttpServerCodec;
 import static io.netty.handler.codec.http.HttpVersion.*;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Enumeration;
-import java.util.List;
 
-public class Hellod {
+public class EchoDaemonMain {
     
-    static int port;
-    static List<String> lines;
-    static Date startedAt;
+    private final int port = 18745;
+    private final LaunchData launchData;
     
     static public void main(String[] args) throws Exception {
-        // was a port specified?
-        port = 8888;
-        if (args.length > 0) {
-            String portString = args[0];
-            port = Integer.parseInt(portString);
+        new EchoDaemonMain(args)
+            .start();
+    }
+    
+    public EchoDaemonMain(String[] args) throws IOException {
+        Arguments arguments = new Arguments(args);
+        this.launchData = LaunchData.create(args);
+        
+        // only write out the launch data if requested
+        if (arguments.getDataFile() != null) {
+            LaunchData.prettyWrite(launchData, arguments);
         }
-        
-        startedAt = new Date();
-        lines = createLines(args);
-        
+    }
+    
+    public void start() throws Exception {
         // start server
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -71,7 +73,7 @@ public class Hellod {
             b.group(bossGroup, workerGroup)
              .channel(NioServerSocketChannel.class)
              //.handler(new LoggingHandler(LogLevel.INFO))
-             .childHandler(new HttpHelloWorldServerInitializer());
+             .childHandler(new EchoServerInitializer());
 
             Channel ch = b.bind(port).sync().channel();
 
@@ -100,23 +102,24 @@ public class Hellod {
         }
     }
     
-    static class HttpHelloWorldServerInitializer extends ChannelInitializer<SocketChannel> {
+    private class EchoServerInitializer extends ChannelInitializer<SocketChannel> {
         @Override
         public void initChannel(SocketChannel ch) {
             ChannelPipeline p = ch.pipeline();
             p.addLast(new HttpServerCodec());
-            p.addLast(new HttpHelloWorldServerHandler());
+            p.addLast(new EchoServerHttpHandler());
         }
     }
     
-    static class HttpHelloWorldServerHandler extends ChannelInboundHandlerAdapter {
+    private class EchoServerHttpHandler extends ChannelInboundHandlerAdapter {
+        
         @Override
         public void channelReadComplete(ChannelHandlerContext ctx) {
             ctx.flush();
         }
 
         @Override
-        public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             if (msg instanceof HttpRequest) {
                 HttpRequest req = (HttpRequest) msg;
                 if (HttpHeaders.is100ContinueExpected(req)) {
@@ -124,10 +127,10 @@ public class Hellod {
                 }
                 boolean keepAlive = HttpHeaders.isKeepAlive(req);
                 
-                String body = createBody();
+                String body = LaunchData.prettyJson(launchData);
 
                 FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(body.getBytes()));
-                response.headers().set(CONTENT_TYPE, "text/html");
+                response.headers().set(CONTENT_TYPE, "application/json");
                 response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
 
                 if (!keepAlive) {
@@ -141,47 +144,7 @@ public class Hellod {
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-            cause.printStackTrace();
             ctx.close();
         }
-    }
-    
-    static public String createBody() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<html>");
-        sb.append("<head><title>Hello Daemon!</title></head>");
-        sb.append("<body>");
-        sb.append("<h1>Hi, i am an example daemon.</h1>");
-        sb.append("Now: ").append(new Date()).append("<br/>");
-        sb.append("Started: ").append(startedAt).append("<br/>");
-        for (String line : lines) {
-            sb.append(line).append("<br/>");
-        }
-        sb.append("</body>");
-        sb.append("</html>");
-        return sb.toString();
-    }
-    
-    static public List<String> createLines(String[] args) {
-        List<String> a = new ArrayList<>();
-        a.add("working.dir: " + System.getProperty("user.dir"));
-        a.add("home.dir: " + System.getProperty("user.home"));
-        a.add("user.name: " + System.getProperty("user.name"));
-        a.add("launcher.name: " + System.getProperty("launcher.name"));
-        a.add("launcher.type: " + System.getProperty("launcher.type"));
-        a.add("launcher.action: " + System.getProperty("launcher.action"));
-        a.add("launcher.app.dir: " + System.getProperty("launcher.app.dir"));
-        a.add("java.class.path: " + System.getProperty("java.class.path"));
-        a.add("java.home: " + System.getProperty("java.home"));
-        a.add("java.version: " + System.getProperty("java.version"));
-        a.add("java.vendor: " + System.getProperty("java.vendor"));
-        a.add("os.arch: " + System.getProperty("os.arch"));
-        a.add("os.name: " + System.getProperty("os.name"));
-        a.add("os.version: " + System.getProperty("os.version"));
-        a.add("arguments:");
-        for (String s : args) {
-            a.add(" - argument: " + s);
-        }
-        return a;
     }
 }

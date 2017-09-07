@@ -1,0 +1,12 @@
+name: "stork-console1"
+domain: "com.fizzed.stork.test"
+display_name: "Echo Console 1"
+short_description: "Unit Testing: should work"
+type: CONSOLE
+main_class: "com.fizzed.stork.test.EchoConsoleMain"
+platforms: [ WINDOWS, LINUX, MAC_OSX ]
+working_dir_mode: RETAIN
+min_java_version: "1.7"
+min_java_memory: 32
+max_java_memory: 64
+symlink_java: false

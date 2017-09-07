@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 EnvironmentFile=/etc/default/${config.name}
-ExecStart=${config.getPlatformPrefixDir("LINUX")}/${config.name}/bin/${config.name} --start
+ExecStart=${config.getPlatformPrefixDir("LINUX")}/${config.name}/bin/${config.name} --start-run
 PIDFile=${config.getPlatformPrefixDir("LINUX")}/${config.name}/run/${config.name}.pid
 KillMode=process
 Restart=on-failure

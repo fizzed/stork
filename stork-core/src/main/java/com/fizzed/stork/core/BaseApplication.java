@@ -37,7 +37,7 @@ public abstract class BaseApplication {
         log.info(" \\___ \\  |  | (  <_> )  | \\/    < ");
         log.info("/____  > |__|  \\____/|__|  |__|_ \\");
         log.info("     \\/                         \\/");
-        log.info("                v{}", Version.getVersion());
+        log.info("                v" + Version.getVersion());
         log.info("");
     }
     

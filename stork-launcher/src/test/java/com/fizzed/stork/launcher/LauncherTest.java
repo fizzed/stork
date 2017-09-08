@@ -61,6 +61,7 @@ public class LauncherTest {
         return TestHelper.hosts();
     }
     
+    static private final Map<String,SshSession> sshs = new HashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String host;
     private final Path exeCat;
@@ -79,7 +80,10 @@ public class LauncherTest {
         this.exeEchoConsole3 = resolveExe("echo-console3");
         this.exeEchoDaemon1 = resolveExe("echo-daemon1");
         //this.symlinkJavaExe = resolveExe("symlink-java");
-        this.ssh = sshConnect();
+        if (!sshs.containsKey(host)) {
+            sshs.put(host, sshConnect());
+        }
+        this.ssh = sshs.get(host);
     }
     
     private boolean isHostRunning() {

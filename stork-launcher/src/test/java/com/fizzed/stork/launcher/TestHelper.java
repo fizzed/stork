@@ -24,7 +24,7 @@ import java.util.List;
 public class TestHelper {
     
     static public final VagrantClient VAGRANT_CLIENT = VagrantClients.cachingOrEmptyClient();
-    
+
     static public List<String> hosts() {
         String host = System.getProperty("host");
         if (host != null && !host.equals("")) {

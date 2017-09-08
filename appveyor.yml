@@ -1,0 +1,5 @@
+version: 1.0.{build}
+build_script:
+- cmd: mvn compile
+test_script:
+- cmd: mvn test

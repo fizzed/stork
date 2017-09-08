@@ -15,16 +15,20 @@
  */
 package com.fizzed.stork.launcher;
 
-/**
- *
- * @author joelauer
- */
+import com.fizzed.stork.core.Version;
+
 public class LauncherModel {
     
+    private final String version;
     private final Configuration config;
 
     public LauncherModel(Configuration config) {
+        this.version = Version.getVersion();
         this.config = config;
+    }
+
+    public String getVersion() {
+        return version;
     }
     
     public Configuration getConfig() {

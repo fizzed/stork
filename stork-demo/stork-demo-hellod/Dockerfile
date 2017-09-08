@@ -13,4 +13,5 @@
 # limitations under the License.
 FROM openjdk:8-jre
 COPY target/stork /opt/demo-hellod
+# --run will allow you to still CTRL-C vs. --exec
 CMD ["/opt/demo-hellod/bin/stork-demo-hellod", "--run"]

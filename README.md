@@ -18,23 +18,28 @@ Stork is proudly sponsored by <a href="https://www.greenback.com">Greenback</a>.
 
 So you've engineered that amazing Java-based application.  Then what?  Distributing
 it or getting it into production is your new problem.  Fat/uber jar? Vagrant?
-Docker? Traditional deploy?
+Docker? Rkt? LXD? Traditional bare metal deploy? There are so many options!
 
-Stork is a collection of utilities for optimizing your "after-build" workflow by
-filling in the gap between your Java build system and execution.  Stork supports
-running your app anywhere (Docker, Vagrant, traditional systems).
+Stork is a collection of lightweight utilities for optimizing your "after-build" workflow by
+filling in the gap between your Java build system and execution.  Using well-tested
+methods across operating systems, containers, etc. Stork will let you safely
+and securely run your app in any environment -- be it Docker, Rkt, LXD, or
+traditional systems.  There are 3 main Stork components that you can pick and
+choose from to help with your app:
 
- - [stork-launcher](#stork-launcher) will generate well-tested, rock solid, secure launcher scripts
-   from a yaml configuration file for either console or daemon/service JVM apps.
-   The generated launchers will run your app the same way regardless of whether
-   running within Docker, Vagrant, or a traditional system.
+ - [stork-launcher](#stork-launcher) will generate well-tested, rock solid, secure
+   launcher scripts from a yaml configuration file for either console or daemon/service
+   JVM apps. The generated launchers will run your app the same way regardless of whether
+   running within a container or numerous different operating systems.
 
  - [stork-assembly](#stork-assembly) will assemble your JVM app into a standard,
    well-defined [canonical layout](docs/CANONICAL_LAYOUT.md) as a tarball ready
-   for distribution or deployment.
+   for universal distribution or deployment.  Regardless of whether your user
+   is on Linux, Windows, OSX, *BSD, etc., our tarball will include everything
+   for your user to be happy.
 
  - [stork-deploy](#stork-deploy) will rapidly and securely deploy your assembly
-   via SSH into a versioned directory structure to Vagrant or a traditional system.
+   via SSH into a versioned directory structure to various operating systems.
    It will handle restarting daemons, use strict user/group permissions, and verify
    the deploy worked.  Power users can combine with [Blaze](https://github.com/fizzed/blaze)
    for even more advanced deploys.
@@ -49,7 +54,7 @@ and `stork-assembly` utilities and produces a tarball assembly that can be
 deployed using `stork-deploy`.  To generate the launchers and assembly, run
 this from the `stork` main directory:
 
-    mvn package
+    mvn package -DskipTests=true
 
 This will generate all launchers, prep the assembly in `target/stork`, and
 tarball it up to `target/stork-demo-hellod-X.X.X.tar.gz` (X.X.X is the version
@@ -66,6 +71,14 @@ Or you can build a Docker image:
 
     docker build -t stork-demo-hellod .
     docker run -it stork-demo-hellod
+
+## Sponsoring development? Commercial support? Devops consulting?
+
+Maintaining Stork takes a significant amount of time and resources.  If you're
+interested in sponsoring Stork, funding new features, or are looking to take
+your devops to the next level, please [reach out to us @ Fizzed, Inc.](http://fizzed.com/contact)
+
+<a href="http://fizzed.com/contact" title="Fizzed"><img src="http://fizzed.com/assets/mfizz/img/logo-new.300x210.png" width="150" height="105" alt="Fizzed"></a>
 
 ## Usage
 
@@ -88,6 +101,18 @@ https://github.com/fizzed/stork/releases/download/v2.5.1/stork-2.5.1.tar.gz
 </build>
 ```
 
+## Why not just create my own script?
+
+That's what we used to do with all of our Java apps too.  Eventually, you'll have
+a problem -- we guarantee it.  For example, you simply ran `java -jar app.jar &`
+in a shell and everything is working.  You close your terminal/SSH session and
+your app is no longer running.  Oops, you forgot to detach your app from the
+terminal.  Use systemd?  Did you remember to add the `-Xrs` flag when you launched
+your java process?  Customer needs to run your app on Windows?  In that case
+you have no option but to use some sort of service framework.  Or even something
+simple like `java` isn't found by your init system, but it works in your shell.
+Stork launchers solve these common problems.
+
 ## Why not just a fat/uber jar?
 
 An uber/fat jar is a jar that has all dependencies merged into it.  Usually
@@ -104,25 +129,25 @@ across Windows, Linux, Mac, and many other UNIX-like systems.
 You simply create a YAML-based config file (that you can check-in to
 source control) and then you compile/generate it into one or more launchers.
 These launchers can then be distributed with your final tarball/assembly/package
-so  that your app looks like a native compiled executable.
+so that your app looks like a native compiled executable.
 
 ### Features
 
- * Generate *secure* launcher scripts for either console or daemon/service JVM apps
- * Heavily unit tested across all major operating systems
-    * Windows XP+ (32-bit and 64-bit)
-    * Linux (Ubuntu, Debian, Redhat) (32-bit and 64-bit)
-    * Mac OSX (32-bit and 64-bit)
+ * Generate *secure* launcher scripts for either console or daemon/service JVM apps.
+ * Heavily tested across all major operating systems for every release
+    * Windows XP+
+    * Linux (Ubuntu, Debian, Redhat flavors)
+    * Mac OSX
     * FreeBSD
     * OpenBSD
-    * NetBSD
  * Intelligent & automatic JVM detection (e.g. no need to have JAVA_HOME set)
  * Carefully researched, tested, and optimized methods for running daemons/services
     * Windows daemons installed as a service (32 and/or 64-bit daemons supported)
-    * Linux/UNIX daemons use NOHUP, detach TTY properly, and do NOT spawn any
-      sort of annoying helper/controller process
+    * Linux/UNIX daemons can either use `exec` or use NOHUP, detach TTY properly,
+      and do NOT spawn any sort of annoying helper/controller process
+    * Execellent SystemD and SysV support
     * Mac OSX daemons integrate seamlessly with launchctl
-    * All daemons can easily be run in non-daemon mode
+    * All daemons can easily be run in non-daemon mode (to make debugging simpler)
     * All companion helper scripts are included to get the daemon to start
       at boot
  * Configurable methods supported for verifying a daemon started -- including useful
@@ -133,7 +158,8 @@ so  that your app looks like a native compiled executable.
    the working directory to the home of app.
  * Sets the working directory of the app without annoyingly changing the working
    directory of the shell that launched the app (even on Windows).
- * Command-line arguments are seamlessly passed thru to underlying Java app
+ * Command-line arguments and/or system properties are seamlessly passed thru to
+   the underlying Java app
  * Runtime debugging using simple LAUNCHER_DEBUG=1 env var before executing binary
    to see what's going on (e.g. how is the JVM found?)
  * Support for symlinking detected JVM as application name so that Linux/UNIX commands
@@ -213,17 +239,25 @@ working_dir_mode: RETAIN
 
 # Arguments for application (as though user typed them on command-line)
 # These will be added immediately after the main class part of java command
+# Users can either entirely override it at runtime with the environment variable
+# APP_ARGS or append extra arguments with the EXTRA_APP_ARGS enviornment variable
+# or by passing them in on the command-line too.
 #app_args: "-c config.yml"
 
 # Arguments to use with the java command (e.g. way to pass -D arguments)
+# Users can either entirely override it at runtime with the environment variable
+# JAVA_ARGS or append extra arguments with the EXTRA_JAVA_ARGS enviornment variable
+# or by passing them in on the command-line too.
 #java_args: "-Dtest=foo"
 
 # Minimum version of java required (system will be searched for acceptable jvm)
-min_java_version: "1.6"
+# Defaults to Java 1.6.
+#min_java_version: "1.6"
 
-# Min/max fixed memory (measured in MB)
-min_java_memory: 30
-max_java_memory: 256
+# Min/max fixed memory (measured in MB). Defaults to empty values which allows
+# Java to use its own defaults.
+#min_java_memory: 30
+#max_java_memory: 256
 
 # Min/max memory by percentage of system
 #min_java_memory_pct: 10
@@ -231,8 +265,8 @@ max_java_memory: 256
 
 # Try to create a symbolic link to java executable in <app_home>/run with
 # the name of "<app_name>-java" so that commands like "ps" will make it
-# easier to find your app
-symlink_java: true
+# easier to find your app. Defaults to false.
+#symlink_java: true
 ```
 
 ## Overriding launcher environment variables
@@ -255,6 +289,7 @@ Stork's launcher scripts for daemons will load these environment variables
 when starting.  For variables used by the launcher script (e.g. APP_HOME or
 EXTRA_JAVA_ARGS), these are overrides.  For variables no used (e.g. DB_PASSWORD)
 these are effectively passed through to the Java process.
+
 
 ## Stork assembly
 
@@ -313,6 +348,7 @@ To customize, the following properties are supported:
  - finalName: The final name of the assembly tarball -- as well as the name of
    the root directory contained within the tarball -- that will contain the 
    contents of stageDirectory. Defaults to ${project.build.finalName}
+
 
 ## Stork deploy
 

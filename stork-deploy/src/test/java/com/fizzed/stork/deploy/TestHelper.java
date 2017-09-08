@@ -24,8 +24,8 @@ import java.util.List;
 public class TestHelper {
     
     // all hosts we support for deploys w/ only console apps
-    static private final List<String> VAGRANT_ALL_HOSTS =
-        Arrays.asList("ubuntu14", "ubuntu16", "debian8", "centos7", "freebsd102", "openbsd58");
+    static private final List<String> VAGRANT_CONSOLE_HOSTS =
+        Arrays.asList("ubuntu14", "ubuntu16", "debian8", "centos7", "freebsd10", "openbsd58");
     
     // subset of hosts we support for deploys w/ daemon apps
     static private final List<String> VAGRANT_DAEMON_HOSTS =
@@ -34,14 +34,19 @@ public class TestHelper {
     static public List<String> filterVagrantHosts(List<String> hosts) {
         String host = System.getProperty("host");
         if (host != null && !host.equals("")) {
-            return Arrays.asList(host);
+            // is it in the array?
+            if (hosts.contains(host)) {
+                return Arrays.asList(host);
+            } else {
+                return Arrays.asList();
+            }
         } else {
             return hosts;
         }
     }
     
-    static public List<String> getAllVagrantHosts() {
-        return filterVagrantHosts(VAGRANT_ALL_HOSTS);
+    static public List<String> getConsoleVagrantHosts() {
+        return filterVagrantHosts(VAGRANT_CONSOLE_HOSTS);
     }
     
     static public List<String> getDaemonVagrantHosts() {

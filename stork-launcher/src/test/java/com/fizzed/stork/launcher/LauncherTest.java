@@ -23,7 +23,6 @@ import com.fizzed.blaze.ssh.SshSession;
 import com.fizzed.blaze.system.Exec;
 import com.fizzed.blaze.util.CaptureOutput;
 import com.fizzed.blaze.util.Streamables;
-import com.fizzed.crux.util.TemporaryPath;
 import com.fizzed.stork.test.LaunchData;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -43,6 +42,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import org.junit.Assume;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -63,6 +63,7 @@ public class LauncherTest {
     
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String host;
+    private final Path exeCat;
     private final Path exeEchoConsole1;
     private final Path exeEchoConsole2;
     private final Path exeEchoConsole3;
@@ -72,6 +73,7 @@ public class LauncherTest {
     
     public LauncherTest(String host) {
         this.host = host;
+        this.exeCat = resolveExe("cat");
         this.exeEchoConsole1 = resolveExe("echo-console1");
         this.exeEchoConsole2 = resolveExe("echo-console2");
         this.exeEchoConsole3 = resolveExe("echo-console3");
@@ -503,35 +505,41 @@ public class LauncherTest {
     
     @Test
     public void daemonStartRun() throws Exception {
-        // remember this temporary file is likely ON the virtual machine!
-        try (TemporaryPath tempFile = TemporaryPath.tempFile("stork-launcher-test.", ".json")) {
-            String raw = execute(0, exeEchoDaemon1, "--start-run", "--data-file", tempFile.toString());
+        // do not run this test on windows
+        assumeFalse(isWindows());
+        
+        // make sure the file does not exist between tests
+        Path path = Paths.get("run/test-launch-data.json");
+        Files.deleteIfExists(path);
+        
+        // by setting working dir mode to APP_HOME - this will be relative
+        execute(0, exeEchoDaemon1, "--start-run", "--data-file", path.toString());
 
-            log.info("stdout was: {}", raw);
-            
-            // give the daemon some time to write data to the file
-            Thread.sleep(2000L);
-            
-            LaunchData output = this.readValue(tempFile.getPath(), LaunchData.class);
+        //log.info("stdout: {}", stdout);
 
-            assertThat(output.getConfirm(), is("Hello World!"));
+        Thread.sleep(1000L);
+        
+        String json = execute(0, exeCat, path.toString());
 
-            // stork always sets launcher.name, launcher.type, launcher.app.dir
-            // daemons that use the --run command are considered a CONSOLE app by stork
-            assertThat(output.getSystemProperties(), hasEntry("launcher.name", "echo-daemon1"));
-            assertThat(output.getSystemProperties(), hasEntry("launcher.type", "DAEMON"));
-            assertThat(output.getSystemProperties(), hasKey("launcher.app.dir"));
+        LaunchData output = this.readValue(json, LaunchData.class);
 
-            // only do these on local since its hard to get correct path via ssh
-            if (isLocal()) {
-                // verify working directory was retained
-                Path ourWorkingDir = Paths.get((String)System.getProperty("user.dir"));
-                Path appWorkingDir = Paths.get((String)output.getSystemProperties().get("user.dir"));
-                Path appHomeDir = Paths.get((String)output.getSystemProperties().get("launcher.app.dir"));
+        assertThat(output.getConfirm(), is("Hello World!"));
 
-                assertThat(appWorkingDir, is(not((ourWorkingDir))));
-                assertThat(appWorkingDir, is(appHomeDir));
-            }
+        // stork always sets launcher.name, launcher.type, launcher.app.dir
+        // daemons that use the --run command are considered a CONSOLE app by stork
+        assertThat(output.getSystemProperties(), hasEntry("launcher.name", "echo-daemon1"));
+        assertThat(output.getSystemProperties(), hasEntry("launcher.type", "DAEMON"));
+        assertThat(output.getSystemProperties(), hasKey("launcher.app.dir"));
+
+        // only do these on local since its hard to get correct path via ssh
+        if (isLocal()) {
+            // verify working directory was retained
+            Path ourWorkingDir = Paths.get((String)System.getProperty("user.dir"));
+            Path appWorkingDir = Paths.get((String)output.getSystemProperties().get("user.dir"));
+            Path appHomeDir = Paths.get((String)output.getSystemProperties().get("launcher.app.dir"));
+
+            assertThat(appWorkingDir, is(not((ourWorkingDir))));
+            assertThat(appWorkingDir, is(appHomeDir));
         }
     }
 }

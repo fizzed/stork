@@ -71,9 +71,9 @@ public class Targets {
                 return SecureShells.sshConnect(uri).run();
             case "vagrant+ssh": {
                 String host = u.getHost();
-                log.info("Querying vagrant ssh-config for {}", u.getHost());
-                return SecureShells.sshConnect("ssh://" + u.getHost())
-                    .configFile(VAGRANT_CLIENT.sshConfig(u.getHost()))
+                log.info("Querying vagrant ssh-config for {}", host);
+                return SecureShells.sshConnect("ssh://" + host)
+                    .configFile(VAGRANT_CLIENT.sshConfig(host))
                     .run();
             }
             default:

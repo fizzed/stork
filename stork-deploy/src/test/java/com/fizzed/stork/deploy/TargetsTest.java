@@ -43,7 +43,7 @@ public class TargetsTest {
     
     @Parameters(name = "{index}: vagrant={0}")
     public static Collection<String> data() {
-        return TestHelper.getAllVagrantHosts();
+        return TestHelper.getConsoleVagrantHosts();
     }
     
     @Before
@@ -79,7 +79,7 @@ public class TargetsTest {
                         assertThat(target.getInitType(), is(InitType.SYSTEMD));
                         assertThat(target, instanceOf(UnixTarget.class));
                         break;
-                    case "freebsd102":
+                    case "freebsd10":
                         assertThat(target.getInitType(), is(InitType.UNKNOWN));
                         assertThat(target, instanceOf(UnixTarget.class));
                         break;

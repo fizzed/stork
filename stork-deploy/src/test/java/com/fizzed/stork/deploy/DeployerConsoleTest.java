@@ -35,7 +35,7 @@ public class DeployerConsoleTest extends DeployerBaseTest {
     
     @Parameters(name = "{index}: vagrant={0}")
     public static Collection<String> data() {
-        return TestHelper.getAllVagrantHosts();
+        return TestHelper.getConsoleVagrantHosts();
     }
     
     public DeployerConsoleTest(String host) {

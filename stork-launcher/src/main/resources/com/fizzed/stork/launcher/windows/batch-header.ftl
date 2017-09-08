@@ -35,6 +35,7 @@ set TYPE=${config.type}
 set MAIN_CLASS=${config.mainClass}
 if "%MIN_JAVA_VERSION%"=="" set MIN_JAVA_VERSION=${config.minJavaVersion}
 if "%WORKING_DIR_MODE%"=="" set WORKING_DIR_MODE=${config.workingDirMode}
+if "%INCLUDE_JAVA_XRS%"=="" set INCLUDE_JAVA_XRS=${config.includeJavaXrs?string("1", "0")}
 
 @REM echo temporarily change working directory to get good abs path for home
 pushd %APP_HOME_REL%

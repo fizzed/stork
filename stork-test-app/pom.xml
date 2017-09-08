@@ -21,7 +21,7 @@
                 </configuration>
             </plugin>
             <!-- build a usable target/stork/lib dir with this app and dependencies -->
-            <!-- careful not to use any other app dependency so maven does not barf -->
+            <!-- careful not to use any dependencies from this app or maven will barf -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -35,7 +35,6 @@
                         </goals>
                         <configuration>
                             <prependGroupId>true</prependGroupId>
-                            <excludeGroupIds>com.fizzed</excludeGroupIds>
                             <outputDirectory>${project.build.directory}/stork/lib</outputDirectory>
                             <overWriteIfNewer>true</overWriteIfNewer>
                         </configuration>
@@ -53,6 +52,7 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
+                            <finalName>com.fizzed.stork-test-app-${project.version}</finalName>
                             <outputDirectory>${project.build.directory}/stork/lib</outputDirectory>
                         </configuration>
                     </execution>

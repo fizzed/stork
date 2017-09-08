@@ -47,6 +47,7 @@ Vagrant.configure(2) do |config|
     guest.vm.box_version = "7.0"
     guest.vm.provision :shell, inline: "yum install -y java-1.7.0-openjdk-headless unzip curl"
     # unit tests required passing along env vars in ssh commands
+    guest.vm.provision :shell, inline: "echo 'forcing sshd to accept env'; echo 'UseDNS no' >> /etc/ssh/sshd_config"
     guest.vm.provision :shell, inline: "echo 'forcing sshd to accept env'; echo 'AcceptEnv *' >> /etc/ssh/sshd_config"
     guest.vm.provision :shell, inline: "systemctl restart sshd.service"
   end

@@ -3,22 +3,30 @@ Stork by Fizzed
 
 #### 2.6.x - In Progress
 
- - stork-launcher: New `--start-run` option for Linux daemon launchers that
+ - stork-launcher: New `include_java_xrs` configuration option to instruct
+   launcher to prepend the `-Xrs` flag for Java.  This is `true` by default.
+   The `-Xrs` flag is critical to avoid Java exiting with a non-zero error code
+   if you `kill` the process to stop it.  This allows inits like SYSTEMD to
+   report the service stopped correctly.
+ - stork-launcher: New `--exec` option for Linux daemon launchers that
    combines features from the `--start` and `--run` actions.  This action will
-   start your Java app in the background, but will not use `nohup`.  Your apps
-   `stdin`, `stdout`, and `stderr` streams will be passed thru.  Unlike `--run`
-   the system property `launcher.type` will be DAEMON -- so you can decided in 
-   your app if you need to stop logging to STDOUT at runtime.
- - stork-launcher: SYSTEMD init scripts now use the `--start-run` action. NOTE
-   that your apps `stdout` will go to the attached `tty` -- which for SYSTEMD
-   means it will go to `journald`.
+   start your Java app using `exec`.  That will allow `stdin`, `stdout`, and
+   `stderr` streams to be unprocessed by the launcher script.
+ - stork-launcher: SYSTEMD init scripts now use the `--exec` action to start
+   your app and use the `--stop` action to gracefully stop it.  Please note
+   that `stdout` will not be redirected to a file (like it was in previous
+   versions) -- so you should be mindful that SYSTEMD will now log anything
+   to `stdout` to `journald`.
  - stork-launcher: Windows launchers now match Linux by setting system properties
    of `launcher.name`, `launcher.type`, and `launcher.app.dir`.
  - stork-launcher: Linux daemon launcher correctly sets `launcher.type` to
-   CONSOLE if `--run` is used.
+   CONSOLE if `--run` is used.  You can now safely check if the `launcher.type`
+   property is `DAEMON` to determine if you are really running as a service (e.g.
+   you were started with SYSV or SYSTEMD).
  - Deprecated and removed stork-bootstrap. The EXTRA_JAVA_ARGS feature from v2.5.0
    mostly addresses what it was trying to accomplish.
- - Significant enhancements to all unit tests across the board.
+ - Significant enhancements to all unit tests across the board.  See `docs/DEV.md`
+   for info about contributing changes to the project.
 
 #### 2.5.1 - 2017-09-06
 

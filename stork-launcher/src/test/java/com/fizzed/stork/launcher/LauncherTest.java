@@ -33,8 +33,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.hasSize;
@@ -465,6 +467,9 @@ public class LauncherTest {
         
         assertThat(output.getConfirm(), is("Hello World!"));
         
+        // -Xrs flag should have been set
+        assertThat(output.getJvmArguments(), hasItem("-Xrs"));
+        
         // stork always sets launcher.name, launcher.type, launcher.app.dir
         // daemons that use the --run command are considered a CONSOLE app by stork
         assertThat(output.getSystemProperties(), hasEntry("launcher.name", "echo-daemon1"));
@@ -508,7 +513,7 @@ public class LauncherTest {
     }
     
     @Test
-    public void daemonStartRun() throws Exception {
+    public void daemonExec() throws Exception {
         // do not run this test on windows
         assumeFalse(isWindows());
         
@@ -517,10 +522,9 @@ public class LauncherTest {
         Files.deleteIfExists(path);
         
         // by setting working dir mode to APP_HOME - this will be relative
-        execute(0, exeEchoDaemon1, "--start-run", "--data-file", path.toString());
+        execute(0, exeEchoDaemon1, "--exec", "--data-file", path.toString());
 
-        //log.info("stdout: {}", stdout);
-
+        // give daemon just a little time to write its data file
         Thread.sleep(1000L);
         
         String json = execute(0, exeCat, path.toString());

@@ -365,7 +365,8 @@ verifyNotRunning()
   then
     if running $TMPPID
     then
-      echo "Already running!!"
+      PID=`cat $TMPPID 2>/dev/null`
+      echo "$NAME is currently running with pid $PID"
       exit 1
     else
       # dead pid file - remove
@@ -387,7 +388,7 @@ checkRunning()
       rm -f $TMPPID
     fi
   else
-    echo "Warning: app is not running!"
+    echo "$NAME is not currently running!"
   fi
 }
 
@@ -405,7 +406,7 @@ stopJavaApp()
   done
   if [ ! $timeout -gt 0 ]
   then 
-      echo "Unable to kill app within timeout; may need to kill it manually [pid: $TMPPID]"
+      echo "Unable to kill $NAME within timeout; may need to kill it manually [pid: $TMPPID]"
   else
       rm -f $TMPPID
   fi

@@ -50,18 +50,23 @@ public class SystemdHelper {
                 List<String> modifiedSystemdLines
                     = Files.lines(systemdServiceFile)
                         .map((line) -> {
-                            if (line.startsWith("ExecStart=") || line.startsWith("PIDFile=")) {
-                                int equalsPos = line.indexOf("=");
+                            int equalsPos = line.indexOf("=");
+                            if (equalsPos > 0) {
+                                String key = line.substring(0, equalsPos);
+                                String value = line.substring(equalsPos+1).trim();
+                                
+                                // does the value reference a /bin or /run?
                                 int dirPos = indexOfAny(line, new String[] { "/bin", "/run" });
+                                
                                 if (dirPos > 0) {
                                     return line.substring(0, equalsPos+1)
                                         + install.getCurrentDir()
                                         + line.substring(dirPos);
+                                } else if (key.equalsIgnoreCase("user")) {
+                                    return "User=" + install.getUser().orElse("");
+                                } else if (key.equalsIgnoreCase("group")) {
+                                    return "Group=" + install.getGroup().orElse("");
                                 }
-                            } else if (line.startsWith("User=")) {
-                                return "User=" + install.getUser().orElse("");
-                            } else if (line.startsWith("Group=")) {
-                                return "Group=" + install.getGroup().orElse("");
                             }
                             return line;
                         })

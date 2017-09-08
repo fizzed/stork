@@ -54,10 +54,8 @@ APP_ACTION_ARG=
 
 # first arg for a daemon is the action to do such as start vs. stop
 if [ "$TYPE" = "DAEMON" ] && [ $# -gt 0 ]; then
-  APP_ACTION_ARG=$1
-  shift
-  # append system property
-  JAVA_ARGS="$JAVA_ARGS -Dlauncher.action=$APP_ACTION_ARG"
+    APP_ACTION_ARG=$1
+    shift
 fi
 
 # append extra app and java args
@@ -93,6 +91,15 @@ done
 SYS_MEM_MB=`getSystemMemoryMB`
 logLauncherDebug "detected system memory: $SYS_MEM_MB MB"
 
+#
+# include -Xrs flag?
+#
+if [ "$INCLUDE_JAVA_XRS" = "1" ]; then
+    if [ ! `echo "$JAVA_ARGS" | grep -q '\-Xrs '` ]; then
+        # prepend the flag on
+        JAVA_ARGS="-Xrs $JAVA_ARGS"
+    fi
+fi
 
 #
 # add max memory java option (if specified)
@@ -164,7 +171,7 @@ fi
 
 # NOTE: placing double/single quotes around classpath causes an issues using
 # --start with a small number of systemd versions
-RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE -Dlauncher.app.dir=$APP_HOME -classpath $APP_JAVA_CLASSPATH $JAVA_ARGS $MAIN_CLASS $APP_ARGS"
+RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE -Dlauncher.app.dir=$APP_HOME $JAVA_ARGS -classpath $APP_JAVA_CLASSPATH $MAIN_CLASS $APP_ARGS"
 RUN_CMD="\"$JAVA_BIN\" $RUN_ARGS"
 
 #

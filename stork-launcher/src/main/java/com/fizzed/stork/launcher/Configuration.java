@@ -94,6 +94,11 @@ public class Configuration {
     private Integer minJavaMemoryPct = null;
     private Integer maxJavaMemoryPct = null;
     
+    // java processes that are daemons should always add the -Xrs option
+    // (especially if you are running via systemd) - otherwise systemd will
+    // report the process exited with status code of 143...
+    private boolean includeJavaXrs = true;
+    
     // best effort to symlink java binary so process is named something more
     // friendly for users (only safe for daemons with unique names)
     // default name is "<app name>-java"
@@ -279,6 +284,14 @@ public class Configuration {
 
     public void setLibDir(String libDir) {
         this.libDir = libDir;
+    }
+
+    public boolean isIncludeJavaXrs() {
+        return includeJavaXrs;
+    }
+
+    public void setIncludeJavaXrs(boolean includeJavaXrs) {
+        this.includeJavaXrs = includeJavaXrs;
     }
 
     public String getMinJavaVersion() {

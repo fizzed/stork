@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,6 +32,7 @@ public class LaunchData {
     private String confirm;
     private Map<String,String> environment;
     private Map<String,String> systemProperties;
+    private List<String> jvmArguments;
     private List<String> arguments;
 
     public String getConfirm() {
@@ -56,6 +59,14 @@ public class LaunchData {
         this.systemProperties = systemProperties;
     }
 
+    public List<String> getJvmArguments() {
+        return jvmArguments;
+    }
+
+    public void setJvmArguments(List<String> jvmArguments) {
+        this.jvmArguments = jvmArguments;
+    }
+
     public List<String> getArguments() {
         return arguments;
     }
@@ -75,19 +86,23 @@ public class LaunchData {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         
+        RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+        List<String> jvmArguments = runtimeMxBean.getInputArguments();
+        
         // convert system properties to a map<string,string>
         Map<String,String> systemProperties = new HashMap<>();
         for (Map.Entry<Object,Object> entry : System.getProperties().entrySet()) {
             systemProperties.put(entry.getKey().toString(), entry.getValue().toString());
         }
         
-        LaunchData output = new LaunchData();
-        output.setConfirm("Hello World!");
-        output.setEnvironment(System.getenv());
-        output.setSystemProperties(systemProperties);
-        output.setArguments(Arrays.asList(args));
+        LaunchData data = new LaunchData();
+        data.setConfirm("Hello World!");
+        data.setEnvironment(System.getenv());
+        data.setSystemProperties(systemProperties);
+        data.setJvmArguments(jvmArguments);
+        data.setArguments(Arrays.asList(args));
         
-        return output;
+        return data;
     }
     
     static public String prettyJson(LaunchData output) throws IOException {

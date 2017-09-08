@@ -5,7 +5,7 @@
 
 usage()
 {
-    echo "Usage: $0 [--start|--start-run|--stop|--run|--status}"
+    echo "Usage: $0 [--start|--stop|--exec|--run|--status}"
     exit 1
 }
 
@@ -40,7 +40,6 @@ if [ -f "$NOHUP_OUT" ] && [ ! -w "$NOHUP_OUT" ]; then
     echo "Unable to overwrite existing nohup log file: $NOHUP_OUT (check permissions; is user `whoami` owner?)"
     exit 1
 fi
-
 
 case "$APP_ACTION_ARG" in
 
@@ -82,9 +81,9 @@ case "$APP_ACTION_ARG" in
     fi
     ;;
 
-  --start-run)
+  --exec)
     # best choice for running from systemd
-    printf "Starting $NAME: "
+    echo "Starting $NAME: ..."
 
     # some launcher frameworks manage the PID (this skips the check entirely)
     # only enable this env var if you know what you're doing
@@ -92,9 +91,14 @@ case "$APP_ACTION_ARG" in
         verifyNotRunning $APP_PID_FILE
     fi
 
-    "$JAVA_BIN" $RUN_ARGS &
-    PID=$!
-    echo $PID > $APP_PID_FILE
+    # take pid of shell for pid lock
+    echo $$ > $APP_PID_FILE
+
+    # best effort to remove pid file upon exit via trap
+    trap 'echo "Removing pid file $APP_PID_FILE"; rm -f "$APP_PID_FILE"' 2 3 6 15
+
+    # shell will now become the java process :-)
+    exec $JAVA_BIN $RUN_ARGS
     ;;
 
   --stop)
@@ -116,9 +120,12 @@ case "$APP_ACTION_ARG" in
 
     # take pid of shell for pid lock
     echo $$ > $APP_PID_FILE
+
     # best effort to remove pid file upon exit via trap
-    trap 'echo "cleaning up pid file: $APP_PID_FILE"; rm -f "$APP_PID_FILE"' 2 3 6 15
-    eval $RUN_CMD
+    trap 'echo "Removing pid file $APP_PID_FILE"; rm -f "$APP_PID_FILE"' 2 3 6 15
+
+    # eval will passthru SIGHUP and allows you to CTRL-C an app in foreground
+    eval \"$JAVA_BIN\" $RUN_ARGS
     ;;
 
   --status)

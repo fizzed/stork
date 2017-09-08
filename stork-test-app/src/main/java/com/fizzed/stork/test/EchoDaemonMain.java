@@ -67,17 +67,17 @@ public class EchoDaemonMain {
         // start server
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
+        long now = System.currentTimeMillis();
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.option(ChannelOption.SO_BACKLOG, 1024);
             b.group(bossGroup, workerGroup)
              .channel(NioServerSocketChannel.class)
-             //.handler(new LoggingHandler(LogLevel.INFO))
              .childHandler(new EchoServerInitializer());
 
             Channel ch = b.bind(port).sync().channel();
 
-            // what interfaces
+            // what interfaces?
             System.out.println("In your browser visit (all possible options):");
             Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
             for (NetworkInterface netint : Collections.list(nets)) {
@@ -91,10 +91,12 @@ public class EchoDaemonMain {
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 @Override
                 public void run() {
-                    System.out.println("Shutting down.");
+                    System.out.println("EchoDaemon is shutting down on port " + port);
                 }
             });
 
+            System.out.println("EchoDaemon started on port " + port + " (in " + (System.currentTimeMillis() - now) + " ms)");
+            
             ch.closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();

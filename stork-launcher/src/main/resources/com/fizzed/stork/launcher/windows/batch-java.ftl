@@ -49,3 +49,10 @@ for /F "tokens=1*" %%a in ("%*") do (
 )
 goto :eof
 :ProcessedArgs
+
+@REM
+@REM prepend -Xrs flag?
+@REM
+if "%INCLUDE_JAVA_XRS%"=="1" (
+  set JAVA_ARGS=-Xrs %JAVA_ARGS%
+)

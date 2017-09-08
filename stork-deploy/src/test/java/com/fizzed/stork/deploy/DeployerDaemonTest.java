@@ -52,7 +52,6 @@ public class DeployerDaemonTest extends DeployerBaseTest {
         // assume its unix for now
         UnixTarget target = (UnixTarget)Targets.connect(getHostUri());
 
-        // make sure app does not exist on host
         target.sshExec(true, true, "kill $(ps aux | grep java | grep -v grep | awk \"{print \\$2}\")")
             .exitValues(0, 1, 2)
             .run();
@@ -66,16 +65,17 @@ public class DeployerDaemonTest extends DeployerBaseTest {
             new Deployer().deploy(assembly, options, target);
         }
 
-        // is the server running on port
+        // is the server running on port?
         String output
             = target.sshExec(false, false, "curl", "http://localhost:18745")
                 .exitValues(0)
-                .pipeOutput(Streamables.captureOutput())
-                .runResult()
-                .map(Actions::toCaptureOutput)
+                .runCaptureOutput()
                 .asString();
         
         assertThat(output, containsString("Hello World!"));
+        
+        
+        
         
         
         //
@@ -89,9 +89,7 @@ public class DeployerDaemonTest extends DeployerBaseTest {
         output
             = target.sshExec(false, false, "curl", "http://localhost:18745")
                 .exitValues(0)
-                .pipeOutput(Streamables.captureOutput())
-                .runResult()
-                .map(Actions::toCaptureOutput)
+                .runCaptureOutput()
                 .asString();
         
         assertThat(output, containsString("Hello World!")); 

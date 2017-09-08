@@ -36,7 +36,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.hasSize;
@@ -532,7 +531,17 @@ public class LauncherTest {
         LaunchData output = this.readValue(json, LaunchData.class);
 
         assertThat(output.getConfirm(), is("Hello World!"));
-
+        
+        // -Xrs flag should have been set ONCE
+        assertThat(output.getJvmArguments(), hasItem("-Xrs"));
+        long count = 0;
+        for (String s : output.getJvmArguments()) {
+            if (s.equals("-Xrs")) {
+                count++;
+            }
+        }
+        assertThat("-Xrs only occurs once", count, is(1L));
+        
         // stork always sets launcher.name, launcher.type, launcher.app.dir
         // daemons that use the --run command are considered a CONSOLE app by stork
         assertThat(output.getSystemProperties(), hasEntry("launcher.name", "echo-daemon1"));

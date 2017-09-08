@@ -95,10 +95,12 @@ logLauncherDebug "detected system memory: $SYS_MEM_MB MB"
 # include -Xrs flag?
 #
 if [ "$INCLUDE_JAVA_XRS" = "1" ]; then
-    if [ ! `echo "$JAVA_ARGS" | grep -q '\-Xrs '` ]; then
-        # prepend the flag on
-        JAVA_ARGS="-Xrs $JAVA_ARGS"
-    fi
+    case "$JAVA_ARGS" in
+        *-Xrs*)
+            ;;
+        *)
+            JAVA_ARGS="-Xrs $JAVA_ARGS" ;;
+    esac
 fi
 
 #

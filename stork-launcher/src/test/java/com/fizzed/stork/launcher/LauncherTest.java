@@ -210,16 +210,16 @@ public class LauncherTest {
         return captureOutput.asString();
     }
     
-    public String findJson(String json) {
-        int start = json.indexOf("{");
+    public String findJson(String stdout) {
+        int start = stdout.indexOf("{");
         if (start < 0) {
             throw new IllegalArgumentException("Unable to find starting json {");
         }
-        int end = json.lastIndexOf("}");
+        int end = stdout.lastIndexOf("}");
         if (end < 0) {
             throw new IllegalArgumentException("Unable to find ending json {");
         }
-        return json.substring(start, end);
+        return stdout.substring(start, end+1);
     }
     
     public <T> T readValue(Path file, Class<T> type) throws IOException {
@@ -247,7 +247,8 @@ public class LauncherTest {
     
     @Test
     public void console() throws Exception {
-        String json = execute(0, exeEchoConsole1);
+        String stdout = execute(0, exeEchoConsole1);
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         
@@ -277,7 +278,8 @@ public class LauncherTest {
         String arg0 = "128401";
         String arg1 = "ahs3h1";
         
-        String json = execute(0, exeEchoConsole1, arg0, arg1);
+        String stdout = execute(0, exeEchoConsole1, arg0, arg1);
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         
@@ -296,7 +298,8 @@ public class LauncherTest {
         String arg0 = "128 401";
         String arg1 = "ahs 3h1";
         
-        String json = execute(0, exeEchoConsole1, arg0, arg1);
+        String stdout = execute(0, exeEchoConsole1, arg0, arg1);
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         
@@ -314,7 +317,8 @@ public class LauncherTest {
         Map<String,String> environment = new HashMap<>();
         environment.put("EXTRA_APP_ARGS", "a b");
         
-        String json = execute(0, exeEchoConsole1, environment);
+        String stdout = execute(0, exeEchoConsole1, environment);
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         
@@ -332,7 +336,8 @@ public class LauncherTest {
         Map<String,String> environment = new HashMap<>();
         environment.put("EXTRA_APP_ARGS", "a b");
         
-        String json = execute(0, exeEchoConsole1, environment, "c", "d");
+        String stdout = execute(0, exeEchoConsole1, environment, "c", "d");
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         
@@ -346,7 +351,8 @@ public class LauncherTest {
     
     @Test
     public void consoleWithSystemProperties() throws Exception {
-        String json = execute(0, exeEchoConsole1, "-Da=1", "-Db=2");
+        String stdout = execute(0, exeEchoConsole1, "-Da=1", "-Db=2");
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         
@@ -358,7 +364,8 @@ public class LauncherTest {
     
     @Test
     public void consoleWithArgumentsAndSystemProperties() throws Exception {
-        String json = execute(0, exeEchoConsole1, "a", "-Da=1", "b", "-Db=2", "c");
+        String stdout = execute(0, exeEchoConsole1, "a", "-Da=1", "b", "-Db=2", "c");
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         
@@ -379,7 +386,8 @@ public class LauncherTest {
         Map<String,String> environment = new HashMap<>();
         environment.put("EXTRA_JAVA_ARGS", "-Da=1 -Db=2");
         
-        String json = execute(0, exeEchoConsole1, environment);
+        String stdout = execute(0, exeEchoConsole1, environment);
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         
@@ -399,7 +407,8 @@ public class LauncherTest {
         
         // this should override the "extra" one since it will be appended
         // after the extra_java_args would be
-        String json = execute(0, exeEchoConsole1, environment, "-Da=2");
+        String stdout = execute(0, exeEchoConsole1, environment, "-Da=2");
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         
@@ -411,17 +420,17 @@ public class LauncherTest {
     
     @Test
     public void consoleMainClassNotFound() throws Exception {
-        String output = execute(1, exeEchoConsole2);
+        String stdout = execute(1, exeEchoConsole2);
         
-        assertThat(output, containsString("Could not find or load main class com.fizzed.stork.test.ClassNotFoundMain"));
+        assertThat(stdout, containsString("Could not find or load main class com.fizzed.stork.test.ClassNotFoundMain"));
     }
     
     @Test
     public void consoleMinJavaVersionNotFound() throws Exception {
-        String output = execute(1, exeEchoConsole3);
+        String stdout = execute(1, exeEchoConsole3);
 
         // should this be printed out to error stream rather than stdout?
-        assertThat(output, containsString("Unable to find Java runtime on system with version >= 1.10"));
+        assertThat(stdout, containsString("Unable to find Java runtime on system with version >= 1.10"));
     }
     
 //    @Test
@@ -448,7 +457,8 @@ public class LauncherTest {
         Map<String,String> environment = new HashMap<>();
         environment.put("JAVA_ARGS", "-Da=1 -Db=2 -Dc=3");
         
-        String json = execute(0, exeEchoConsole1, environment);
+        String stdout = execute(0, exeEchoConsole1, environment);
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         
@@ -460,7 +470,8 @@ public class LauncherTest {
    
     @Test
     public void daemonRun() throws Exception {
-        String json = execute(0, exeEchoDaemon1, "--run");
+        String stdout = execute(0, exeEchoDaemon1, "--run");
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         
@@ -489,7 +500,8 @@ public class LauncherTest {
     
     @Test
     public void daemonRunWithArguments() throws Exception {
-        String json = execute(0, exeEchoDaemon1, "--run", "a", "b");
+        String stdout = execute(0, exeEchoDaemon1, "--run", "a", "b");
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         
@@ -501,7 +513,8 @@ public class LauncherTest {
     
     @Test
     public void daemonRunWithSystemProperties() throws Exception {
-        String json = execute(0, exeEchoDaemon1, "--run", "-Da=1", "-Db=2");
+        String stdout = execute(0, exeEchoDaemon1, "--run", "-Da=1", "-Db=2");
+        String json = findJson(stdout);
         
         LaunchData output = this.readValue(json, LaunchData.class);
         

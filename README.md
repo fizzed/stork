@@ -2,6 +2,7 @@ Stork by Fizzed
 =======================================
 
 [![Build Status](https://travis-ci.org/fizzed/stork.svg?branch=master)](https://travis-ci.org/fizzed/stork)
+[![Build status](https://ci.appveyor.com/api/projects/status/1yv9d52o4lshaawp/branch/master?svg=true)](https://ci.appveyor.com/project/jjlauer/stork/branch/master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fizzed/stork/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fizzed/stork)
 
 [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))

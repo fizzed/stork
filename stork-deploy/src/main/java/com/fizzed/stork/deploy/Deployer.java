@@ -58,7 +58,7 @@ public class Deployer {
         Deployment install = Deployments.install(assembly, target, options);
 
         // existing deployment
-        ExistingDeployment existing = Deployments.existing(install, target);
+        ExistingDeployment existing = Deployments.existing(install, target, options);
 
         log.info("");
         logAssembly(assembly);
@@ -334,6 +334,7 @@ public class Deployer {
         log.info("version dir: {}", install.getVersionDir());
         log.info("    as user: {}", install.getUser().orElse("<null>"));
         log.info("   as group: {}", install.getGroup().orElse("<null>"));
+        log.info("     retain: {} previous versions", existing.getRetain().map(v -> v.toString()).orElse("all"));
     }
     
 }

@@ -65,18 +65,18 @@ public class Deployments {
             options.getUser(), options.getGroup());
     }
     
-    static public ExistingDeployment existing(Deployment deployment, Target target) {
-        return existing(deployment.getBaseDir(), target);
+    static public ExistingDeployment existing(Deployment deployment, Target target, DeployOptions options) {
+        return existing(deployment.getBaseDir(), target, options);
     }
-    
-    
-    
-    static public ExistingDeployment existing(String baseDir, Target target) {
+
+    static public ExistingDeployment existing(String baseDir, Target target, DeployOptions options) {
         String foundBaseDir = null;
         String currentDir = null;
         String versionDir = null;
         SortedSet<VersionedPath> versionDirs = new TreeSet<>();
         Long deployedAt = null;
+        Optional<Integer> retain = Optional.ofNullable(options.getRetain())
+            .filter(v -> v >= 0);
         
         // inventory what's currently on target's baseDir
         List<BasicFile> files = target.listFiles(baseDir);
@@ -126,7 +126,7 @@ public class Deployments {
             */
         }
         
-        return new ExistingDeployment(foundBaseDir, currentDir, versionDir, null, null, deployedAt, versionDirs);
+        return new ExistingDeployment(foundBaseDir, currentDir, versionDir, null, null, deployedAt, versionDirs, retain);
     }
     
 }

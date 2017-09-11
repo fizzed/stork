@@ -57,7 +57,7 @@ public class Deployments {
         if (assembly.isSnapshot()) {
             Instant instant = Instant.ofEpochMilli(assembly.getCreatedAt());
             LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
-            String date = ldt.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmssSSS", Locale.US));
+            String date = ldt.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss", Locale.US).withZone(ZoneOffset.UTC));
             versionDir += "-" + date;
         }
         

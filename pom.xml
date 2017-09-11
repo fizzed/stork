@@ -26,8 +26,8 @@
         <maven.enforce.version>3.2.5</maven.enforce.version>
         <jackson.version>2.8.1</jackson.version>
         <slf4j.version>1.7.21</slf4j.version>
-        <blaze.version>0.13.0</blaze.version>
-        <crux.version>0.12.0</crux.version>
+        <blaze.version>0.16.0</blaze.version>
+        <crux.version>0.12.1</crux.version>
     </properties>
 
     <modules>

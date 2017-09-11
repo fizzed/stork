@@ -19,7 +19,6 @@ import com.fizzed.blaze.Contexts;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -271,7 +270,9 @@ public class Deployer {
                         .collect(Collectors.toList());
 
                 dirsToRemove.forEach(dir -> {
-                    target.remove(false, dir);
+                    // NOTE: only need sudo due to not marking the parent dir as writable
+                    // by the group (which we need to clean up)
+                    target.remove(true, dir);
                 });
             }
         }

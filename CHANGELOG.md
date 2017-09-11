@@ -29,6 +29,7 @@ Stork by Fizzed
    mostly addresses what it was trying to accomplish.
  - Significant enhancements to all unit tests across the board.  See `docs/DEV.md`
    for info about contributing changes to the project.
+ - Bumped Blaze dependency from v0.13.0 to v0.16.0
 
 #### 2.5.1 - 2017-09-06
 

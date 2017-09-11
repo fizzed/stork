@@ -15,8 +15,6 @@
  */
 package com.fizzed.stork.deploy;
 
-import com.fizzed.blaze.core.Actions;
-import com.fizzed.blaze.util.Streamables;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;

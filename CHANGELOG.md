@@ -3,15 +3,17 @@ Stork by Fizzed
 
 #### 2.6.x - In Progress
 
+ - stork-deploy: New `retain` option to only retain a specified number of past
+   versions after a successful deploy.
  - stork-launcher: New `include_java_xrs` configuration option to instruct
    launcher to prepend the `-Xrs` flag for Java.  This is `true` by default.
    The `-Xrs` flag is critical to avoid Java exiting with a non-zero error code
    if you `kill` the process to stop it.  This allows inits like SYSTEMD to
    report the service stopped correctly.
- - stork-launcher: New `--exec` option for Linux daemon launchers that
-   combines features from the `--start` and `--run` actions.  This action will
-   start your Java app using `exec`.  That will allow `stdin`, `stdout`, and
-   `stderr` streams to be unprocessed by the launcher script.
+ - stork-launcher: New `--exec` option for Linux daemon launchers. Combines features
+   from the `--start` and `--run` actions.  This action will start your Java app
+   using `exec`.  Your `stdin`, `stdout`, and `stderr` streams will be passed though
+   as-is to your app.
  - stork-launcher: SYSTEMD init scripts now use the `--exec` action to start
    your app and use the `--stop` action to gracefully stop it.  Please note
    that `stdout` will not be redirected to a file (like it was in previous

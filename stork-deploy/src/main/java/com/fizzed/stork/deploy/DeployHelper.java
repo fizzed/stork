@@ -42,14 +42,14 @@ public class DeployHelper {
         Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                try {
-                    if (!Files.isWritable(file)) {
-                        log.error("File {} is not writable!!!", file);
-                    }
+                //try {
+//                    if (!Files.isWritable(file)) {
+//                        log.error("File {} is not writable!!!", file);
+//                    }
                     Files.deleteIfExists(file);
-                } catch (IOException e) {
-                    log.error("Unable to delete {} wth attrs {}", file, attrs, e);
-                }
+                //} catch (IOException e) {
+                //    log.error("Unable to delete {} wth attrs {}", file, attrs, e);
+                //}
                 return FileVisitResult.CONTINUE;
             }
 

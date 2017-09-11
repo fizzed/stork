@@ -71,10 +71,7 @@ public class DeployerDaemonTest extends DeployerBaseTest {
                 .asString();
         
         assertThat(output, containsString("Hello World!"));
-        
-        
-        
-        
+
         
         //
         // verify upgrade works too

@@ -180,6 +180,9 @@ public class DeployerConsoleTest extends DeployerBaseTest {
             .findFirst()
             .orElseThrow(() -> new RuntimeException("Unable to find fresh versioned dir"));
         
+        // with only second-level precision on naming version dirs let's wait to be safe
+        Thread.sleep(1L);
+        
         //
         // upgrade #1 install
         //
@@ -199,6 +202,9 @@ public class DeployerConsoleTest extends DeployerBaseTest {
             .filter(file -> !file.equals(freshVersionedDir))
             .findFirst()
             .orElseThrow(() -> new RuntimeException("Unable to find upgrade #1 versioned dir"));
+        
+        // with only second-level precision on naming version dirs let's wait to be safe
+        Thread.sleep(1L);
         
         //
         // upgrade #2 install

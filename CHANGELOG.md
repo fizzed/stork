@@ -1,7 +1,7 @@
 Stork by Fizzed
 =======================================
 
-#### 2.6.x - 2017-09-11
+#### 2.6.0 - 2017-09-11
 
  - stork-deploy: New `retain` option to only retain a specified number of past
    versions after a successful deploy.

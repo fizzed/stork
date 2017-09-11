@@ -259,21 +259,20 @@ public class Deployer {
         target.remove(false, targetWorkDir);
         
         // prune old versions?
-        if (options.getRetain() != null && options.getRetain() > 0) {
-            if (existing.getVersionDirs() != null
-                && existing.getVersionDirs().size() > options.getRetain()) {
-                List<String> dirsToRemove = new ArrayList<>();
-                int i = 0;
-                for (VersionedPath dir : existing.getVersionDirs()) {
-                    if (i >= options.getRetain()) {
-                        dirsToRemove.add(dir.getPath());
-                    }
-                    i++;
-                }
-                for (String dir : dirsToRemove) {
-                    log.info("Pruning old dir {}", dir);
+        if (options.getRetain() != null && options.getRetain() >= 0) {
+            if (existing.getVersionDirs().size() > options.getRetain()) {
+                log.info("Will retain {} previous versions (and remove the rest)", options.getRetain());
+                
+                // determine which dirs need removed
+                List<String> dirsToRemove = 
+                    existing.getVersionDirs().stream()
+                        .skip(options.getRetain())
+                        .map(dir -> dir.getPath())
+                        .collect(Collectors.toList());
+
+                dirsToRemove.forEach(dir -> {
                     target.remove(false, dir);
-                }
+                });
             }
         }
 

@@ -72,7 +72,9 @@ public class SystemdHelper {
                         })
                         .collect(Collectors.toList());
                 
-                Files.write(systemdServiceFile, modifiedSystemdLines, StandardOpenOption.TRUNCATE_EXISTING);
+                Files.write(systemdServiceFile, modifiedSystemdLines);
+                // on windows this file is marked as read-only by default
+                systemdServiceFile.toFile().setWritable(true, true);
                 
                 log.info("Modified for install: {}", systemdServiceFile);
             } catch (IOException e) {

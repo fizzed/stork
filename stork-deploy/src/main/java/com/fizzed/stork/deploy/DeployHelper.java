@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,13 +42,20 @@ public class DeployHelper {
         Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Files.delete(file);
+                try {
+                    if (!Files.isWritable(file)) {
+                        log.error("File {} is not writable!!!", file);
+                    }
+                    Files.deleteIfExists(file);
+                } catch (IOException e) {
+                    log.error("Unable to delete {} wth attrs {}", file, attrs, e);
+                }
                 return FileVisitResult.CONTINUE;
             }
 
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException ioe) throws IOException {
-                Files.delete(dir);
+                Files.deleteIfExists(dir);
                 return FileVisitResult.CONTINUE;
             }
 

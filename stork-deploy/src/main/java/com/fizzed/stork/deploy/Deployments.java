@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +72,7 @@ public class Deployments {
         String foundBaseDir = null;
         String currentDir = null;
         String versionDir = null;
-        Set<String> versionDirs = new TreeSet<>();
+        SortedSet<VersionedPath> versionDirs = new TreeSet<>();
         Long deployedAt = null;
         
         // inventory what's currently on target's baseDir
@@ -92,7 +92,9 @@ public class Deployments {
                     }
                 } else {
                     // otherwise its a versioned dir
-                    versionDirs.add(file.getPath().toString());
+                    VersionedPath vp = new VersionedPath(
+                        file.getCreatedAt(), file.getPath().toString());
+                    versionDirs.add(vp);
                 }
             }
             

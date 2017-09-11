@@ -15,14 +15,14 @@
  */
 package com.fizzed.stork.deploy;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 public class ExistingDeployment extends Deployment {
 
     private final Long deployedAt;
-    private final Set<String> versionDirs;
+    private final SortedSet<VersionedPath> versionDirs;
 
-    public ExistingDeployment(String baseDir, String currentDir, String versionDir, String user, String group, Long deployedAt, Set<String> versionDirs) {
+    public ExistingDeployment(String baseDir, String currentDir, String versionDir, String user, String group, Long deployedAt, SortedSet<VersionedPath> versionDirs) {
         super(baseDir, currentDir, versionDir, user, group);
         this.versionDirs = versionDirs;
         this.deployedAt = deployedAt;
@@ -32,7 +32,7 @@ public class ExistingDeployment extends Deployment {
         return deployedAt;
     }
 
-    public Set<String> getVersionDirs() {
+    public SortedSet<VersionedPath> getVersionDirs() {
         return versionDirs;
     }
     

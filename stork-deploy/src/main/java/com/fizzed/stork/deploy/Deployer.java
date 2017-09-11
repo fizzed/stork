@@ -293,7 +293,7 @@ public class Deployer {
             log.info("deployed at: {}", (existing.getDeployedAt() == null ? "<none>" : DeployHelper.toFriendlyDateTime(existing.getDeployedAt())));
             
             int i = 0;
-            for (String versionDir : existing.getVersionDirs()) {
+            for (VersionedPath versionDir : existing.getVersionDirs()) {
                 if (i == 0) {
                     log.info("   all vers: {}",  versionDir);
                 } else {

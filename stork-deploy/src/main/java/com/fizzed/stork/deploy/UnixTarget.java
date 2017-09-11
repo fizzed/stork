@@ -139,7 +139,7 @@ public class UnixTarget extends SshTarget {
         for (Object path : paths) {
             sshExec.arg(path);
         }
-        sshExec.run();
+        sshExec.exitValue(0).run();
         log.info("Removed {}", (Object) paths);
     }
 

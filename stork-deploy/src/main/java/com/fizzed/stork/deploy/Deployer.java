@@ -19,7 +19,9 @@ import com.fizzed.blaze.Contexts;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -255,6 +257,25 @@ public class Deployer {
         
         // cleanup after ourselves
         target.remove(false, targetWorkDir);
+        
+        // prune old versions?
+        if (options.getRetain() != null && options.getRetain() > 0) {
+            if (existing.getVersionDirs() != null
+                && existing.getVersionDirs().size() > options.getRetain()) {
+                List<String> dirsToRemove = new ArrayList<>();
+                int i = 0;
+                for (VersionedPath dir : existing.getVersionDirs()) {
+                    if (i >= options.getRetain()) {
+                        dirsToRemove.add(dir.getPath());
+                    }
+                    i++;
+                }
+                for (String dir : dirsToRemove) {
+                    log.info("Pruning old dir {}", dir);
+                    target.remove(false, dir);
+                }
+            }
+        }
 
         log.info("Deployed {} to {}", assembly, target);
     }

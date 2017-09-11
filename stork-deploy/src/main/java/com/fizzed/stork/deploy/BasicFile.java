@@ -15,6 +15,7 @@
  */
 package com.fizzed.stork.deploy;
 
+import java.io.File;
 import java.nio.file.Path;
 
 public class BasicFile {
@@ -45,6 +46,22 @@ public class BasicFile {
 
     public int getGroupId() {
         return groupId;
+    }
+
+    @Override
+    public String toString() {
+        return path.toString();
+    }
+    
+    static public String pathToUnixString(Path path) {
+        if (path == null) {
+            return null;
+        }
+        String s = path.toString();
+        if (File.separatorChar == '\\') {
+            s = s.replace('\\', '/');
+        }
+        return s;
     }
     
 }

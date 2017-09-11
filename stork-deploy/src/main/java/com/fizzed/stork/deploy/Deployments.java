@@ -15,6 +15,7 @@
  */
 package com.fizzed.stork.deploy;
 
+import static com.fizzed.stork.deploy.BasicFile.pathToUnixString;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -56,7 +57,7 @@ public class Deployments {
         if (assembly.isSnapshot()) {
             Instant instant = Instant.ofEpochMilli(assembly.getCreatedAt());
             LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
-            String date = ldt.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss", Locale.US));
+            String date = ldt.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmssSSS", Locale.US));
             versionDir += "-" + date;
         }
         
@@ -67,6 +68,8 @@ public class Deployments {
     static public ExistingDeployment existing(Deployment deployment, Target target) {
         return existing(deployment.getBaseDir(), target);
     }
+    
+    
     
     static public ExistingDeployment existing(String baseDir, Target target) {
         String foundBaseDir = null;
@@ -83,17 +86,17 @@ public class Deployments {
             
             for (BasicFile file : files) {
                 if (file.getPath().getFileName().toString().equals("current")) {
-                    currentDir = file.getPath().toString();
+                    currentDir = pathToUnixString(file.getPath());
                     
                     // where does it point to?
                     Path versionDirPath = target.realpath(file.getPath());
                     if (versionDirPath != null) {
-                        versionDir = versionDirPath.toString();
+                        versionDir = pathToUnixString(versionDirPath);
                     }
                 } else {
                     // otherwise its a versioned dir
                     VersionedPath vp = new VersionedPath(
-                        file.getCreatedAt(), file.getPath().toString());
+                        file.getCreatedAt(), pathToUnixString(file.getPath()));
                     versionDirs.add(vp);
                 }
             }

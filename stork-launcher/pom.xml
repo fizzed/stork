@@ -15,12 +15,6 @@
     
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
             <!-- java 8 only on test compile -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

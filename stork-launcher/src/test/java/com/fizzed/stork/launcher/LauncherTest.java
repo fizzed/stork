@@ -539,7 +539,8 @@ public class LauncherTest {
         // give daemon just a little time to write its data file
         Thread.sleep(1000L);
         
-        String json = execute(0, exeCat, path.toString());
+        String stdout = execute(0, exeCat, path.toString());
+        String json = this.findJson(stdout);
 
         LaunchData output = this.readValue(json, LaunchData.class);
 

@@ -1,6 +1,10 @@
 Stork by Fizzed
 =======================================
 
+#### 2.6.1 - 2017-09-12
+
+ - Fixed `stork-launcher` dependency issue in Maven Central.
+
 #### 2.6.0 - 2017-09-11
 
  - stork-deploy: New `retain` option to only retain a specified number of past

@@ -102,6 +102,14 @@ https://github.com/fizzed/stork/releases/download/v2.6.1/stork-2.6.1.tar.gz
 </build>
 ```
 
+### gradle plugin
+```groovy
+plugins {
+  id "com.fizzed.stork" version "2.6.2"
+}
+// configuration / execution (see below)
+```
+
 ## Why not just create my own script?
 
 That's what we used to do with all of our Java apps too.  Eventually, you'll have
@@ -196,6 +204,35 @@ Maven
         ...
     </plugins>
 </build>
+```
+
+Gradle
+* task name: storkLauncher
+```groovy
+storkLaunchers {
+    outputDirectory = new File("${project.buildDir}", "stork")
+    inputFiles = ["${project.projectDir}/src/main/launchers".toString()]
+    launcher {
+        name =  "test1"
+        displayName = "test1"
+        domain = "com.fizzed.stork.test1"
+        shortDescription = "desc"
+        type = "DAEMON"
+        platforms = ["LINUX","MAC_OSX"]
+        workingDirMode = "APP_HOME"
+        mainClass="class"
+    }
+    launcher {
+            name =  "test2"
+            displayName = "test2"
+            domain = "com.fizzed.stork.test1"
+            shortDescription = "desc"
+            type = "DAEMON"
+            platforms = ["LINUX","MAC_OSX"]
+            workingDirMode = "APP_HOME"
+            mainClass="class"
+        }
+}
 ```
 
 To customize, the following properties are supported:
@@ -331,6 +368,15 @@ Maven
         </plugin>
     </plugins>
 </build>
+```
+
+Gradle
+* task name: storkAssembly
+```groovy
+storkAssembly {
+    stageDirectory = new File("${project.buildDir}", "stork")
+    outputFile = project.buildDir
+}
 ```
 
 What's nice is that target/stork still exists and you are free to directly

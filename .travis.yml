@@ -1,5 +1,5 @@
 language: java
-env:
-  - _JAVA_OPTIONS=""
+before_install:
+  - unset _JAVA_OPTIONS
 jdk:
   - oraclejdk8

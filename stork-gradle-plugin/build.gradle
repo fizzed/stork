@@ -1,20 +1,10 @@
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "com.gradle.publish:plugin-publish-plugin:0.9.8"
-    }
-}
-
 plugins {
     id 'java'
     id 'groovy'
     id 'eclipse'
     id 'idea'
     id "java-gradle-plugin"
+    id "com.gradle.plugin-publish" version "0.9.8"
 }
 
 repositories {

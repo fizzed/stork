@@ -50,7 +50,7 @@ case "$APP_ACTION_ARG" in
     # log start time first into outfile
     echo "$NAME starting at `date`" > "$NOHUP_OUT"
 
-    nohup "$JAVA_BIN" $RUN_ARGS </dev/null >"$NOHUP_OUT" 2>&1 &
+    nohup "$JAVA_EXE" $RUN_ARGS </dev/null >"$NOHUP_OUT" 2>&1 &
     PID=$!
     echo $PID > $APP_PID_FILE
 
@@ -98,7 +98,7 @@ case "$APP_ACTION_ARG" in
     trap 'echo "Removing pid file $APP_PID_FILE"; rm -f "$APP_PID_FILE"' 2 3 6 15
 
     # shell will now become the java process :-)
-    exec $JAVA_BIN $RUN_ARGS
+    exec $JAVA_EXE $RUN_ARGS
     ;;
 
   --stop)
@@ -125,7 +125,7 @@ case "$APP_ACTION_ARG" in
     trap 'echo "Removing pid file $APP_PID_FILE"; rm -f "$APP_PID_FILE"' 2 3 6 15
 
     # eval will passthru SIGHUP and allows you to CTRL-C an app in foreground
-    eval \"$JAVA_BIN\" $RUN_ARGS
+    eval \"$JAVA_EXE\" $RUN_ARGS
     ;;
 
   --status)
@@ -136,7 +136,7 @@ case "$APP_ACTION_ARG" in
     echo "lib_dir: $APP_LIB_DIR_DEBUG"
     echo "pid_file: $APP_PID_FILE_DEBUG"
     echo "java_min_version_required: $MIN_JAVA_VERSION"
-    echo "java_bin: $JAVA_BIN"
+    echo "java_exe: $JAVA_EXE"
     echo "java_version: $JAVA_VERSION"
     echo "java_run: $RUN_CMD"
     echo

@@ -2,11 +2,11 @@
 #
 # find java runtime that meets our minimum requirements
 #
-ALL_JAVA_BINS=`findAllJavaExecutables`
+ALL_JAVA_EXES=`findAllJavaExecutables`
 
-JAVA_BIN=`findFirstJavaExecutableByMinimumMajorVersion "$ALL_JAVA_BINS" "$MIN_JAVA_VERSION"`
+JAVA_EXE=`findFirstJavaExecutableByMinimumMajorVersion "$ALL_JAVA_EXES" "$MIN_JAVA_VERSION"`
 
-if [ -z "$JAVA_BIN" ]; then
+if [ -z "$JAVA_EXE" ]; then
     echo "Unable to find Java runtime on system with version >= $MIN_JAVA_VERSION"
 
     min_java_maj_ver=`parseJavaMajorVersion "$MIN_JAVA_VERSION"`
@@ -21,7 +21,7 @@ if [ -z "$JAVA_BIN" ]; then
     exit 1
 fi
 
-JAVA_VERSION=`getJavaVersion "$JAVA_BIN"`
+JAVA_VERSION=`getJavaVersion "$JAVA_EXE"`
 
 
 #
@@ -152,14 +152,14 @@ if [ "$SYMLINK_JAVA" = "1" ]; then
     if [ -L "$TARGET_SYMLINK" ]; then
         rm -f "$TARGET_SYMLINK"
     fi
-    ln -s "$JAVA_BIN" "$TARGET_SYMLINK" > /dev/null 2>&1
+    ln -s "$JAVA_EXE" "$TARGET_SYMLINK" > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         # symlink succeeded (test if it works)
         symlink_test=$("$TARGET_SYMLINK" -version 2>/dev/null)
         if [ $? -eq 0 ]; then
             # symlink worked
-            NON_SYMLINK_JAVA_BIN="$JAVA_BIN"
-            JAVA_BIN="$TARGET_SYMLINK"
+            NON_SYMLINK_JAVA_EXE="$JAVA_EXE"
+            JAVA_EXE="$TARGET_SYMLINK"
         else
             if [ $LAUNCHER_DEBUG = "1" ]; then echo "[LAUNCHER] symlink failed for java; ignoring"; fi
         fi
@@ -174,7 +174,7 @@ fi
 # NOTE: placing double/single quotes around classpath causes an issues using
 # --start with a small number of systemd versions
 RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE -Dlauncher.app.dir=$APP_HOME $JAVA_ARGS -classpath $APP_JAVA_CLASSPATH $MAIN_CLASS $APP_ARGS"
-RUN_CMD="\"$JAVA_BIN\" $RUN_ARGS"
+RUN_CMD="\"$JAVA_EXE\" $RUN_ARGS"
 
 #
 # debug for either console/daemon apps
@@ -186,11 +186,11 @@ logLauncherDebug "log_dir: $APP_LOG_DIR_DEBUG"
 logLauncherDebug "lib_dir: $APP_LIB_DIR_DEBUG"
 logLauncherDebug "pid_file: $APP_PID_FILE_DEBUG"
 logLauncherDebug "java_min_version_required: $MIN_JAVA_VERSION"
-if [ ! -z "$NON_SYMLINK_JAVA_BIN" ]; then
-    logLauncherDebug "java_bin: $NON_SYMLINK_JAVA_BIN"
-    logLauncherDebug "java_symlink: $JAVA_BIN"
+if [ ! -z "$NON_SYMLINK_JAVA_EXE" ]; then
+    logLauncherDebug "java_exe: $NON_SYMLINK_JAVA_EXE"
+    logLauncherDebug "java_symlink: $JAVA_EXE"
 else
-    logLauncherDebug "java_bin: $JAVA_BIN"
+    logLauncherDebug "java_exe: $JAVA_EXE"
 fi
 logLauncherDebug "java_version: $JAVA_VERSION"
 logLauncherDebug "java_run: $RUN_CMD"

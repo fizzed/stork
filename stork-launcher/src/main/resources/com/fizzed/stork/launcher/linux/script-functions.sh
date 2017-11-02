@@ -175,6 +175,7 @@ getJavaVersion()
     #local java_ver_line=`"$java_bin" -version 2>&1 | head -1`
     #logJavaSearchDebug "getJavaVersion ver line: $java_ver_line"
     #echo `expr "'$java_ver_line'" : '.*version.*"\(.*\)"'`
+    # extracts 1.8.0_144 or 9.0.1
     local java_ver=`"$java_bin" -version 2>&1 | grep "version" | awk '{print $3}' | tr -d \"`
     echo "$java_ver"
 }
@@ -273,14 +274,24 @@ findAllJavaExecutables()
     echo "$java_cmds"
 }
 
-
 # java_maj_ver=`parseJavaMajorVersion 1.7`
 # returns: "7"
 parseJavaMajorVersion()
 {
-    local full_version="$1"
-    local java_maj_ver=`echo "$full_version" | awk '{split($0, array, ".")} END{print array[2]}'`
-    echo $java_maj_ver
+    local version="$1"
+    local major=`echo "$version" | awk '{split($0, array, ".")} END{print array[1]}'`
+    local minor=`echo "$version" | awk '{split($0, array, ".")} END{print array[2]}'`
+    local patch=`echo "$version" | awk '{split($0, array, ".")} END{print array[3]}'`
+
+    # if major > 1 then it represents the major java version (e.g. Java 9+)
+    # we want 1.8.0_44 to return 8, 9.0.1 to return 9
+    if [ "x$major" = "x" ]; then
+        return 0
+    elif [ "$major" -gt "1" ]; then
+        echo $major
+    else
+        echo $minor
+    fi
 }
 
 

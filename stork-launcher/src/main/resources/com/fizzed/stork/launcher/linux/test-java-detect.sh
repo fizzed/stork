@@ -17,3 +17,6 @@ echo "java_bin_8: $java_bin_8"
 
 java_bin_latest_maj=`findLatestJavaExecutableByMajorVersion "$all_java_bins"`
 echo "java_bin_latest_maj: $java_bin_latest_maj"
+
+java_bin_9=`findFirstJavaExecutableByMinimumMajorVersion "$all_java_bins" "9.0"`
+echo "java_bin_9: $java_bin_9"

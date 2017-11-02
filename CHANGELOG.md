@@ -3,6 +3,7 @@ Stork by Fizzed
 
 #### x.x.x - not released yet
 
+ - stork-launcher: Java 9 support for linux/mac launchers
  - stork-maven-plugin: Artifact classifiers now used (if present) when assembling
    the stork "lib" dir.
 

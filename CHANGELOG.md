@@ -1,6 +1,11 @@
 Stork by Fizzed
 =======================================
 
+#### x.x.x - not released yet
+
+ - stork-maven-plugin: Artifact classifiers now used (if present) when assembling
+   the stork "lib" dir.
+
 #### 2.6.1 - 2017-09-12
 
  - Fixed `stork-launcher` dependency issue in Maven Central.

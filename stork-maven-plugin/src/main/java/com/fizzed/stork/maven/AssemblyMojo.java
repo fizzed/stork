@@ -85,8 +85,18 @@ public class AssemblyMojo extends AbstractMojo {
                     getLog().error("Project artifact was null (maybe not compiled into jar yet?)");
                 } else {
                     // generate final jar name (which appends groupId)
-                    String artifactName = a.getGroupId() + "." + a.getArtifactId() + "-" + a.getVersion() + ".jar";
-                    File stageArtificateFile = new File(stageLibDir, artifactName);
+                    StringBuilder jarFileName = new StringBuilder();
+                    jarFileName.append(a.getGroupId()).append(".");
+                    jarFileName.append(a.getArtifactId()).append("-");
+                    jarFileName.append(a.getVersion());
+                    // some jars have classifiers too...
+                    if (a.getClassifier() != null && !a.getClassifier().trim().isEmpty()) {
+                        jarFileName.append("-");
+                        jarFileName.append(a.getClassifier());
+                    }
+                    jarFileName.append(".").append(a.getType());
+
+                    File stageArtificateFile = new File(stageLibDir, jarFileName.toString());
                     
                     // is it a directory? (probably the modules code!)
                     if (f.isDirectory()) {

@@ -4,6 +4,8 @@ Stork by Fizzed
 #### x.x.x - not released yet
 
  - stork-launcher: Java 9 support for linux/mac launchers
+ - stork-launcher: JAVA_EXE environment variable can be used to tell launcher
+   exactly what JVM to use for starting app (e.g. JAVA_EXE=/usr/bin/java myapp)
  - stork-maven-plugin: Artifact classifiers now used (if present) when assembling
    the stork "lib" dir.
 

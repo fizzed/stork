@@ -1,10 +1,12 @@
 
 #
-# find java runtime that meets our minimum requirements
+# find java runtime that meets our minimum requirements (unless already set)
 #
-ALL_JAVA_EXES=`findAllJavaExecutables`
+if [ -z "$JAVA_EXE" ]; then
+    ALL_JAVA_EXES=`findAllJavaExecutables`
 
-JAVA_EXE=`findFirstJavaExecutableByMinimumMajorVersion "$ALL_JAVA_EXES" "$MIN_JAVA_VERSION"`
+    JAVA_EXE=`findFirstJavaExecutableByMinimumMajorVersion "$ALL_JAVA_EXES" "$MIN_JAVA_VERSION"`
+fi
 
 if [ -z "$JAVA_EXE" ]; then
     echo "Unable to find Java runtime on system with version >= $MIN_JAVA_VERSION"

@@ -534,12 +534,13 @@ public class LauncherTest {
         Files.deleteIfExists(path);
         
         // by setting working dir mode to APP_HOME - this will be relative
-        execute(0, exeEchoDaemon1, "--exec", "--data-file", path.toString());
+        // in case we are running on windows fix the path
+        execute(0, exeEchoDaemon1, "--exec", "--data-file", path.toString().replace('\\', '/'));
 
         // give daemon just a little time to write its data file
         Thread.sleep(1000L);
         
-        String stdout = execute(0, exeCat, path.toString());
+        String stdout = execute(0, exeCat, path.toString().replace('\\', '/'));
         String json = this.findJson(stdout);
 
         LaunchData output = this.readValue(json, LaunchData.class);

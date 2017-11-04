@@ -50,7 +50,8 @@ case "$APP_ACTION_ARG" in
     # log start time first into outfile
     echo "$NAME starting at `date`" > "$NOHUP_OUT"
 
-    nohup "$JAVA_EXE" $RUN_ARGS </dev/null >"$NOHUP_OUT" 2>&1 &
+    #nohup "$JAVA_EXE" $RUN_ARGS </dev/null >"$NOHUP_OUT" 2>&1 &
+    nohup "$JAVA_EXE" -Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE "-Dlauncher.app.dir=$APP_HOME" $JAVA_ARGS -classpath "$APP_JAVA_CLASSPATH" $MAIN_CLASS $APP_ARGS </dev/null >"$NOHUP_OUT" 2>&1 &
     PID=$!
     echo $PID > $APP_PID_FILE
 
@@ -98,7 +99,7 @@ case "$APP_ACTION_ARG" in
     trap 'echo "Removing pid file $APP_PID_FILE"; rm -f "$APP_PID_FILE"' 2 3 6 15
 
     # shell will now become the java process :-)
-    exec $JAVA_EXE $RUN_ARGS
+    exec "$JAVA_EXE" -Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE "-Dlauncher.app.dir=$APP_HOME" $JAVA_ARGS -classpath "$APP_JAVA_CLASSPATH" $MAIN_CLASS $APP_ARGS
     ;;
 
   --stop)
@@ -125,7 +126,7 @@ case "$APP_ACTION_ARG" in
     trap 'echo "Removing pid file $APP_PID_FILE"; rm -f "$APP_PID_FILE"' 2 3 6 15
 
     # eval will passthru SIGHUP and allows you to CTRL-C an app in foreground
-    eval \"$JAVA_EXE\" $RUN_ARGS
+    eval $RUN_CMD
     ;;
 
   --status)

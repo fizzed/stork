@@ -66,11 +66,20 @@ if NOT "%reg_best_java_bin%"=="" (
 @REM keep searching for the most acceptable version (the last one)
 call :JavaSearchDebug "Searching registry for JDK entries..."
 set reg_best_java_bin=
+
 for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\Java Development Kit" /s 2^>nul ^| find "JavaHome"') do (
     set reg_java_bin=%%j\bin\java
     call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! java_bin_accepted
     if NOT "!java_bin_accepted!" == "" set reg_best_java_bin=!java_bin_accepted!
 )
+
+@REM Java 9 switched the default key
+for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\JDK" /s 2^>nul ^| find "JavaHome"') do (
+    set reg_java_bin=%%j\bin\java
+    call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! java_bin_accepted
+    if NOT "!java_bin_accepted!" == "" set reg_best_java_bin=!java_bin_accepted!
+)
+
 if NOT "%reg_best_java_bin%"=="" (
     set java_bin_accepted=!reg_best_java_bin!
     goto :AcceptableJavaBinFound
@@ -99,7 +108,11 @@ SET full_ver=%~1
 for /f "delims=. tokens=1-2" %%v in ("%full_ver%") do (
     @REM @echo Major: %%v
     @REM @echo Minor: %%w
-    set maj_ver_num=%%w
+    if %%v gtr 1 (
+        set maj_ver_num=%%v
+    ) else (
+        set maj_ver_num=%%w
+    )
 )
 if "%maj_ver_num%"=="" (
     set maj_ver_num=0
@@ -125,14 +138,21 @@ SET java_version=
 if NOT "%JAVAVER%"=="" (
     set JAVAVER=%JAVAVER:"=%
     @REM @echo Output: %JAVAVER%
-    for /f "delims=. tokens=1-3" %%v in ("%JAVAVER%") do (
+    for /f "delims=. tokens=1-3" %%v in (%JAVAVER%) do (
         @REM @echo Major: %%v
         @REM @echo Minor: %%w
         @REM @echo Build: %%x
-        set java_version=%%w
+        if %%v gtr 1 (
+            @REM @echo was greater than 1
+            set java_version=%%v
+        ) else (
+            @REM @echo was equal to 1
+            set java_version=%%w
+        )
     )
 )
 ( endlocal
+    @REM @echo java_version: %java_version%
     set "%2=%java_version%"
     set "%3=%JAVAVER%"
 )

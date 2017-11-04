@@ -8,6 +8,8 @@ Stork by Fizzed
  - stork-launcher: JAVA_EXE environment variable can be used to tell launcher
    exactly what JVM to use for starting app (e.g. JAVA_EXE=/usr/bin/java myapp)
  - stork-launcher: Improved support for paths with spaces
+ - stork-launcher: Linux scripts now detect if they are running on Windows
+   (e.g. in Cygwin) and will search well-known paths for JVMs
  - stork-maven-plugin: Artifact classifiers now used (if present) when assembling
    the stork "lib" dir.
 

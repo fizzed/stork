@@ -41,17 +41,26 @@ findDirectory()
 getOperatingSystemName()
 {
     local u=$(uname)
-    if [ "$u" = "Linux" ]; then
-      echo "linux"
-    elif [ "$u" = "FreeBSD" ]; then
-      echo "freebsd"
-    elif [ "$u" = "OpenBSD" ]; then
-      echo "openbsd"
-    elif [ "$u" = "Darwin" ]; then
-      echo "osx"
-    else
-      echo "unknown"
-    fi
+    case "$u" in
+        Linux)
+            echo "linux"
+            ;;
+        Darwin)
+            echo "osx"
+            ;;
+        FreeBSD)
+            echo "freebsd"
+            ;;
+        OpenBSD)
+            echo "openbsd"
+            ;;
+        CYGWIN*|MINGW*|MSYS*)
+            echo "windows"
+            ;;
+        *)
+            echo "unknown"
+            ;;
+    esac
 }
 
 isOperatingSystemOSX()
@@ -88,6 +97,16 @@ isOperatingSystemOpenBSD()
 {
     local p=`getOperatingSystemName`
     if [ "$p" = "openbsd" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+isOperatingSystemWindows()
+{
+    local p=`getOperatingSystemName`
+    if [ "$p" = "windows" ]; then
         return 0
     else
         return 1
@@ -249,6 +268,10 @@ findAllJavaExecutables()
         #java_home_parents=`appendPath "$java_home_parents" "/System/Library/Frameworks/JavaVM.framework/Versions/*"`
         java_home_parents=`appendPath "$java_home_parents" "/Library/Java/JavaVirtualMachines/*/Contents/Home"`
         java_home_parents=`appendPath "$java_home_parents" "/System/Library/Java/JavaVirtualMachines/*/Contents/Home"`
+    fi
+
+    if isOperatingSystemWindows; then
+        java_home_parents=`appendPath "$java_home_parents" "/c/Program Files/Java/*"`
     fi
     
     logJavaSearchDebug "trying well-known java homes..."

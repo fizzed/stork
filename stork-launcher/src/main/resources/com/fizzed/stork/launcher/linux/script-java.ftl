@@ -175,7 +175,7 @@ fi
 
 # NOTE: placing double/single quotes around classpath causes an issues using
 # --start with a small number of systemd versions
-RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE -Dlauncher.app.dir=$APP_HOME $JAVA_ARGS -classpath $APP_JAVA_CLASSPATH $MAIN_CLASS $APP_ARGS"
+RUN_ARGS="-Dlauncher.name=$NAME -Dlauncher.type=$RUN_TYPE \"-Dlauncher.app.dir=$APP_HOME\" $JAVA_ARGS -classpath \"$APP_JAVA_CLASSPATH\" $MAIN_CLASS $APP_ARGS"
 RUN_CMD="\"$JAVA_EXE\" $RUN_ARGS"
 
 #

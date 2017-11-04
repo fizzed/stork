@@ -10,6 +10,7 @@ Stork by Fizzed
  - stork-launcher: Improved support for paths with spaces
  - stork-launcher: Linux scripts now detect if they are running on Windows
    (e.g. in Cygwin) and will search well-known paths for JVMs
+ - stork-launcher: Optimized search for JVM on Windows when looked up via registry
  - stork-maven-plugin: Artifact classifiers now used (if present) when assembling
    the stork "lib" dir.
 

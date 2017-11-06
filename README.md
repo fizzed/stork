@@ -85,7 +85,7 @@ your devops to the next level, please [reach out to us @ Fizzed, Inc.](http://fi
 
 ### Command-line
 
-https://github.com/fizzed/stork/releases/download/v2.6.1/stork-2.6.1.tar.gz
+https://github.com/fizzed/stork/releases/download/v2.7.0/stork-2.7.0.tar.gz
 
 ### Maven plugin
 
@@ -95,17 +95,17 @@ https://github.com/fizzed/stork/releases/download/v2.6.1/stork-2.6.1.tar.gz
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-maven-plugin</artifactId>
-            <version>2.6.1</version>
+            <version>2.7.0</version>
             <!-- configuration / execution (see below) -->
         </plugin>
     </plugins>
 </build>
 ```
 
-### gradle plugin
+### Gradle Plugin (to be released soon)
 ```groovy
 plugins {
-  id "com.fizzed.stork" version "2.6.2"
+  id "com.fizzed.stork" version "x.x.x"
 }
 // configuration / execution (see below)
 ```
@@ -191,7 +191,7 @@ Maven
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-maven-plugin</artifactId>
-            <version>2.6.1</version>
+            <version>2.7.0</version>
             <executions>
                 <execution>
                     <id>stork-launcher</id>
@@ -206,7 +206,8 @@ Maven
 </build>
 ```
 
-Gradle
+Gradle (to be released soon)
+
 * task name: storkLauncher
 ```groovy
 storkLaunchers {
@@ -310,7 +311,7 @@ working_dir_mode: RETAIN
 ## Overriding launcher environment variables
 
 All launcher scripts are written to allow last-minute or per-environment 
-replacement.  As of v2.6.1, let's say you needed to add a few more Java
+replacement.  As of v2.7.0, let's say you needed to add a few more Java
 system properties and wanted to execute a daemon launcher named "hellod".
 
     EXTRA_JAVA_ARGS="-Da=1 -Db=2" /opt/hellod/current/bin/hellod --run
@@ -356,7 +357,7 @@ Maven
         <plugin>
             <groupId>com.fizzed</groupId>
             <artifactId>stork-maven-plugin</artifactId>
-            <version>2.6.1</version>
+            <version>2.7.0</version>
             <executions>
                 <execution>
                     <id>stork-assembly</id>
@@ -370,7 +371,8 @@ Maven
 </build>
 ```
 
-Gradle
+Gradle (to be released soon)
+
 * task name: storkAssembly
 ```groovy
 storkAssembly {
@@ -450,7 +452,7 @@ Download blaze:
 Create a `blaze.conf` file:
 
     blaze.dependencies = [
-      "com.fizzed:stork-deploy:2.6.1"
+      "com.fizzed:stork-deploy:2.7.0"
     ]
 
 Create a `blaze.java` file:

@@ -1,10 +1,10 @@
 Stork by Fizzed
 =======================================
 
-#### x.x.x - not released yet
+#### 2.7.0 - 2017-11-05
 
- - stork-launcher: Java 9 support for launchers (JVM changed how it reports its
-   version number and stork supports both the new and old ways now)
+ - stork-launcher: Java 9 support for launchers (java version can now be set
+   to 9.0 or 1.8 or 1.7, etc.)
  - stork-launcher: JAVA_EXE environment variable can be used to tell launcher
    exactly what JVM to use for starting app (e.g. JAVA_EXE=/usr/bin/java myapp)
  - stork-launcher: Improved support for paths with spaces

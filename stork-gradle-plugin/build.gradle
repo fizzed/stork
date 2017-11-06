@@ -1,0 +1,97 @@
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'eclipse'
+    id 'idea'
+    id "java-gradle-plugin"
+    id "com.gradle.plugin-publish" version "0.9.8"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+def addDependency(configurationName, dependency) {
+    def coordinates = [
+        'group': dependency.groupId.text(),
+        'name': dependency.artifactId.text(),
+        'version': dependency.version.text()
+    ]
+    dependencies {
+        add configurationName, coordinates
+    }
+}
+
+def effectivePomFile = file('target/effective-pom.xml')
+if (effectivePomFile.file) {
+    def pom = new XmlSlurper().parseText(file('target/effective-pom.xml').text)
+    pom.dependencies.dependency.each { dependency ->
+        def scope = dependency.scope.text()
+        if (scope == 'compile') {
+            addDependency scope, dependency
+        }
+        else if (scope == 'test') {
+            addDependency 'testCompile', dependency
+        }
+    }
+}
+
+task createClasspathManifest {
+    def outputDir = file("$buildDir/$name")
+
+    inputs.files sourceSets.main.runtimeClasspath
+    outputs.dir outputDir
+
+    doLast {
+        outputDir.mkdirs()
+        file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join("\n")
+    }
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+
+    testCompile gradleTestKit()
+    testCompile 'junit:junit:4.12'
+    testRuntime files(createClasspathManifest)
+}
+
+gradlePlugin {
+    plugins {
+        storkPlugin {
+            id = "com.fizzed.stork"
+            implementationClass = "com.fizzed.stork.gradle.StorkPlugin"
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar) {
+    classifier = "javadoc"
+    from javadoc
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+pluginBundle {
+    website = 'https://github.com/fizzed/stork'
+    vcsUrl = 'https://github.com/fizzed/stork'
+    description = 'Plugin for stork launcher & assembly'
+    tags = ['distribution', 'application']
+
+    plugins {
+        storkPlugin {
+            id = "com.fizzed.stork"
+            displayName = 'Stork gradle plugin'
+        }
+    }
+}

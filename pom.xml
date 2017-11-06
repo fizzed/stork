@@ -28,6 +28,7 @@
         <slf4j.version>1.7.21</slf4j.version>
         <blaze.version>0.16.0</blaze.version>
         <crux.version>0.12.1</crux.version>
+        <gradle.version>4.0</gradle.version>
     </properties>
 
     <modules>
@@ -36,6 +37,7 @@
         <module>stork-launcher</module>
         <module>stork-assembly</module>
         <module>stork-deploy</module>
+        <module>stork-gradle-plugin</module>
         <module>stork-maven-plugin</module>
         <module>stork-cli</module>
         <module>stork-demo/stork-demo-hellod</module>

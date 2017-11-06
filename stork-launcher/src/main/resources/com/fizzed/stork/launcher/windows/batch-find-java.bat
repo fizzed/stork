@@ -7,6 +7,10 @@
 @REM   JAVA_SEARCH_DEBUG=1
 @REM
 
+if NOT "%JAVA_EXE%"=="" (
+    set java_bin_accepted=%JAVA_EXE%
+    goto :AcceptableJavaBinFound
+)
 
 set target_java_ver_num=0
 call :ExtractJavaMajorVersionNum "%MIN_JAVA_VERSION%" target_java_ver_num

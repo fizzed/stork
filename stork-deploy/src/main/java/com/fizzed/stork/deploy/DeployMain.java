@@ -51,6 +51,7 @@ public class DeployMain extends BaseApplication {
         System.out.println(" --user <user>           User that owns deploy dir");
         System.out.println(" --group <group>         Group that owns deploy dir");
         System.out.println(" --unattended            Do not prompt for answers during deploy");
+        System.out.println(" --retain                Retain the last n deployments on the target");
         System.out.println("");
     }
     
@@ -118,6 +119,10 @@ public class DeployMain extends BaseApplication {
                     argsOptions.unattended(true);
                     break;
                 }
+                case "--retain": {
+                    argsOptions.retain(parseRetainOption(nextArg(arg,args)));
+                    break;
+                }
                 default: {
                     if (arg.startsWith("-")) {
                         System.err.println("Invalid argument [" + arg + "]");
@@ -168,5 +173,23 @@ public class DeployMain extends BaseApplication {
             printErrorThenHelpHintAndExit(e.getMessage());
         }
     }
-    
+
+    private Integer parseRetainOption(String retainOption) {
+
+        Integer retainCount = -1;
+        String invalidRetainOptionErrMsg = "Given retain value is not valid! Only non-negative integers allowed!";
+
+        try {
+            retainCount = Integer.parseInt(retainOption);
+        } catch (Exception exception) {
+            printErrorThenHelpHintAndExit(invalidRetainOptionErrMsg);
+        }
+
+        if(retainCount < 0) {
+            printErrorThenHelpHintAndExit(invalidRetainOptionErrMsg);
+        }
+
+        return retainCount;
+    }
+
 }

@@ -430,7 +430,7 @@ public class LauncherTest {
         String stdout = execute(1, exeEchoConsole3);
 
         // should this be printed out to error stream rather than stdout?
-        assertThat(stdout, containsString("Unable to find Java runtime on system with version >= 1.10"));
+        assertThat(stdout, containsString("Unable to find Java runtime on system with version >= 1.99"));
     }
     
 //    @Test

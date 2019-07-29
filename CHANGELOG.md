@@ -1,6 +1,10 @@
 Stork by Fizzed
 =======================================
 
+#### 3.0.0 - 2019-07-29
+
+ - Add support for Java 11+ (@ajcamilo)
+
 #### 2.7.0 - 2017-11-05
 
  - stork-launcher: Java 9 support for launchers (java version can now be set

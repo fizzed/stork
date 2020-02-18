@@ -244,6 +244,9 @@ To customize, the following properties are supported:
  - inputFiles: An array of input directories or files to compile in a single
    invocation.  Defaults to ${basedir}/src/main/launchers
 
+ - attachArtifacts: If true the .tar.gz archive will be attached as an artifact to the maven build,
+   installed to the local repository and deployed to the remote in the deploy phase. Defaults false
+
 ### Configuration file
 
 ```yaml

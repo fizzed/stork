@@ -69,6 +69,15 @@ public class AssemblyMojo extends AbstractMojo {
      */
     @Parameter(property = "attachArtifacts", defaultValue = "false", required = true)
     protected Boolean attachArtifacts;
+
+    /**
+     * Classifier used for the Attached artifact
+     *
+     * @since 3.0.1
+     */
+    @Parameter(property = "classifier")
+    protected String classifier;
+
     
     @Parameter( defaultValue = "${project}", readonly = true )
     protected MavenProject project;
@@ -155,7 +164,7 @@ public class AssemblyMojo extends AbstractMojo {
             getLog().info("Generated maven stork assembly: " + tgzFile);
 
             if (attachArtifacts) {
-                projectHelper.attachArtifact(project, "tar.gz", "stork", tgzFile);
+                projectHelper.attachArtifact(project, "tar.gz", classifier, tgzFile);
             }
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);

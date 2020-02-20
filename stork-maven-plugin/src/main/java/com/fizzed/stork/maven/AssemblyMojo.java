@@ -9,11 +9,13 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
 
 /**
  * Stages and assemble a maven project into a stork assembly tarball.
@@ -59,10 +61,33 @@ public class AssemblyMojo extends AbstractMojo {
      */
     @Parameter(property = "skipArtifactsThatAreDirectories", defaultValue = "false", required = true)
     protected Boolean skipArtifactsThatAreDirectories;
+
+    /**
+     * Attach artifacts to the maven build?
+     *
+     * @since 3.0.1
+     */
+    @Parameter(property = "attachArtifacts", defaultValue = "false", required = true)
+    protected Boolean attachArtifacts;
+
+    /**
+     * Classifier used for the Attached artifact
+     *
+     * @since 3.0.1
+     */
+    @Parameter(property = "classifier")
+    protected String classifier;
+
     
     @Parameter( defaultValue = "${project}", readonly = true )
     protected MavenProject project;
-    
+
+    /**
+     * The Maven project helper.
+     */
+    @Component
+    private MavenProjectHelper projectHelper;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!stageDirectory.exists()) {
@@ -137,7 +162,10 @@ public class AssemblyMojo extends AbstractMojo {
             // tarball it up
             File tgzFile = AssemblyUtils.createTGZ(outputDirectory, stageDirectory, finalName);
             getLog().info("Generated maven stork assembly: " + tgzFile);
-            
+
+            if (attachArtifacts) {
+                projectHelper.attachArtifact(project, "tar.gz", classifier, tgzFile);
+            }
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }

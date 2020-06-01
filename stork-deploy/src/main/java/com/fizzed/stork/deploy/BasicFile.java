@@ -20,13 +20,24 @@ import java.nio.file.Path;
 
 public class BasicFile {
     
+    static public enum FileType {
+        DIRECTORY,
+        REGULAR_FILE,
+        SYMBOLIC_LINK,
+        OTHER
+    }
+    
     private final Path path;
+    private final FileType type;
+    private final long size;
     private final long createdAt;
     private final int userId;
     private final int groupId;
 
-    public BasicFile(Path path, long createdAt, int userId, int groupId) {
+    public BasicFile(Path path, FileType type, long size, long createdAt, int userId, int groupId) {
         this.path = path;
+        this.type = type;
+        this.size = size;
         this.createdAt = createdAt;
         this.userId = userId;
         this.groupId = groupId;
@@ -34,6 +45,14 @@ public class BasicFile {
     
     public Path getPath() {
         return path;
+    }
+
+    public FileType getType() {
+        return type;
+    }
+
+    public long getSize() {
+        return size;
     }
 
     public long getCreatedAt() {

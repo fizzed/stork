@@ -263,9 +263,9 @@ public class LauncherTest {
         // hard to determine real working dir so only do this on "local"
         if (isLocal()) {
             // verify working directory was retained
-            Path ourWorkingDir = Paths.get((String)System.getProperty("user.dir"));
-            Path appWorkingDir = Paths.get((String)output.getSystemProperties().get("user.dir"));
-            Path appHomeDir = Paths.get((String)output.getSystemProperties().get("launcher.app.dir"));
+            Path ourWorkingDir = Paths.get((String)System.getProperty("user.dir")).toRealPath().toAbsolutePath();
+            Path appWorkingDir = Paths.get((String)output.getSystemProperties().get("user.dir")).toRealPath().toAbsolutePath();;
+            Path appHomeDir = Paths.get((String)output.getSystemProperties().get("launcher.app.dir")).toRealPath().toAbsolutePath();;
 
             assertThat(appWorkingDir, is(ourWorkingDir));
             assertThat(appHomeDir, is(not(ourWorkingDir)));

@@ -106,6 +106,26 @@ public class Deployer {
                 + "Run something like 'sudo groupadd -r " + install.getGroup().get() + "' then re-run.");
         }
 
+        //
+        // inventory what is currently there?
+        //
+        List<BasicFile> currentDirFiles = target.listFilesRecursively(install.getCurrentDir(), bf -> {
+            if (bf.getPath().endsWith("log")) {
+                log.info("Skipping log dir!");
+                return false;
+            }
+            return true;
+        });
+//        List<BasicFile> currentDirFiles = target.listFiles(install.getCurrentDir());
+        if (currentDirFiles != null) {
+            currentDirFiles.forEach(bf -> {
+                log.info("{} ({}) ({} bytes)", bf.getPath(), bf.getType(), bf.getSize());
+            });
+            
+            return;
+        }
+        
+        
         // TODO: verify commands we need exist?
         //   tar if (.tar.gz), gunzip if (.zip)
 

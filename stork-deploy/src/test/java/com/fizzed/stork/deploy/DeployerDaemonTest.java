@@ -53,11 +53,11 @@ public class DeployerDaemonTest extends DeployerBaseTest {
         target.sshExec(true, true, "kill $(ps aux | grep java | grep -v grep | awk \"{print \\$2}\")")
             .exitValues(0, 1, 2)
             .run();
-        target.remove(true, "/opt/stork-daemon1");
-        target.remove(true, "/etc/init.d/stork-daemon1");
-        target.remove(true, "/etc/default/stork-daemon1");
-        target.remove(true, "/etc/sysconfig/stork-daemon1");
-        target.remove(true, "/etc/systemd/system/stork-daemon1.service");
+//        target.remove(true, "/opt/stork-daemon1");
+//        target.remove(true, "/etc/init.d/stork-daemon1");
+//        target.remove(true, "/etc/default/stork-daemon1");
+//        target.remove(true, "/etc/sysconfig/stork-daemon1");
+//        target.remove(true, "/etc/systemd/system/stork-daemon1.service");
         
         try (Assembly assembly = Assemblys.process(assemblyFile)) {
             new Deployer().deploy(assembly, options, target);

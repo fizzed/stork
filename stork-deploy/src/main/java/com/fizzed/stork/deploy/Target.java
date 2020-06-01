@@ -18,7 +18,9 @@ package com.fizzed.stork.deploy;
 import com.fizzed.blaze.util.ImmutableUri;
 import java.io.Closeable;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 abstract public class Target implements Closeable {
     
@@ -60,6 +62,27 @@ abstract public class Target implements Closeable {
     abstract public boolean hasGroup(String group);
 
     abstract public List<BasicFile> listFiles(Object path);
+    
+    public List<BasicFile> listFilesRecursively(Object path, Predicate<BasicFile> filter) {
+        List<BasicFile> allFiles = new ArrayList<>();
+        this.doListFilesRecursively(allFiles, path, filter);
+        return allFiles;
+    }
+    
+    private void doListFilesRecursively(List<BasicFile> allFiles, Object path, Predicate<BasicFile> filter) {
+        List<BasicFile> ls = this.listFiles(path);
+        if (ls != null) {
+            ls.forEach(bf -> {
+                // do we include this?
+                if (filter != null && filter.test(bf)) {
+                    allFiles.add(bf);
+                    if (bf.getType() == BasicFile.FileType.DIRECTORY) {
+                        this.doListFilesRecursively(allFiles, bf.getPath(), filter);
+                    }
+                }
+            });
+        }
+    }
     
     abstract public Path readlink(Object path);
     

@@ -29,6 +29,7 @@ import com.fizzed.blaze.ssh.SshFileAttributes;
 import com.fizzed.blaze.ssh.SshSftpNoSuchFileException;
 import com.fizzed.blaze.ssh.SshSftpSession;
 import com.fizzed.crux.util.StopWatch;
+import com.fizzed.stork.deploy.BasicFile.FileType;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +57,19 @@ public class UnixTarget extends SshTarget {
             List<BasicFile> basicFiles = new ArrayList<>(files.size());
             files.stream().forEach((file) -> {
                 SshFileAttributes attrs = file.attributes();
+                FileType type = FileType.OTHER;
+                if (attrs.isDirectory()) {
+                    type = FileType.DIRECTORY;
+                }
+                else if (attrs.isRegularFile()) {
+                    type = FileType.REGULAR_FILE;
+                }
+                else if (attrs.isSymbolicLink()) {
+                    type = FileType.SYMBOLIC_LINK;
+                }
+                
                 long createdAt = attrs.creationTime().toMillis();
-                basicFiles.add(new BasicFile(file.path(), createdAt, attrs.uid(), attrs.gid()));
+                basicFiles.add(new BasicFile(file.path(), type, attrs.size(), createdAt, attrs.uid(), attrs.gid()));
             });
             return basicFiles;
         } catch (SshSftpNoSuchFileException e) {

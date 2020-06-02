@@ -323,7 +323,9 @@ findFirstJavaExecutableByMinimumMajorVersion()
 {
     local java_bins="$1"
     local min_java_ver="$2"
+    local max_java_ver="$3"
     local target_min_java_maj_ver=`parseJavaMajorVersion "$min_java_ver"`
+    local target_max_java_maj_ver=`parseJavaMajorVersion "$max_java_ver"`
 
     local IFS=":"
     for java_bin in $java_bins; do
@@ -331,8 +333,10 @@ findFirstJavaExecutableByMinimumMajorVersion()
         logJavaSearchDebug "evaluting if $java_bin with version $java_ver >= 1.$target_min_java_maj_ver"
         java_maj_ver=`parseJavaMajorVersion "$java_ver"`
         if [ "$java_maj_ver" != "" ] && [ $java_maj_ver -ge $target_min_java_maj_ver ]; then
-             echo "$java_bin"
-             return 1
+            if [ -z "$max_java_ver" ] || [ $java_maj_ver -le $target_max_java_maj_ver ]; then
+                echo "$java_bin"
+                return 1
+            fi
         fi
     done
     return 0

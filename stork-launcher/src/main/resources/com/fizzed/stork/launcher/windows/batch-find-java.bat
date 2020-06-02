@@ -19,17 +19,21 @@ if "%target_java_ver_num%"=="0" (
     Exit /B 1
 )
 
+set target_java_ver_max=0
+call :ExtractJavaMajorVersionNum "%MAX_JAVA_VERSION%" target_java_ver_max
+
 call :JavaSearchDebug "target_java_ver_num: %target_java_ver_num%"
+call :JavaSearchDebug "target_java_ver_max: %target_java_ver_max%"
 
 @REM
 @REM is java or jre in JAVA_HOME acceptable?
 @REM
 call :JavaSearchDebug "Searching JAVA_HOME env var..."
 if NOT "%JAVA_HOME%"=="" (
-    call :IsJavaBinVersionAcceptable "!JAVA_HOME!\jre\bin\java" !target_java_ver_num! java_bin_accepted
+    call :IsJavaBinVersionAcceptable "!JAVA_HOME!\jre\bin\java" !target_java_ver_num! !target_java_ver_max! java_bin_accepted
     if NOT "!java_bin_accepted!" == "" goto :AcceptableJavaBinFound
 
-    call :IsJavaBinVersionAcceptable "!JAVA_HOME!\bin\java" !target_java_ver_num! java_bin_accepted
+    call :IsJavaBinVersionAcceptable "!JAVA_HOME!\bin\java" !target_java_ver_num! !target_java_ver_max! java_bin_accepted
     if NOT "!java_bin_accepted!" == "" goto :AcceptableJavaBinFound
 )
 
@@ -40,7 +44,7 @@ if NOT "%JAVA_HOME%"=="" (
 call :JavaSearchDebug "Searching PATH..."
 for %%X in (java.exe) do (set JAVA_IN_PATH=%%~$PATH:X)
 IF DEFINED JAVA_IN_PATH (
-    call :IsJavaBinVersionAcceptable !JAVA_IN_PATH! !target_java_ver_num! java_bin_accepted
+    call :IsJavaBinVersionAcceptable !JAVA_IN_PATH! !target_java_ver_num! !target_java_ver_max! java_bin_accepted
     if NOT "!java_bin_accepted!" == "" goto :AcceptableJavaBinFound
 )
 
@@ -61,7 +65,7 @@ for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\JDK" /s 2^>nul ^| 
     set reg_java_bin=%%j\bin\java
 )
 
-call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! java_bin_accepted
+call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! !target_java_ver_max! java_bin_accepted
 if NOT "!java_bin_accepted!" == "" set reg_best_java_bin=!java_bin_accepted!
 
 if NOT "%reg_best_java_bin%"=="" (
@@ -78,7 +82,7 @@ for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\Java Development K
     set reg_java_bin=%%j\bin\java
 )
 
-call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! java_bin_accepted
+call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! !target_java_ver_max! java_bin_accepted
 if NOT "!java_bin_accepted!" == "" set reg_best_java_bin=!java_bin_accepted!
 
 if NOT "%reg_best_java_bin%"=="" (
@@ -95,7 +99,7 @@ for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\JRE" /s 2^>nul ^| 
     set reg_java_bin=%%j\bin\java
 )
 
-call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! java_bin_accepted
+call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! !target_java_ver_max! java_bin_accepted
 if NOT "!java_bin_accepted!" == "" set reg_best_java_bin=!java_bin_accepted!
 
 if NOT "%reg_best_java_bin%"=="" (
@@ -112,7 +116,7 @@ for /f "tokens=2*" %%i in ('reg query "HKLM\Software\JavaSoft\Java Runtime Envir
     set reg_java_bin=%%j\bin\java
 )
 
-call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! java_bin_accepted
+call :IsJavaBinVersionAcceptable "!reg_java_bin!" !target_java_ver_num! !target_java_ver_max! java_bin_accepted
 if NOT "!java_bin_accepted!" == "" set reg_best_java_bin=!java_bin_accepted!
 
 if NOT "%reg_best_java_bin%"=="" (
@@ -194,26 +198,38 @@ if NOT "%JAVAVER%"=="" (
 GOTO :EOF
 
 
-@REM call :IsJavaBinVersionAcceptable java_bin target_java_ver_num java_bin_if_accepted
+@REM call :IsJavaBinVersionAcceptable java_bin target_java_ver_num target_java_ver_max java_bin_if_accepted
 :IsJavaBinVersionAcceptable
 setlocal
 SET java_bin=%~1
 SET target_java_ver_num=%~2
+SET target_java_ver_max=%~3
+@REM call :JavaSearchDebug "java_bin_ver_num: %java_bin_ver_num%"
+@REM call :JavaSearchDebug "java_bin_ver_max: %java_bin_ver_max%"
 call :JavaSearchDebug "java_bin: %java_bin%"
 call :GetJavaBinMajorVersionNum "%java_bin%" java_bin_ver_num java_full_ver
 if "%java_bin_ver_num%"=="" (
     set java_bin_ver_num=0
 )
 if %java_bin_ver_num% geq %target_java_ver_num% (
-    set java_bin_if_accepted=!java_bin!
-    call :JavaSearchDebug " version: !java_full_ver! ^(meets minimum 1.!target_java_ver_num!^)"
+    if %target_java_ver_max% gtr 0 (
+        if %java_bin_ver_num% leq %target_java_ver_max% (
+            set java_bin_if_accepted=!java_bin!
+            call :JavaSearchDebug " version: !java_full_ver! ^(meets minimum 1.!target_java_ver_num! and maximum !target_java_ver_max!^)"
+        ) else (
+            set java_bin_if_accepted=
+            call :JavaSearchDebug " version: !java_full_ver! ^(meets minimum 1.!target_java_ver_num! but NOT maximum !target_java_ver_max!^)"
+        )
+    ) else (
+        set java_bin_if_accepted=!java_bin!
+        call :JavaSearchDebug " version: !java_full_ver! ^(meets minimum 1.!target_java_ver_num!^)"
+    )
 ) else (
     set java_bin_if_accepted=
     call :JavaSearchDebug " version: !java_full_ver! ^(^less than 1.!target_java_ver_num! though^)"
 )
-)
 ( endlocal
-    set "%3=%java_bin_if_accepted%"
+    set "%4=%java_bin_if_accepted%"
 )
 GOTO :EOF
 

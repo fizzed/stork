@@ -45,7 +45,7 @@ public class ConfigurationFactory {
     static public ObjectMapper createObjectMapper() {
         // create json deserializer
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
         return mapper;
     }
 

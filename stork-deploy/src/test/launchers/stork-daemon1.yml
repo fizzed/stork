@@ -6,7 +6,8 @@ type: DAEMON
 main_class: "com.fizzed.stork.test.EchoDaemonMain"
 platforms: [ WINDOWS, LINUX, MAC_OSX ]
 working_dir_mode: APP_HOME
-min_java_version: "1.7"
+min_java_version: "7"
+max_java_version: "30"
 min_java_memory: 32
 max_java_memory: 64
 symlink_java: true

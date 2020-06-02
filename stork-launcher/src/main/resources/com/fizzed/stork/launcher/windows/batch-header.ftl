@@ -34,6 +34,7 @@ set NAME=${config.name}
 set TYPE=${config.type}
 set MAIN_CLASS=${config.mainClass}
 if "%MIN_JAVA_VERSION%"=="" set MIN_JAVA_VERSION=${config.minJavaVersion}
+if "%MAX_JAVA_VERSION%"=="" set MAX_JAVA_VERSION=${config.maxJavaVersion!"0"}
 if "%WORKING_DIR_MODE%"=="" set WORKING_DIR_MODE=${config.workingDirMode}
 if "%INCLUDE_JAVA_XRS%"=="" set INCLUDE_JAVA_XRS=${config.includeJavaXrs?string("1", "0")}
 

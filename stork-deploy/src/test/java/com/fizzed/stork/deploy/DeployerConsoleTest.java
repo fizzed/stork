@@ -172,6 +172,8 @@ public class DeployerConsoleTest extends DeployerBaseTest {
             .map(bf -> bf.getPath())
             .collect(Collectors.toList());
         
+        log.info("Files were: {}", freshFiles);
+        
         assertThat(freshFiles, hasSize(2));
         
         // find the versioned dir
@@ -180,8 +182,9 @@ public class DeployerConsoleTest extends DeployerBaseTest {
             .findFirst()
             .orElseThrow(() -> new RuntimeException("Unable to find fresh versioned dir"));
         
-        // with only second-level precision on naming version dirs let's wait to be safe
-        Thread.sleep(1L);
+        // we only have "second" level precision on deploys, on fast computers
+        // we need to wait more than a second
+        Thread.sleep(1500L);
         
         //
         // upgrade #1 install
@@ -195,6 +198,8 @@ public class DeployerConsoleTest extends DeployerBaseTest {
             .map(bf -> bf.getPath())
             .collect(Collectors.toList());
         
+        log.info("Files were: {}", upgrade1Files);
+        
         assertThat(upgrade1Files, hasSize(3));
 
         Path updrade1VersionedDir = upgrade1Files.stream()
@@ -203,8 +208,9 @@ public class DeployerConsoleTest extends DeployerBaseTest {
             .findFirst()
             .orElseThrow(() -> new RuntimeException("Unable to find upgrade #1 versioned dir"));
         
-        // with only second-level precision on naming version dirs let's wait to be safe
-        Thread.sleep(1L);
+        // we only have "second" level precision on deploys, on fast computers
+        // we need to wait more than a second
+        Thread.sleep(1500L);
         
         //
         // upgrade #2 install
@@ -217,6 +223,8 @@ public class DeployerConsoleTest extends DeployerBaseTest {
         List<Path> upgrade2Files = target.listFiles("/opt/stork-console1").stream()
             .map(bf -> bf.getPath())
             .collect(Collectors.toList());
+        
+        log.info("Files were: {}", upgrade2Files);
         
         Path updrade2VersionedDir = upgrade2Files.stream()
             .filter(file -> !file.getFileName().toString().equals("current"))

@@ -89,6 +89,7 @@ public class Configuration {
     private String extraAppArgs = "";
     private String extraJavaArgs = "";
     private String minJavaVersion = "1.6";
+    private String maxJavaVersion = null;
     private Integer minJavaMemory = null;
     private Integer maxJavaMemory = null;
     private Integer minJavaMemoryPct = null;
@@ -300,6 +301,14 @@ public class Configuration {
 
     public void setMinJavaVersion(String minJavaVersion) {
         this.minJavaVersion = minJavaVersion;
+    }
+
+    public String getMaxJavaVersion() {
+        return maxJavaVersion;
+    }
+
+    public void setMaxJavaVersion(String maxJavaVersion) {
+        this.maxJavaVersion = maxJavaVersion;
     }
 
     public Integer getMinJavaMemory() {

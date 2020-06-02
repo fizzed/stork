@@ -5,7 +5,7 @@
 if [ -z "$JAVA_EXE" ]; then
     ALL_JAVA_EXES=`findAllJavaExecutables`
 
-    JAVA_EXE=`findFirstJavaExecutableByMinimumMajorVersion "$ALL_JAVA_EXES" "$MIN_JAVA_VERSION"`
+    JAVA_EXE=`findFirstJavaExecutableByMinimumMajorVersion "$ALL_JAVA_EXES" "$MIN_JAVA_VERSION" "$MAX_JAVA_VERSION"`
 fi
 
 if [ -z "$JAVA_EXE" ]; then

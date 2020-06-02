@@ -30,7 +30,7 @@ public class TestHelper {
         if (host != null && !host.equals("")) {
             return Arrays.asList(host);
         } else {
-            return Arrays.asList("local", "ubuntu14", "ubuntu16", "windows10", "debian8", "centos7", "freebsd10", "openbsd60");
+            return Arrays.asList("local", "ubuntu14", "ubuntu16", "ubuntu20", "windows10", "debian8", "centos7", "freebsd10", "openbsd60");
         }
     }
     

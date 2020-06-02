@@ -14,8 +14,17 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "ubuntu16" do |guest|
     guest.vm.box = "bento/ubuntu-16.04"
-    guest.vm.box_version = "201708.22.0"
+    guest.vm.box_version = "201801.02.0"
     guest.vm.provision :shell, inline: "echo 'install depends'; apt update; apt install -y openjdk-8-jre-headless unzip curl"
+    # unit tests required passing along env vars in ssh commands
+    guest.vm.provision :shell, inline: "echo 'forcing sshd to accept env'; echo 'AcceptEnv *' >> /etc/ssh/sshd_config"
+    guest.vm.provision :shell, inline: "echo 'restart sshd'; service ssh restart"
+  end
+
+  config.vm.define "ubuntu20" do |guest|
+    guest.vm.box = "bento/ubuntu-20.04"
+    guest.vm.box_version = "202005.21.0"
+    guest.vm.provision :shell, inline: "echo 'install depends'; apt update; apt install -y openjdk-11-jre-headless unzip curl"
     # unit tests required passing along env vars in ssh commands
     guest.vm.provision :shell, inline: "echo 'forcing sshd to accept env'; echo 'AcceptEnv *' >> /etc/ssh/sshd_config"
     guest.vm.provision :shell, inline: "echo 'restart sshd'; service ssh restart"

@@ -20,6 +20,7 @@ TYPE="${config.type}"
 MAIN_CLASS="${config.mainClass}"
 [ -z "$WORKING_DIR_MODE" ] && WORKING_DIR_MODE="${config.workingDirMode}"
 [ -z "$MIN_JAVA_VERSION" ] && MIN_JAVA_VERSION="${config.minJavaVersion}"
+[ -z "$MAX_JAVA_VERSION" ] && MAX_JAVA_VERSION="${config.maxJavaVersion!""}"
 [ -z "$SYMLINK_JAVA" ] && SYMLINK_JAVA="${config.symlinkJava?string("1", "0")}"
 [ -z "$INCLUDE_JAVA_XRS" ] && INCLUDE_JAVA_XRS="${config.includeJavaXrs?string("1", "0")}"
 

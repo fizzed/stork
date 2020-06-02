@@ -1,6 +1,12 @@
 Stork by Fizzed
 =======================================
 
+#### 3.0.1 - 2020-06-01
+
+ - Support for new "maxJavaVersion" config property to limit JVMs in a range
+   of versions.
+ - Bump blaze to v0.21.0
+
 #### 3.0.0 - 2019-07-29
 
  - Add support for Java 11+ (@ajcamilo)

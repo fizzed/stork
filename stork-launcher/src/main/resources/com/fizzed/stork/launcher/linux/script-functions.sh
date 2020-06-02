@@ -327,13 +327,26 @@ findFirstJavaExecutableByMinimumMajorVersion()
     local target_min_java_maj_ver=`parseJavaMajorVersion "$min_java_ver"`
     local target_max_java_maj_ver=`parseJavaMajorVersion "$max_java_ver"`
 
+    logJavaSearchDebug "Searching for min java version $target_min_java_maj_ver"
+    logJavaSearchDebug "Searching for max java version $target_max_java_maj_ver"
+
     local IFS=":"
     for java_bin in $java_bins; do
         java_ver=`getJavaVersion "$java_bin"`
-        logJavaSearchDebug "evaluting if $java_bin with version $java_ver >= 1.$target_min_java_maj_ver"
+        logJavaSearchDebug "evaluting if $java_bin with version $java_ver >= $target_min_java_maj_ver"
         java_maj_ver=`parseJavaMajorVersion "$java_ver"`
+        logJavaSearchDebug "parsed major java version: $java_maj_ver"
         if [ "$java_maj_ver" != "" ] && [ $java_maj_ver -ge $target_min_java_maj_ver ]; then
-            if [ -z "$max_java_ver" ] || [ $java_maj_ver -le $target_max_java_maj_ver ]; then
+            if [ -z "$max_java_ver" ]; then
+                logJavaSearchDebug "Matches minimum java version $target_min_java_maj_ver"
+                echo "$java_bin"
+                return 1
+            elif [ $java_maj_ver -le $target_max_java_maj_ver ]; then
+                logJavaSearchDebug "Matches minimum java version $target_min_java_maj_ver and maximum $target_max_java_maj_ver"
+                echo "$java_bin"
+                return 1
+            else
+                logJavaSearchDebug "Matches minimum java version $target_min_java_maj_ver but NOT maximum $target_max_java_maj_ver"
                 echo "$java_bin"
                 return 1
             fi

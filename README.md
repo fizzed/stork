@@ -293,6 +293,10 @@ working_dir_mode: RETAIN
 # Defaults to Java 1.6.
 #min_java_version: "1.6"
 
+# Maximum version of java required (system will be searched for acceptable jvm)
+# Defaults to empty (all)
+#max_java_version: ""
+
 # Min/max fixed memory (measured in MB). Defaults to empty values which allows
 # Java to use its own defaults.
 #min_java_memory: 30
@@ -523,6 +527,6 @@ and eventually contributing to this project.
 
 ## License
 
-Copyright (C) 2014+ Fizzed, Inc.
+Copyright (C) 2020 Fizzed, Inc.
 
 This work is licensed under the Apache License, Version 2.0. See LICENSE for details.

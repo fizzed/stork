@@ -188,6 +188,7 @@ logLauncherDebug "log_dir: $APP_LOG_DIR_DEBUG"
 logLauncherDebug "lib_dir: $APP_LIB_DIR_DEBUG"
 logLauncherDebug "pid_file: $APP_PID_FILE_DEBUG"
 logLauncherDebug "java_min_version_required: $MIN_JAVA_VERSION"
+logLauncherDebug "java_max_version_required: $MAX_JAVA_VERSION"
 if [ ! -z "$NON_SYMLINK_JAVA_EXE" ]; then
     logLauncherDebug "java_exe: $NON_SYMLINK_JAVA_EXE"
     logLauncherDebug "java_symlink: $JAVA_EXE"

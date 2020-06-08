@@ -17,16 +17,20 @@ package com.fizzed.stork.deploy;
 
 import com.fizzed.blaze.core.ContextHolder;
 import com.fizzed.blaze.internal.ContextImpl;
+import com.fizzed.crux.vagrant.VagrantClient;
+import com.fizzed.crux.vagrant.VagrantClients;
 import static org.junit.Assume.*;
 import org.junit.Before;
 
 public class DeployerBaseTest {
 
+    static public final VagrantClient VAGRANT_CLIENT = VagrantClients.cachingOrEmptyClient();
+    
     protected final String host;
     
     @Before
     public void isVagrantHostRunning() {
-        assumeTrue("Is vagrant " + host + " running?", Targets.VAGRANT_CLIENT.machinesRunning().contains(host));
+        assumeTrue("Is vagrant " + host + " running?", VAGRANT_CLIENT.machinesRunning().contains(host));
     }
     
     @Before

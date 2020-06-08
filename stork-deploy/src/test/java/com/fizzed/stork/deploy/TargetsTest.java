@@ -21,6 +21,7 @@ import com.fizzed.blaze.internal.ContextImpl;
 import com.fizzed.blaze.ssh.SshSession;
 import com.fizzed.blaze.ssh.SshSftpSession;
 import com.fizzed.blaze.util.MutableUri;
+import static com.fizzed.stork.deploy.DeployerBaseTest.VAGRANT_CLIENT;
 import java.nio.file.Path;
 import java.util.Collection;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -48,15 +49,15 @@ public class TargetsTest {
     
     @Before
     public void isVagrantHostRunning() {
-        assumeTrue("is " + host + " running?", Targets.VAGRANT_CLIENT.machinesRunning().contains(host));
+        assumeTrue("is " + host + " running?", VAGRANT_CLIENT.machinesRunning().contains(host));
     }
     
     public TargetsTest(String host) {
         this.host = host;
         this.uri = MutableUri.of("ssh://{}", host);
         ContextHolder.set(new ContextImpl(null, null, null, null));
-        if (Targets.VAGRANT_CLIENT.machinesRunning().contains(host)) {
-            this.sshConfigFile = Targets.VAGRANT_CLIENT.sshConfig(host);
+        if (VAGRANT_CLIENT.machinesRunning().contains(host)) {
+            this.sshConfigFile = VAGRANT_CLIENT.sshConfig(host);
         } else {
             this.sshConfigFile = null;
         }

@@ -24,8 +24,8 @@ import java.io.IOException;
 import static com.fizzed.blaze.SecureShells.sshExec;
 import com.fizzed.blaze.ssh.SshSftpSession;
 import com.fizzed.blaze.util.MutableUri;
-import com.fizzed.crux.vagrant.VagrantClient;
-import com.fizzed.crux.vagrant.VagrantClients;
+//import com.fizzed.crux.vagrant.VagrantClient;
+//import com.fizzed.crux.vagrant.VagrantClients;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -39,8 +39,8 @@ import org.slf4j.LoggerFactory;
 public class Targets {
     static private final Logger log = LoggerFactory.getLogger(Targets.class);
 
-    static public final VagrantClient VAGRANT_CLIENT
-        = VagrantClients.cachingOrEmptyClient();
+//    static public final VagrantClient VAGRANT_CLIENT
+//        = VagrantClients.cachingOrEmptyClient();
     
     static public Target connect(String uri) throws IOException {
         SshSession ssh = sshConnect(uri);
@@ -68,14 +68,15 @@ public class Targets {
         
         switch (u.getScheme()) {
             case "ssh":
+            case "vagrant+ssh":
                 return SecureShells.sshConnect(uri).run();
-            case "vagrant+ssh": {
-                String host = u.getHost();
-                log.info("Querying vagrant ssh-config for {}", host);
-                return SecureShells.sshConnect("ssh://" + host)
-                    .configFile(VAGRANT_CLIENT.sshConfig(host))
-                    .run();
-            }
+//            case "vagrant+ssh": {
+//                String host = u.getHost();
+//                log.info("Querying vagrant ssh-config for {}", host);
+//                return SecureShells.sshConnect("ssh://" + host)
+//                    .configFile(VAGRANT_CLIENT.sshConfig(host))
+//                    .run();
+//            }
             default:
                 fail("Unsupported target uri. Support for either ssh://host or vagrant+ssh://host");
                 return null;

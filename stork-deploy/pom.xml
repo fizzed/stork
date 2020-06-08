@@ -188,15 +188,16 @@
             <scope>provided</scope>
         </dependency>
         
-        <dependency>
+<!--        <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>blaze-vagrant</artifactId>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
         
         <dependency>
             <groupId>com.fizzed</groupId>
             <artifactId>crux-vagrant</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

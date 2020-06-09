@@ -4,7 +4,7 @@
     <groupId>com.fizzed</groupId>
     <artifactId>stork</artifactId>
     <packaging>pom</packaging>
-    <version>3.1.0</version>
+    <version>3.1.1-SNAPSHOT</version>
     <name>stork</name>
 
     <parent>
@@ -16,7 +16,7 @@
     <scm>
         <url>https://github.com/fizzed/stork</url>
         <connection>scm:git:git@github.com:fizzed/stork.git</connection>
-        <tag>v3.1.0</tag>
+        <tag>master</tag>
     </scm>
     
     <properties>

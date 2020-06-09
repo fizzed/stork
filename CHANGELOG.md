@@ -1,6 +1,11 @@
 Stork by Fizzed
 =======================================
 
+#### 3.1.0 - 2020-06-09
+
+ - Bump blaze to v1.0.0
+ - Bump crux to v1.0.23
+
 #### 3.0.1 - 2020-06-01
 
  - Support for new "maxJavaVersion" config property to limit JVMs in a range

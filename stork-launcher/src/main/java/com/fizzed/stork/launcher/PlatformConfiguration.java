@@ -17,10 +17,6 @@ package com.fizzed.stork.launcher;
 
 import com.fizzed.stork.launcher.Configuration.DaemonMethod;
 
-/**
- *
- * @author joelauer
- */
 public class PlatformConfiguration {
     
     private Configuration.DaemonMethod daemonMethod;
@@ -77,5 +73,5 @@ public class PlatformConfiguration {
     public void setRunDir(String runDir) {
         this.runDir = runDir;
     }
-    
+
 }

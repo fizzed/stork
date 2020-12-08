@@ -114,8 +114,10 @@ public class Configuration {
     
     private Map<Platform,PlatformConfiguration> platformConfigurations;
     
+    private String systemdServiceSection;
+    
     public Configuration() {
-        this.platformConfigurations = new HashMap<Platform,PlatformConfiguration>();
+        this.platformConfigurations = new HashMap<>();
         // create default linux and windows configurations
         PlatformConfiguration linuxConfig = new PlatformConfiguration();
         // http://stackoverflow.com/questions/958249/whats-the-difference-between-nohup-and-a-daemon
@@ -504,5 +506,13 @@ public class Configuration {
         
         return v;
     }
-    
+
+    public String getSystemdServiceSection() {
+        return systemdServiceSection;
+    }
+
+    public void setSystemdServiceSection(String systemdServiceSection) {
+        this.systemdServiceSection = systemdServiceSection;
+    }
+
 }

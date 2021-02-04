@@ -11,6 +11,7 @@ KillMode=process
 Restart=on-failure
 User=${config.getPlatformUser("LINUX")!""}
 Group=${config.getPlatformGroup("LINUX")!""}
+${config.getSystemdServiceSection()!""}
 
 [Install]
 WantedBy=multi-user.target

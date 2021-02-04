@@ -1,6 +1,10 @@
 Stork by Fizzed
 =======================================
 
+#### 3.1.1 - 2020-12-07
+
+ - Support for custom service section to be appended for SystemD configs
+
 #### 3.1.0 - 2020-06-09
 
  - Bump blaze to v1.0.0

@@ -25,8 +25,8 @@ if %bit64%==y set TargetExe=${config.name}64.exe
 @REM
 set ARG=
 for /F "tokens=1*" %%a in ("%APP_ARGS%") do (
-  set ARG=%%a
-  set APP_ARGS=%%b
+  set APP_ARGS=%%a
+  set ARG=%%b
 )
 
 IF "%ARG%"=="--run" (

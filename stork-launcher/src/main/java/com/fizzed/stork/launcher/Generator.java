@@ -399,13 +399,13 @@ public class Generator {
         File service64File = new File(binDir, config.getName() + "64.exe");
         File ini64File = new File(binDir, config.getName() + "64.ini");
         
-        copyResource("windows/jslwin/jsl_static.exe", serviceFile);
+        copyResource("windows/jslwin/jsl.exe", serviceFile);
         logger.info("  helper {}", serviceFile);
         
         generateWindowsJSLWinINI(config, iniFile, model);
         logger.info("  helper {}", iniFile);
         
-        copyResource("windows/jslwin/jsl_static64.exe", service64File);
+        copyResource("windows/jslwin/jsl64.exe", service64File);
         logger.info("  helper {}", service64File);
         
         generateWindowsJSLWinINI(config, ini64File, model);

@@ -22,20 +22,20 @@ run your console application or start/stop your daemon.  The executables should
 look and feel like a native application.
 
 Examples include batch files or shell scripts to start your Java app. Assume
-file permissions of 0755.
+file permissions of 0775.
 
 ### lib/ (libraries)
 
 All shared files and libraries required for running the application(s).
 
 Examples include jar files containing compiled Java classes. Assume file permissions
-of 0644.
+of 0664.
 
 ### conf/ (configuration data)
 
 All configuration files for the application(s). Any files in this directory
 need to be carefully examined during an upgrade -- since the user may have
-edited the config for their specific system.  Assume file permissions of 0644.
+edited the config for their specific system.  Assume file permissions of 0664.
 
 ### share/ (architecture-independent data)
 
@@ -43,7 +43,7 @@ For all read-only architecture independent data files.
 
 Examples would include sql scripts to setup databases; linux/unix init.d scripts, or
 documentation. Assume this data will be overwritten on application upgrades.
-Assume file permissions of 0644.
+Assume file permissions of 0664.
 
 ### data/ (variable state information)
 

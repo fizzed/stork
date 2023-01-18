@@ -1,19 +1,16 @@
-Stork by Fizzed
-=======================================
+# Stork by Fizzed
 
-[![Build Status](https://travis-ci.org/fizzed/stork.svg?branch=master)](https://travis-ci.org/fizzed/stork)
-[![Build status](https://ci.appveyor.com/api/projects/status/1yv9d52o4lshaawp/branch/master?svg=true)](https://ci.appveyor.com/project/jjlauer/stork/branch/master)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fizzed/stork/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fizzed/stork)
+[![Maven Central](https://img.shields.io/maven-central/v/com.fizzed/stork?color=blue&style=flat-square)](https://mvnrepository.com/artifact/com.fizzed/stork)
+
+[![Java 8](https://img.shields.io/github/actions/workflow/status/fizzed/stork/java8.yaml?branch=master&label=Java%208&style=flat-square)](https://github.com/fizzed/stork/actions/workflows/java8.yaml)
+[![Java 11](https://img.shields.io/github/actions/workflow/status/fizzed/stork/java11.yaml?branch=master&label=Java%2011&style=flat-square)](https://github.com/fizzed/stork/actions/workflows/java11.yaml)
+[![Java 17](https://img.shields.io/github/actions/workflow/status/fizzed/stork/java17.yaml?branch=master&label=Java%2017&style=flat-square)](https://github.com/fizzed/stork/actions/workflows/java17.yaml)
+
+[![Linux x64](https://img.shields.io/github/actions/workflow/status/fizzed/stork/java11.yaml?branch=master&label=Linux%20x64&style=flat-square)](https://github.com/fizzed/stork/actions/workflows/java11.yaml)
+[![MacOS x64](https://img.shields.io/github/actions/workflow/status/fizzed/stork/macos-x64.yaml?branch=master&label=MacOS%20x64&style=flat-square)](https://github.com/fizzed/stork/actions/workflows/macos-x64.yaml)
+[![Windows x64](https://img.shields.io/github/actions/workflow/status/fizzed/stork/windows-x64.yaml?branch=master&label=Windows%20x64&style=flat-square)](https://github.com/fizzed/stork/actions/workflows/windows-x64.yaml)
 
 [Fizzed, Inc.](http://fizzed.com) (Follow on Twitter: [@fizzed_inc](http://twitter.com/fizzed_inc))
-
-## Sponsored by
-
-Stork is proudly sponsored by <a href="https://www.greenback.com">Greenback</a>.  We love the service and think you would too.
-
-<a href="https://www.greenback.com?utm_source=github.com&utm_medium=sponsorship&utm_campaign=fizzed-stork" title="Greenback - Expenses made simple"><img src="https://www.greenback.com/assets/images/logo-greenback.png" height="48" width="166" alt="Greenback"></a>
-
-<a href="https://www.greenback.com?utm_source=github.com&utm_medium=sponsorship&utm_campaign=fizzed-stork" title="Greenback - Expenses made simple">More engineering. Less paperwork. Expenses made simple.</a>
 
 ## Overview
 

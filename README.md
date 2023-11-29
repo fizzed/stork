@@ -10,6 +10,38 @@
 [![MacOS x64](https://img.shields.io/github/actions/workflow/status/fizzed/stork/macos-x64.yaml?branch=master&label=MacOS%20x64&style=flat-square)](https://github.com/fizzed/stork/actions/workflows/macos-x64.yaml)
 [![Windows x64](https://img.shields.io/github/actions/workflow/status/fizzed/stork/windows-x64.yaml?branch=master&label=Windows%20x64&style=flat-square)](https://github.com/fizzed/stork/actions/workflows/windows-x64.yaml)
 
+## Overview
+
+So you've engineered that amazing Java-based application.  Then what?  Distributing
+it or getting it into production is your new problem.  Fat/uber jar? Vagrant?
+Docker? Rkt? LXD? Traditional bare metal deploy? There are so many options!
+
+Stork is a collection of lightweight utilities for optimizing your "after-build" workflow by
+filling in the gap between your Java build system and execution.  Using well-tested
+methods across operating systems, containers, etc. Stork will let you safely
+and securely run your app in any environment -- be it Docker, Rkt, LXD, or
+traditional systems.  There are 3 main Stork components that you can pick and
+choose from to help with your app:
+
+- [stork-launcher](#stork-launcher) will generate well-tested, rock solid, secure
+  launcher scripts from a yaml configuration file for either console or daemon/service
+  JVM apps. The generated launchers will run your app the same way regardless of whether
+  running within a container or numerous different operating systems.
+
+- [stork-assembly](#stork-assembly) will assemble your JVM app into a standard,
+  well-defined [canonical layout](docs/CANONICAL_LAYOUT.md) as a tarball ready
+  for universal distribution or deployment.  Regardless of whether your user
+  is on Linux, Windows, OSX, *BSD, etc., our tarball will include everything
+  for your user to be happy.
+
+- [stork-deploy](#stork-deploy) will rapidly and securely deploy your assembly
+  via SSH into a versioned directory structure to various operating systems.
+  It will handle restarting daemons, use strict user/group permissions, and verify
+  the deploy worked.  Power users can combine with [Blaze](https://github.com/fizzed/blaze)
+  for even more advanced deploys.
+
+[Using Stork to deploy a production Ninja Framework app](http://fizzed.com/blog/2015/01/using-stork-deploy-production-ninja-framework-app)
+
 ## Sponsorship & Support
 
 ![](https://cdn.fizzed.com/github/fizzed-logo-100.png)
@@ -25,38 +57,6 @@ Project sponsors may include the following benefits:
 - Feature development & roadmap
 - Priority bug fixes
 - Privately hosted continuous integration tests for their unique edge or use cases
-
-## Overview
-
-So you've engineered that amazing Java-based application.  Then what?  Distributing
-it or getting it into production is your new problem.  Fat/uber jar? Vagrant?
-Docker? Rkt? LXD? Traditional bare metal deploy? There are so many options!
-
-Stork is a collection of lightweight utilities for optimizing your "after-build" workflow by
-filling in the gap between your Java build system and execution.  Using well-tested
-methods across operating systems, containers, etc. Stork will let you safely
-and securely run your app in any environment -- be it Docker, Rkt, LXD, or
-traditional systems.  There are 3 main Stork components that you can pick and
-choose from to help with your app:
-
- - [stork-launcher](#stork-launcher) will generate well-tested, rock solid, secure
-   launcher scripts from a yaml configuration file for either console or daemon/service
-   JVM apps. The generated launchers will run your app the same way regardless of whether
-   running within a container or numerous different operating systems.
-
- - [stork-assembly](#stork-assembly) will assemble your JVM app into a standard,
-   well-defined [canonical layout](docs/CANONICAL_LAYOUT.md) as a tarball ready
-   for universal distribution or deployment.  Regardless of whether your user
-   is on Linux, Windows, OSX, *BSD, etc., our tarball will include everything
-   for your user to be happy.
-
- - [stork-deploy](#stork-deploy) will rapidly and securely deploy your assembly
-   via SSH into a versioned directory structure to various operating systems.
-   It will handle restarting daemons, use strict user/group permissions, and verify
-   the deploy worked.  Power users can combine with [Blaze](https://github.com/fizzed/blaze)
-   for even more advanced deploys.
-
-[Using Stork to deploy a production Ninja Framework app](http://fizzed.com/blog/2015/01/using-stork-deploy-production-ninja-framework-app)
 
 ## Example
 

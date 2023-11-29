@@ -84,14 +84,6 @@ Or you can build a Docker image:
     docker build -t stork-demo-hellod .
     docker run -it stork-demo-hellod
 
-## Sponsoring development? Commercial support? Devops consulting?
-
-Maintaining Stork takes a significant amount of time and resources.  If you're
-interested in sponsoring Stork, funding new features, or are looking to take
-your devops to the next level, please [reach out to us @ Fizzed, Inc.](http://fizzed.com/contact)
-
-<a href="http://fizzed.com/contact" title="Fizzed"><img src="http://fizzed.com/assets/mfizz/img/logo-new.300x210.png" width="150" height="105" alt="Fizzed"></a>
-
 ## Usage
 
 ### Command-line

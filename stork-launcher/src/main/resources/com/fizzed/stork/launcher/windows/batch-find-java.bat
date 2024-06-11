@@ -44,7 +44,7 @@ if NOT "%JAVA_HOME%"=="" (
 call :JavaSearchDebug "Searching PATH..."
 for %%X in (java.exe) do (set JAVA_IN_PATH=%%~$PATH:X)
 IF DEFINED JAVA_IN_PATH (
-    call :IsJavaBinVersionAcceptable !JAVA_IN_PATH! !target_java_ver_num! !target_java_ver_max! java_bin_accepted
+    call :IsJavaBinVersionAcceptable "!JAVA_IN_PATH!" !target_java_ver_num! !target_java_ver_max! java_bin_accepted
     if NOT "!java_bin_accepted!" == "" goto :AcceptableJavaBinFound
 )
 
@@ -166,6 +166,7 @@ GOTO:EOF
 :GetJavaBinMajorVersionNum
 setlocal
 SET java_bin=%~1
+SET JAVA_TOOL_OPTIONS=
 
 @REM echo getting ver for: %java_bin%
 

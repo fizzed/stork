@@ -176,7 +176,8 @@ public class LauncherTest {
                         .args((Object[]) args)
                         .exitValue(exitValue)
                         .pipeOutput(captureOutput)
-                        .pipeError(captureOutput);
+                        .pipeError(captureOutput)
+                        .pipeInput(Streamables.nullInput());
                 
                 if (environment != null) {
                     for (Map.Entry<String,String> entry : environment.entrySet()) {

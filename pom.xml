@@ -1,7 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.fizzed</groupId>
     <artifactId>stork</artifactId>
     <packaging>pom</packaging>
     <version>3.1.4-SNAPSHOT</version>
@@ -10,7 +9,7 @@
     <parent>
         <groupId>com.fizzed</groupId>
         <artifactId>maven-parent</artifactId>
-        <version>2.2.1</version>
+        <version>2.7.0</version>
     </parent>
 
     <scm>
@@ -20,15 +19,14 @@
     </scm>
     
     <properties>
-        <java.version>1.7</java.version>
+        <java.version>1.8</java.version>
         <main.java.package />
         <!-- workaround travis ci maven version requirement -->
         <maven.enforce.version>3.2.5</maven.enforce.version>
-        <jackson.version>2.8.1</jackson.version>
+        <jackson.version>2.14.1</jackson.version>
         <slf4j.version>1.7.21</slf4j.version>
-        <blaze.version>1.0.2</blaze.version>
-        <crux.version>1.0.40</crux.version>
-        <gradle.version>4.0</gradle.version>
+        <blaze.version>1.6.0</blaze.version>
+        <crux.version>1.0.48</crux.version>
     </properties>
 
     <modules>
@@ -43,6 +41,19 @@
         <module>stork-demo/stork-demo-hellod</module>
         <module>stork-demo/stork-demo-dropwizard</module>
     </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <reuseForks>false</reuseForks>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencyManagement>
         <dependencies>            

@@ -86,7 +86,7 @@ public class blaze {
         new Target("macos", "x64").setTags("test").setHost("bmh-build-x64-macos-latest"),
         new Target("macos", "arm64").setTags("test").setHost("bmh-build-arm64-macos-latest"),
         new Target("windows", "x64").setTags("test").setHost("bmh-build-x64-windows-latest"),
-        //new Target("windows", "arm64").setTags("test").setHost("bmh-build-arm64-windows-latest"),
+        new Target("windows", "arm64").setTags("test").setHost("bmh-build-arm64-windows-latest"),
         new Target("freebsd", "x64").setTags("test").setHost("bmh-build-x64-freebsd-latest"),
         new Target("openbsd", "x64").setTags("test").setHost("bmh-build-x64-openbsd-latest")
     );

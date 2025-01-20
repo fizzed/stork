@@ -1,15 +1,10 @@
 import static com.fizzed.blaze.Contexts.fail;
 import static com.fizzed.blaze.Systems.exec;
 import static com.fizzed.blaze.Systems.which;
-import static java.util.Arrays.asList;
 
-import com.fizzed.blaze.Task;
 import com.fizzed.blaze.project.PublicBlaze;
-import com.fizzed.buildx.Buildx;
-import com.fizzed.buildx.Target;
 
 import java.nio.file.Path;
-import java.util.List;
 
 public class blaze extends PublicBlaze {
     

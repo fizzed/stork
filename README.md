@@ -101,10 +101,6 @@ Or you can build a Docker image:
 
 ## Usage
 
-### Command-line
-
-https://github.com/fizzed/stork/releases/download/v3.2.0/stork-3.2.0.tar.gz
-
 ### Maven plugin
 
 ```xml
@@ -118,14 +114,6 @@ https://github.com/fizzed/stork/releases/download/v3.2.0/stork-3.2.0.tar.gz
         </plugin>
     </plugins>
 </build>
-```
-
-### Gradle Plugin (to be released soon)
-```groovy
-plugins {
-  id "com.fizzed.stork" version "x.x.x"
-}
-// configuration / execution (see below)
 ```
 
 ## Why not just create my own script?
@@ -222,36 +210,6 @@ Maven
         ...
     </plugins>
 </build>
-```
-
-Gradle (to be released soon)
-
-* task name: storkLauncher
-```groovy
-storkLaunchers {
-    outputDirectory = new File("${project.buildDir}", "stork")
-    inputFiles = ["${project.projectDir}/src/main/launchers".toString()]
-    launcher {
-        name =  "test1"
-        displayName = "test1"
-        domain = "com.fizzed.stork.test1"
-        shortDescription = "desc"
-        type = "DAEMON"
-        platforms = ["LINUX","MAC_OSX"]
-        workingDirMode = "APP_HOME"
-        mainClass="class"
-    }
-    launcher {
-            name =  "test2"
-            displayName = "test2"
-            domain = "com.fizzed.stork.test1"
-            shortDescription = "desc"
-            type = "DAEMON"
-            platforms = ["LINUX","MAC_OSX"]
-            workingDirMode = "APP_HOME"
-            mainClass="class"
-        }
-}
 ```
 
 To customize, the following properties are supported:
@@ -545,6 +503,6 @@ and eventually contributing to this project.
 
 ## License
 
-Copyright (C) 2020 Fizzed, Inc.
+Copyright (C) 2025 Fizzed, Inc.
 
 This work is licensed under the Apache License, Version 2.0. See LICENSE for details.

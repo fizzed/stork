@@ -52,6 +52,7 @@
                         <configuration>
                             <finalName>com.fizzed.stork-test-app-${project.version}</finalName>
                             <outputDirectory>${project.build.directory}/stork/lib</outputDirectory>
+                            <classifier>dummy</classifier>
                         </configuration>
                     </execution>
                 </executions>

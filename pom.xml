@@ -37,9 +37,9 @@
         <module>stork-deploy</module>
         <module>stork-maven-plugin</module>
         <!--<module>stork-gradle-plugin</module>-->
-        <module>stork-cli</module>
         <module>stork-demo/stork-demo-hellod</module>
         <module>stork-demo/stork-demo-dropwizard</module>
+        <module>stork-cli</module>
     </modules>
 
     <build>

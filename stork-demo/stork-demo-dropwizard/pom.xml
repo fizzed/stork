@@ -18,16 +18,11 @@
         <main.java.package>com.fizzed.stork.demo.dropwizard</main.java.package>
         <dropwizard.version>0.7.1</dropwizard.version>
         <jackson.version>2.3.3</jackson.version>
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
     
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
             <!-- eating our own dog food :-) -->
             <plugin>
                 <groupId>com.fizzed</groupId>

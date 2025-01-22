@@ -15,16 +15,11 @@
     
     <properties>
         <main.java.package>com.fizzed.stork.demo.hellod</main.java.package>
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
             <!-- eating our own dog food :-) -->
             <plugin>
                 <groupId>com.fizzed</groupId>

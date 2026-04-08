@@ -85,24 +85,36 @@ public class UnixTarget extends SshTarget {
     
     @Override
     public void chown(boolean sudo, boolean recursive, String owner, String target) {
-        String options = "";
+        final List<Object> args = new ArrayList<>();
+        args.add("chown");
+
         if (recursive) {
-            options = "-R";
+            args.add("-R");
         }
 
-        sshExec(sudo, false, "chown", options, owner, target).run();
+        args.add(owner);
+        args.add(target);
+
+        this.sshExec(sudo, false, args.toArray())
+            .run();
 
         log.info("Set owner to {} for {}", owner, target);
     }
 
     @Override
     public void chmod(boolean sudo, boolean recursive, String permissions, String target) {
-        String options = "";
+        final List<Object> args = new ArrayList<>();
+        args.add("chmod");
+
         if (recursive) {
-            options = "-R";
+            args.add("-R");
         }
 
-        sshExec(sudo, false, "chmod", options, permissions, target).run();
+        args.add(permissions);
+        args.add(target);
+
+        this.sshExec(sudo, false, args.toArray())
+            .run();
 
         log.info("Set perms to {} for {}", permissions, target);
     }
@@ -376,12 +388,7 @@ public class UnixTarget extends SshTarget {
     }
     
     private void installSystemdDaemon(Deployment install, Daemon daemon, boolean onBoot) {
-        
-        
         // upload modified file to target, then copy it over
-        
-        
-        
         String sourceServiceFile = install.getCurrentDir() + "/share/systemd/" + daemon.getName() + ".service";
         String serviceFile = "/etc/systemd/system/" + daemon.getName() + ".service";
         copyFiles(true, sourceServiceFile, serviceFile);

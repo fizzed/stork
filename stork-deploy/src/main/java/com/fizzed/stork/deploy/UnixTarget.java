@@ -171,10 +171,7 @@ public class UnixTarget extends SshTarget {
         try {
             String userId
                 = sshExec(false, false, "id", "-u", user)
-                    .pipeOutput(Streamables.captureOutput(false))
-                    .pipeError(Streamables.nullOutput())
-                    .runResult()
-                    .map(Actions::toCaptureOutput)
+                    .runCaptureOutput(false)
                     .asString()
                     .trim();
             return Integer.valueOf(userId);
@@ -192,10 +189,7 @@ public class UnixTarget extends SshTarget {
         try {
             String groupId
                 = sshExec(false, false, "id", "-g", group)
-                    .pipeOutput(Streamables.captureOutput(false))
-                    .pipeError(Streamables.nullOutput())
-                    .runResult()
-                    .map(Actions::toCaptureOutput)
+                    .runCaptureOutput(false)
                     .asString()
                     .trim();
             return Integer.valueOf(groupId);
@@ -276,9 +270,7 @@ public class UnixTarget extends SshTarget {
                         // run a status command so user can see what's up
                         String output
                             = sshExec(true, false, "systemctl", "status", daemon.getName())
-                                .pipeOutput(Streamables.captureOutput(false))
-                                .runResult()
-                                .map(Actions::toCaptureOutput)
+                                .runCaptureOutput(false)
                                 .asString();
                     }
                     
@@ -319,7 +311,7 @@ public class UnixTarget extends SshTarget {
             String defaultsFile = "/etc/" + dir + "/" + daemon.getName();
 
             String cmd
-                = "if [ -d /etc/" + dir + " ]; then "
+                = "'if [ -d /etc/" + dir + " ]; then "
                 + "  if [ ! -f " + defaultsFile + " ]; then "    
                 + "    echo \"APP_HOME=\\\"" + install.getCurrentDir() + "\\\"\" > " + defaultsFile + "; "
                 + "    echo \"APP_USER=\\\"" + install.getUser().orElse("") + "\\\"\" >> " + defaultsFile + "; "
@@ -330,7 +322,7 @@ public class UnixTarget extends SshTarget {
                 + "  fi "
                 + "else "
                 + "  exit 10; "
-                + "fi";
+                + "fi'";
 
             Integer exitValue
                 = sshExec(true, true, cmd)

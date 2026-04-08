@@ -187,7 +187,8 @@ public class LauncherTest {
                 
                 exec.run();
             } else {
-                SshExec exec = (SshExec)SecureShells.sshExec(ssh)
+                Exec exec
+                    = SecureShells.sshExec(ssh)
                         .command(exe)
                         .args((Object[]) args)
                         .exitValue(exitValue)

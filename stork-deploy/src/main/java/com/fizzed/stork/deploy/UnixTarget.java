@@ -171,7 +171,7 @@ public class UnixTarget extends SshTarget {
         try {
             String userId
                 = sshExec(false, false, "id", "-u", user)
-                    .pipeOutput(Streamables.captureOutput())
+                    .pipeOutput(Streamables.captureOutput(false))
                     .pipeError(Streamables.nullOutput())
                     .runResult()
                     .map(Actions::toCaptureOutput)
@@ -192,7 +192,7 @@ public class UnixTarget extends SshTarget {
         try {
             String groupId
                 = sshExec(false, false, "id", "-g", group)
-                    .pipeOutput(Streamables.captureOutput())
+                    .pipeOutput(Streamables.captureOutput(false))
                     .pipeError(Streamables.nullOutput())
                     .runResult()
                     .map(Actions::toCaptureOutput)
@@ -276,7 +276,7 @@ public class UnixTarget extends SshTarget {
                         // run a status command so user can see what's up
                         String output
                             = sshExec(true, false, "systemctl", "status", daemon.getName())
-                                .pipeOutput(Streamables.captureOutput())
+                                .pipeOutput(Streamables.captureOutput(false))
                                 .runResult()
                                 .map(Actions::toCaptureOutput)
                                 .asString();

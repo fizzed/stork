@@ -24,8 +24,6 @@
         <!-- workaround travis ci maven version requirement -->
         <maven.enforce.version>3.2.5</maven.enforce.version>
         <jackson.version>2.14.1</jackson.version>
-        <slf4j.version>1.7.21</slf4j.version>
-        <blaze.version>1.6.0</blaze.version>
         <slf4j.version>2.0.17</slf4j.version>
         <blaze.version>2.6.0</blaze.version>
         <crux.version>1.0.48</crux.version>

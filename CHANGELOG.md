@@ -1,12 +1,16 @@
 Stork by Fizzed
 =======================================
 
-#### 3.5.0 - 2026-04-08
+#### 3.3.0 - 2026-04-08
 
  - Bump min blaze to v2.6.0; make captureOutput to stdout as false during deploy
  - Fix ssh chown and chmod to not provide an empty parameter (which breaks on blaze v2+)
  - Fix init system detection (which changed with blaze v2+)
  - Update dependency versions to latest
+
+#### 3.2.0 - 2025-01-22
+
+ - Numerous fixes to run on latest JVMs
 
 #### 3.1.1 - 2020-12-07
 

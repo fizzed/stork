@@ -85,24 +85,36 @@ public class UnixTarget extends SshTarget {
     
     @Override
     public void chown(boolean sudo, boolean recursive, String owner, String target) {
-        String options = "";
+        final List<Object> args = new ArrayList<>();
+        args.add("chown");
+
         if (recursive) {
-            options = "-R";
+            args.add("-R");
         }
 
-        sshExec(sudo, false, "chown", options, owner, target).run();
+        args.add(owner);
+        args.add(target);
+
+        this.sshExec(sudo, false, args.toArray())
+            .run();
 
         log.info("Set owner to {} for {}", owner, target);
     }
 
     @Override
     public void chmod(boolean sudo, boolean recursive, String permissions, String target) {
-        String options = "";
+        final List<Object> args = new ArrayList<>();
+        args.add("chmod");
+
         if (recursive) {
-            options = "-R";
+            args.add("-R");
         }
 
-        sshExec(sudo, false, "chmod", options, permissions, target).run();
+        args.add(permissions);
+        args.add(target);
+
+        this.sshExec(sudo, false, args.toArray())
+            .run();
 
         log.info("Set perms to {} for {}", permissions, target);
     }
@@ -159,7 +171,7 @@ public class UnixTarget extends SshTarget {
         try {
             String userId
                 = sshExec(false, false, "id", "-u", user)
-                    .pipeOutput(Streamables.captureOutput())
+                    .pipeOutput(Streamables.captureOutput(false))
                     .pipeError(Streamables.nullOutput())
                     .runResult()
                     .map(Actions::toCaptureOutput)
@@ -180,7 +192,7 @@ public class UnixTarget extends SshTarget {
         try {
             String groupId
                 = sshExec(false, false, "id", "-g", group)
-                    .pipeOutput(Streamables.captureOutput())
+                    .pipeOutput(Streamables.captureOutput(false))
                     .pipeError(Streamables.nullOutput())
                     .runResult()
                     .map(Actions::toCaptureOutput)
@@ -264,7 +276,7 @@ public class UnixTarget extends SshTarget {
                         // run a status command so user can see what's up
                         String output
                             = sshExec(true, false, "systemctl", "status", daemon.getName())
-                                .pipeOutput(Streamables.captureOutput())
+                                .pipeOutput(Streamables.captureOutput(false))
                                 .runResult()
                                 .map(Actions::toCaptureOutput)
                                 .asString();
@@ -376,12 +388,7 @@ public class UnixTarget extends SshTarget {
     }
     
     private void installSystemdDaemon(Deployment install, Daemon daemon, boolean onBoot) {
-        
-        
         // upload modified file to target, then copy it over
-        
-        
-        
         String sourceServiceFile = install.getCurrentDir() + "/share/systemd/" + daemon.getName() + ".service";
         String serviceFile = "/etc/systemd/system/" + daemon.getName() + ".service";
         copyFiles(true, sourceServiceFile, serviceFile);

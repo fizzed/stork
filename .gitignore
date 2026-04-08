@@ -2,3 +2,4 @@ target
 .vagrant
 *.iml
 .buildx
+.idea

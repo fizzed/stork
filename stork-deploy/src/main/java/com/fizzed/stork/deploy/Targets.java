@@ -87,8 +87,8 @@ public class Targets {
         String initTypeString
             =  sshExec(ssh)
                 .command("sh").args("-c", 
-                    "if \\$(/sbin/init --version 2>/dev/null | egrep -q upstart); then echo upstart; " +
-                    "elif \\$(systemctl 2>/dev/null| egrep -q .mount); then echo systemd; " +
+                    "if /sbin/init --version 2>/dev/null | grep -q upstart; then echo upstart; " +
+                    "elif systemctl 2>/dev/null | grep -q \"\\.mount\"; then echo systemd; " +
                     "elif [ -f /etc/init.d/cron ] || [ -f /etc/init.d/crond ]; then echo sysv; " +
                     "else echo unknown; fi")
                 .runCaptureOutput(false)

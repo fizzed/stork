@@ -195,7 +195,7 @@ getJavaVersion()
     #logJavaSearchDebug "getJavaVersion ver line: $java_ver_line"
     #echo `expr "'$java_ver_line'" : '.*version.*"\(.*\)"'`
     # extracts 1.8.0_144 or 9.0.1
-    local java_ver=`"$java_bin" -version 2>&1 | grep "version" | awk '{print $3}' | tr -d \"`
+    local java_ver=`JAVA_TOOL_OPTIONS='' "$java_bin" -version 2>&1 | grep "version" | awk '{print $3}' | tr -d \"`
     echo "$java_ver"
 }
 
